@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: mosala-frontend
+    container_name: mosala-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "1199:80"
+    depends_on:
+      - backend
+    networks:
+      - mosala-net
+
+  backend:
+    image: mosala-backend
+    container_name: mosala-backend
+    build:
+      context: ./mosala-api
+      dockerfile: Dockerfile
+    command: uvicorn app.main:app --host 0.0.0.0 --port 1188 --reload
+    ports:
+      - "1188:1188"
+    environment:
+      - DATABASE_URL=mysql+aiomysql://mosala:mosala@db:3306/mosala
+    depends_on:
+      - db
+    networks:
+      - mosala-net
+
+  db:
+    image: mysql:8.0
+    container_name: mosala-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: mosala
+      MYSQL_USER: mosala
+      MYSQL_PASSWORD: mosala
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3326:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - mosala-net
+
+volumes:
+  db_data:
+
+networks:
+  mosala-net:
+    driver: bridge 

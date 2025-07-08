@@ -1,89 +1,268 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Briefcase, Users, BookOpen, MessageCircle } from "lucide-react";
+import { Menu, X, Briefcase, Users, BookOpen, MessageCircle, ChevronDown, Search } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout>();
+  const navbarRef = useRef<HTMLElement>(null);
 
-  const menuItems = [
-    { href: "/", label: "Accueil", icon: null },
-    { href: "/jobs", label: "Emplois & Formations", icon: Briefcase },
-    { href: "/about", label: "À propos", icon: Users },
-    { href: "/blog", label: "Blog", icon: BookOpen },
-    { href: "/contact", label: "Contact", icon: MessageCircle },
+  // Menus regroupés
+  const menuGroups = [
+    {
+      label: "Emplois & Formations",
+      href: "/jobs",
+      icon: Briefcase,
+    },
+    {
+      label: "Annuaire",
+      children: [
+        { href: "/candidates", label: "Candidats", icon: Users },
+        { href: "/employers", label: "Employeurs", icon: Briefcase },
+      ],
+    },
+    {
+      label: "Ressources",
+      children: [
+        { href: "/about", label: "À propos", icon: Users },
+        { href: "/blog", label: "Blog", icon: BookOpen },
+        { href: "/contact", label: "Contact", icon: MessageCircle },
+      ],
+    },
   ];
 
+  // Effet de scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Fermer le menu quand on clique à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (navbarRef.current && !navbarRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Gestion intelligente du hover dropdown
+  const handleDropdownEnter = (label: string) => {
+    clearTimeout(dropdownTimeoutRef.current);
+    setOpenDropdown(label);
+  };
+
+  const handleDropdownLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 200);
+  };
+
   return (
-    <nav className="bg-white/95 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm">
+    <nav 
+      ref={navbarRef}
+      className={`bg-white/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled ? "shadow-sm border-b border-gray-200/50" : "border-b border-transparent"
+      }`}
+    >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center">
+          {/* Logo avec effet de scale amélioré */}
+          <a href="/" className="flex items-center group" tabIndex={0} aria-label="Accueil Mosala">
             <img 
-              src="/lovable-uploads/1a173991-3aff-4b03-90e4-b87e9603efd0.png" 
+              src="/lovable-uploads/logo-mosala1.png" 
               alt="MOSALA" 
-              className="h-10 w-auto"
+              width={240}
+              height={60}
+              className={`h-12 w-auto transition-all duration-300 ${
+                isScrolled ? "scale-95" : "scale-100"
+              } group-hover:scale-105`}
+              loading="lazy"
             />
+          </a>
+
+          {/* Barre de recherche (mobile) */}
+          <button className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <Search className="w-5 h-5 text-gray-600" />
+          </button>
+
+          {/* Desktop Menu avec effets Vercel-like */}
+          <div className="hidden md:flex items-center space-x-1">
+            <a 
+              href="/" 
+              className="text-[#18182f] hover:text-[#6E45E2] transition-colors font-medium px-3 py-2 rounded-lg hover:bg-gray-50/50"
+            >
+              Accueil
+            </a>
+            
+            {menuGroups.map((group) =>
+              group.children ? (
+                <div
+                  key={group.label}
+                  className="relative"
+                  onMouseEnter={() => handleDropdownEnter(group.label)}
+                  onMouseLeave={handleDropdownLeave}
+                >
+                  <button 
+                    className="text-[#18182f] hover:text-[#6E45E2] transition-colors font-medium px-3 py-2 rounded-lg hover:bg-gray-50/50 flex items-center gap-1"
+                    aria-expanded={openDropdown === group.label}
+                    aria-haspopup="true"
+                  >
+                    {group.label}
+                    <ChevronDown className={`w-4 h-4 ml-1 transition-transform duration-200 ${
+                      openDropdown === group.label ? "rotate-180" : ""
+                    }`} />
+                  </button>
+                  
+                  {/* Dropdown style Vercel */}
+                  <div
+                    className={`absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-gray-900/5 overflow-hidden transition-all duration-200 z-50 ${
+                      openDropdown === group.label
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 -translate-y-1 pointer-events-none"
+                    }`}
+                  >
+                    <div className="py-1">
+                      {group.children.map((item) => (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[#6E45E2] transition-colors"
+                        >
+                          <item.icon className="w-4 h-4 mr-2 text-gray-500" />
+                          {item.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <a
+                  key={group.href}
+                  href={group.href}
+                  className="text-[#18182f] hover:text-[#6E45E2] transition-colors font-medium px-3 py-2 rounded-lg hover:bg-gray-50/50"
+                >
+                  {group.label}
+                </a>
+              )
+            )}
           </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-mosala-dark hover:text-primary transition-colors font-medium"
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
+          {/* CTA et recherche (desktop) */}
+          <div className="hidden md:flex items-center space-x-2">
+            <div className="relative mx-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                className="pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-200 focus:border-[#6E45E2] focus:ring-1 focus:ring-[#6E45E2]/50 outline-none transition-all w-64"
+              />
+            </div>
 
-          {/* Desktop CTA Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+            <Button 
+              variant="ghost" 
+              className="text-[#18182f] hover:bg-gray-100/50"
+            >
               Connexion
             </Button>
-            <Button className="bg-gradient-primary hover:opacity-90 text-white">
-              S'inscrire
+            <Button className="relative overflow-hidden group bg-gradient-to-r from-[#6E45E2] to-[#00C4CC] hover:from-[#6E45E2]/90 hover:to-[#00C4CC]/90">
+              <span className="relative z-10">S'inscrire</span>
+              <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Bouton mobile */}
           <button
-            className="md:hidden p-2 rounded-md hover:bg-muted"
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Menu"
+            aria-expanded={isMenuOpen}
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? (
+              <X className="w-6 h-6 text-gray-900" />
+            ) : (
+              <Menu className="w-6 h-6 text-gray-900" />
+            )}
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border">
-            <div className="flex flex-col space-y-4">
-              {menuItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center space-x-2 text-mosala-dark hover:text-primary transition-colors font-medium py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.icon && <item.icon size={18} />}
-                  <span>{item.label}</span>
-                </a>
-              ))}
-              <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                  Connexion
-                </Button>
-                <Button className="bg-gradient-primary hover:opacity-90 text-white">
-                  S'inscrire
-                </Button>
+        {/* Menu mobile avec transitions */}
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen ? "max-h-screen pb-4" : "max-h-0"
+        }`}>
+          <div className="pt-2 space-y-1">
+            <div className="px-4 mb-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  className="pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-200 focus:border-[#6E45E2] focus:ring-1 focus:ring-[#6E45E2]/50 outline-none transition-all w-full"
+                />
               </div>
             </div>
+
+            <a 
+              href="/" 
+              className="block px-4 py-3 text-gray-900 hover:bg-gray-50 rounded-lg font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Accueil
+            </a>
+            
+            {menuGroups.map((group) =>
+              group.children ? (
+                <div key={group.label} className="px-1">
+                  <div className="px-3 py-2 font-medium text-gray-900">
+                    {group.label}
+                  </div>
+                  <div className="pl-4 flex flex-col">
+                    {group.children.map((item) => (
+                      <a
+                        key={item.href}
+                        href={item.href}
+                        className="px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg flex items-center"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <item.icon className="w-4 h-4 mr-2 text-gray-500" />
+                        {item.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <a
+                  key={group.href}
+                  href={group.href}
+                  className="block px-4 py-3 text-gray-900 hover:bg-gray-50 rounded-lg font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {group.label}
+                </a>
+              )
+            )}
+            
+            <div className="px-1 pt-2 mt-2 border-t border-gray-200 space-y-2">
+              <Button 
+                variant="outline" 
+                className="w-full border-[#6E45E2] text-[#6E45E2] hover:bg-[#6E45E2]/10"
+              >
+                Connexion
+              </Button>
+              <Button className="w-full bg-gradient-to-r from-[#6E45E2] to-[#00C4CC] hover:from-[#6E45E2]/90 hover:to-[#00C4CC]/90">
+                S'inscrire
+              </Button>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );

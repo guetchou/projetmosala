@@ -1,0 +1,1 @@
+# Paramètres globaux, secrets, etc.

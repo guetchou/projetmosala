@@ -52,16 +52,26 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				mosala: {
+					green: 'hsl(var(--mosala-green))',
+					yellow: 'hsl(var(--mosala-yellow))',
+					orange: 'hsl(var(--mosala-orange))',
+					red: 'hsl(var(--mosala-red))',
+					dark: 'hsl(var(--mosala-dark))',
+					light: 'hsl(var(--mosala-light))'
 				}
+			},
+			backgroundImage: {
+				'gradient-mosala': 'var(--gradient-mosala)',
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-secondary': 'var(--gradient-secondary)'
+			},
+			boxShadow: {
+				'mosala': 'var(--shadow-mosala)',
+				'glow': 'var(--shadow-glow)'
+			},
+			transitionProperty: {
+				'smooth': 'var(--transition-smooth)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

@@ -97,4 +97,121 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Enhanced Swiper styles */
+  .testimonials-swiper .swiper-button-next,
+  .testimonials-swiper .swiper-button-prev {
+    @apply text-primary;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    margin-top: -22px;
+    transition: all 0.3s ease;
+  }
+
+  .testimonials-swiper .swiper-button-next:hover,
+  .testimonials-swiper .swiper-button-prev:hover {
+    @apply bg-primary text-white shadow-mosala;
+    transform: scale(1.1);
+  }
+
+  .testimonials-swiper .swiper-pagination-bullet {
+    @apply bg-primary/30;
+    width: 12px;
+    height: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .testimonials-swiper .swiper-pagination-bullet-active {
+    @apply bg-primary;
+    transform: scale(1.2);
+  }
+
+  .caravane-testimonials .swiper-button-next,
+  .caravane-testimonials .swiper-button-prev {
+    @apply text-accent;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    margin-top: -22px;
+    transition: all 0.3s ease;
+  }
+
+  .caravane-testimonials .swiper-button-next:hover,
+  .caravane-testimonials .swiper-button-prev:hover {
+    @apply bg-accent text-white;
+    transform: scale(1.1);
+  }
+
+  .caravane-testimonials .swiper-pagination-bullet {
+    @apply bg-accent/30;
+    width: 10px;
+    height: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .caravane-testimonials .swiper-pagination-bullet-active {
+    @apply bg-accent;
+    transform: scale(1.2);
+  }
+
+  /* Custom animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { 
+      box-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)), 0 0 15px hsl(var(--primary));
+    }
+    50% { 
+      box-shadow: 0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary)), 0 0 30px hsl(var(--primary));
+    }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  /* Scroll animations */
+  .scroll-fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+  }
+
+  .scroll-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Enhanced hover effects */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
 }

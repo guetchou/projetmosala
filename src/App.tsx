@@ -18,6 +18,9 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Blog from "./pages/Blog";
 import ChatbotWidget from "@/components/ChatbotWidget";
+import AdminDashboard from "./pages/AdminDashboard";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -29,17 +32,29 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* Ces routes sont déjà déclarées plus haut, on les retire ici */}
           <Route path="/blog" element={<Blog />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
           <Route path="/contact" element={<Contact />} />
-  <Route path="/advanced-search" element={<AdvancedSearch />} />
-  <Route path="/profile-creation" element={<ProfileCreation />} />
-  <Route path="/map-3d" element={<InteractiveMap3D />} />
-  <Route path="/alerts" element={<CustomAlerts />} />
-  <Route path="/recruiter-space" element={<RecruiterSpace />} />
-  <Route path="/offline-mode" element={<OfflineMode />} />
+          <Route path="/advanced-search" element={<AdvancedSearch />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile-creation" element={
+            <ProtectedRoute requiredRole="candidat">
+              <ProfileCreation />
+            </ProtectedRoute>
+          } />
+          <Route path="/recruiter-space" element={
+            <ProtectedRoute requiredRole="recruteur">
+              <RecruiterSpace />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin-dashboard" element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/map-3d" element={<InteractiveMap3D />} />
+          <Route path="/alerts" element={<CustomAlerts />} />
+          <Route path="/offline-mode" element={<OfflineMode />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <ChatbotWidget />
       </BrowserRouter>

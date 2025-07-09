@@ -8,6 +8,7 @@ MYSQL_URL = os.environ.get("MOSALA_MYSQL_URL", "mysql+aiomysql://mosala_user:mot
 # Importer les modèles ORM générés précédemment
 from app.models.user_orm import User, Base as UserBase
 from app.models.job_orm import Job, Base as JobBase
+from app.core.security import hash_password
 
 engine = create_async_engine(MYSQL_URL, echo=True)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
@@ -16,9 +17,9 @@ async def insert_data():
     async with async_session() as session:
         # Utilisateurs de test
         users = [
-            User(name="Jean Likibi", email="jean@mosala.org"),
-            User(name="Aïssa M’Bemba", email="aissa@mosala.org"),
-            User(name="Pauline Ondzaba", email="pauline@mosala.org"),
+            User(name="Jean Likibi", email="jean@mosala.org", password_hash=hash_password("test1234"), role="candidat"),
+            User(name="Aïssa M’Bemba", email="aissa@mosala.org", password_hash=hash_password("test1234"), role="recruteur"),
+            User(name="Pauline Ondzaba", email="pauline@mosala.org", password_hash=hash_password("test1234"), role="admin"),
         ]
         # Offres d'emploi de test
         jobs = [

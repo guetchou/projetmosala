@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Briefcase, Users, BookOpen, MessageCircle, ChevronDown, Search } from "lucide-react";
+import { getUserRole, isAuthenticated, removeToken } from "@/utils/auth";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,6 +9,9 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout>();
   const navbarRef = useRef<HTMLElement>(null);
+
+  const role = getUserRole();
+  const authenticated = isAuthenticated();
 
   // Menus regroupés
   const menuGroups = [
@@ -69,8 +73,8 @@ const Navbar = () => {
   return (
     <nav 
       ref={navbarRef}
-      className={`bg-white/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? "shadow-sm border-b border-gray-200/50" : "border-b border-transparent"
+      className={`bg-mosala-white/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled ? "shadow-sm border-b border-mosala-dark-100/50" : "border-b border-transparent"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -90,15 +94,15 @@ const Navbar = () => {
           </a>
 
           {/* Barre de recherche (mobile) */}
-          <button className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
-            <Search className="w-5 h-5 text-gray-600" />
+          <button className="md:hidden p-2 rounded-lg hover:bg-mosala-green-50 transition-colors">
+            <Search className="w-5 h-5 text-mosala-dark-200" />
           </button>
 
           {/* Desktop Menu avec effets Vercel-like */}
           <div className="hidden md:flex items-center space-x-1">
             <a 
               href="/" 
-              className="text-[#18182f] hover:text-[#6E45E2] transition-colors font-medium px-3 py-2 rounded-lg hover:bg-gray-50/50"
+              className="text-mosala-dark-500 hover:text-mosala-green-500 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-mosala-green-50"
             >
               Accueil
             </a>
@@ -112,7 +116,7 @@ const Navbar = () => {
                   onMouseLeave={handleDropdownLeave}
                 >
                   <button 
-                    className="text-[#18182f] hover:text-[#6E45E2] transition-colors font-medium px-3 py-2 rounded-lg hover:bg-gray-50/50 flex items-center gap-1"
+                    className="text-mosala-dark-500 hover:text-mosala-green-500 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-mosala-green-50 flex items-center gap-1"
                     aria-expanded={openDropdown === group.label}
                     aria-haspopup="true"
                   >
@@ -124,7 +128,7 @@ const Navbar = () => {
                   
                   {/* Dropdown style Vercel */}
                   <div
-                    className={`absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-gray-900/5 overflow-hidden transition-all duration-200 z-50 ${
+                    className={`absolute left-0 mt-2 w-48 bg-mosala-white rounded-lg shadow-lg ring-1 ring-gray-900/5 overflow-hidden transition-all duration-200 z-50 ${
                       openDropdown === group.label
                         ? "opacity-100 translate-y-0"
                         : "opacity-0 -translate-y-1 pointer-events-none"
@@ -135,9 +139,9 @@ const Navbar = () => {
                         <a
                           key={item.href}
                           href={item.href}
-                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-[#6E45E2] transition-colors"
+                          className="flex items-center px-4 py-2 text-mosala-dark-300 hover:bg-mosala-green-50 hover:text-mosala-green-500 transition-colors"
                         >
-                          <item.icon className="w-4 h-4 mr-2 text-gray-500" />
+                          <item.icon className="w-4 h-4 mr-2 text-mosala-dark-200" />
                           {item.label}
                         </a>
                       ))}
@@ -148,7 +152,7 @@ const Navbar = () => {
                 <a
                   key={group.href}
                   href={group.href}
-                  className="text-[#18182f] hover:text-[#6E45E2] transition-colors font-medium px-3 py-2 rounded-lg hover:bg-gray-50/50"
+                  className="text-mosala-dark-500 hover:text-mosala-green-500 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-mosala-green-50"
                 >
                   {group.label}
                 </a>
@@ -159,37 +163,48 @@ const Navbar = () => {
           {/* CTA et recherche (desktop) */}
           <div className="hidden md:flex items-center space-x-2">
             <div className="relative mx-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-mosala-dark-200" />
               <input
                 type="text"
                 placeholder="Rechercher..."
-                className="pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-200 focus:border-[#6E45E2] focus:ring-1 focus:ring-[#6E45E2]/50 outline-none transition-all w-64"
+                className="pl-10 pr-4 py-2 text-sm rounded-lg border border-mosala-dark-100 focus:border-mosala-green-500 focus:ring-1 focus:ring-mosala-green-500/50 outline-none transition-all w-64"
               />
             </div>
 
-            <Button 
-              variant="ghost" 
-              className="text-[#18182f] hover:bg-gray-100/50"
-            >
-              Connexion
-            </Button>
-            <Button className="relative overflow-hidden group bg-gradient-to-r from-[#6E45E2] to-[#00C4CC] hover:from-[#6E45E2]/90 hover:to-[#00C4CC]/90">
-              <span className="relative z-10">S'inscrire</span>
-              <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </Button>
+            {authenticated && role === "admin" && (
+              <a href="/admin-dashboard" className="btn btn-outline">Admin</a>
+            )}
+            {authenticated && role === "recruteur" && (
+              <a href="/recruiter-space" className="btn btn-outline">Espace Recruteur</a>
+            )}
+            {authenticated && role === "candidat" && (
+              <a href="/profile-creation" className="btn btn-outline">Mon Profil</a>
+            )}
+            {!authenticated && (
+              <>
+                <Button variant="ghost" className="text-[#18182f] hover:bg-gray-100/50">Connexion</Button>
+                <Button className="relative overflow-hidden group bg-gradient-to-r from-[#6E45E2] to-[#00C4CC] hover:from-[#6E45E2]/90 hover:to-[#00C4CC]/90">
+                  <span className="relative z-10">S'inscrire</span>
+                  <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </Button>
+              </>
+            )}
+            {authenticated && (
+              <Button variant="outline" onClick={() => { removeToken(); window.location.href = "/"; }}>Déconnexion</Button>
+            )}
           </div>
 
           {/* Bouton mobile */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-mosala-green-50 transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Menu"
             aria-expanded={isMenuOpen}
           >
             {isMenuOpen ? (
-              <X className="w-6 h-6 text-gray-900" />
+              <X className="w-6 h-6 text-mosala-dark-500" />
             ) : (
-              <Menu className="w-6 h-6 text-gray-900" />
+              <Menu className="w-6 h-6 text-mosala-dark-500" />
             )}
           </button>
         </div>
@@ -201,18 +216,18 @@ const Navbar = () => {
           <div className="pt-2 space-y-1">
             <div className="px-4 mb-2">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-mosala-dark-200" />
                 <input
                   type="text"
                   placeholder="Rechercher..."
-                  className="pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-200 focus:border-[#6E45E2] focus:ring-1 focus:ring-[#6E45E2]/50 outline-none transition-all w-full"
+                  className="pl-10 pr-4 py-2 text-sm rounded-lg border border-mosala-dark-100 focus:border-mosala-green-500 focus:ring-1 focus:ring-mosala-green-500/50 outline-none transition-all w-full"
                 />
               </div>
             </div>
 
             <a 
               href="/" 
-              className="block px-4 py-3 text-gray-900 hover:bg-gray-50 rounded-lg font-medium"
+              className="block px-4 py-3 text-mosala-dark-500 hover:bg-mosala-green-50 rounded-lg font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               Accueil
@@ -221,7 +236,7 @@ const Navbar = () => {
             {menuGroups.map((group) =>
               group.children ? (
                 <div key={group.label} className="px-1">
-                  <div className="px-3 py-2 font-medium text-gray-900">
+                  <div className="px-3 py-2 font-medium text-mosala-dark-500">
                     {group.label}
                   </div>
                   <div className="pl-4 flex flex-col">
@@ -229,10 +244,10 @@ const Navbar = () => {
                       <a
                         key={item.href}
                         href={item.href}
-                        className="px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg flex items-center"
+                        className="px-3 py-2 text-mosala-dark-300 hover:bg-mosala-green-50 rounded-lg flex items-center"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <item.icon className="w-4 h-4 mr-2 text-gray-500" />
+                        <item.icon className="w-4 h-4 mr-2 text-mosala-dark-200" />
                         {item.label}
                       </a>
                     ))}
@@ -242,7 +257,7 @@ const Navbar = () => {
                 <a
                   key={group.href}
                   href={group.href}
-                  className="block px-4 py-3 text-gray-900 hover:bg-gray-50 rounded-lg font-medium"
+                  className="block px-4 py-3 text-mosala-dark-500 hover:bg-mosala-green-50 rounded-lg font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {group.label}
@@ -250,14 +265,14 @@ const Navbar = () => {
               )
             )}
             
-            <div className="px-1 pt-2 mt-2 border-t border-gray-200 space-y-2">
+            <div className="px-1 pt-2 mt-2 border-t border-mosala-dark-100 space-y-2">
               <Button 
                 variant="outline" 
-                className="w-full border-[#6E45E2] text-[#6E45E2] hover:bg-[#6E45E2]/10"
+                className="w-full border-[#6E45E2] text-[#6E45E2] hover:bg-mosala-green-500/10"
               >
                 Connexion
               </Button>
-              <Button className="w-full bg-gradient-to-r from-[#6E45E2] to-[#00C4CC] hover:from-[#6E45E2]/90 hover:to-[#00C4CC]/90">
+              <Button className="w-full bg-gradient-to-r from-mosala-green-500 to-mosala-yellow-500 hover:from-mosala-green-600 hover:to-mosala-yellow-600">
                 S'inscrire
               </Button>
             </div>

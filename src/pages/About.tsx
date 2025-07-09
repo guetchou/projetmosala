@@ -30,3 +30,4 @@ Proximité : Support local 24/7 (chatbot, WhatsApp, email)</p>
 );
 
 export default About;
+ 

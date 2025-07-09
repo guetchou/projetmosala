@@ -40,7 +40,7 @@ const App = () => (
   <Route path="/alerts" element={<CustomAlerts />} />
   <Route path="/recruiter-space" element={<RecruiterSpace />} />
   <Route path="/offline-mode" element={<OfflineMode />} />
-</Routes>
+        </Routes>
         <ChatbotWidget />
       </BrowserRouter>
     </TooltipProvider>

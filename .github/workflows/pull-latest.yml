@@ -1,16 +1,14 @@
-name: Pull Latest Code on Server
+name: Déploiement automatique sur VPS
 
 on:
   workflow_dispatch:
 
 jobs:
-  pull-latest:
+  deploy-on-vps:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
-      - name: Pull latest code on remote server
+    steps:
+      - name: Pull latest code and redeploy on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -19,4 +17,6 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             cd /opt/mosala-job-hub
-            git pull origin main 
+            git pull origin main
+            docker compose down
+            docker compose up --build -d

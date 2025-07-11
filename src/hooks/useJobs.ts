@@ -1,15 +1,14 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { fetchApi } from "@/api/fetcher";
 
-export function useJobs(token) {
+export function useJobs(token?: string) {
   return useQuery({
     queryKey: ["jobs"],
     queryFn: async () => {
-      const res = await fetch("https://api.mosala.org/jobs", {
-        headers: token ? { "Authorization": `Bearer ${token}` } : {}
+      return fetchApi("/jobs", {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
       });
-      if (!res.ok) throw new Error("Erreur lors du chargement des offres");
-      return res.json();
     }
   });
 }

@@ -9,6 +9,7 @@ import About from './pages/About';
 import Candidates from './pages/Candidates';
 import Employers from './pages/Employers';
 import Jobs from './pages/Jobs';
+import Orientation from './pages/Orientation';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,10 +18,18 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Blog from "./pages/Blog";
+import BlogPost from './pages/BlogPost';
 import ChatbotWidget from "@/components/ChatbotWidget";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import Register from "./pages/Register";
+import Support from "./pages/Support";
+import Services from "./pages/Services";
+import Formations from "./pages/Formations";
+import FAQ from "./pages/FAQ";
+import CandidateSpace from "./pages/CandidateSpace";
 
 const queryClient = new QueryClient();
 
@@ -33,9 +42,12 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/advanced-search" element={<AdvancedSearch />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/profile-creation" element={
             <ProtectedRoute requiredRole="candidat">
               <ProfileCreation />
@@ -54,6 +66,16 @@ const App = () => (
           <Route path="/map-3d" element={<InteractiveMap3D />} />
           <Route path="/alerts" element={<CustomAlerts />} />
           <Route path="/offline-mode" element={<OfflineMode />} />
+          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/candidates" element={<Candidates />} />
+          <Route path="/employers" element={<Employers />} />
+          <Route path="/orientation" element={<Orientation />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/formations" element={<Formations />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/candidate-space" element={<CandidateSpace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <ChatbotWidget />

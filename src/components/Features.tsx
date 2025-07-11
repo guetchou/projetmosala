@@ -41,26 +41,26 @@ import { Zap, UserPlus, Map, Bell, UserCog, WifiOff } from "lucide-react";
 ];
 
 const Features = () => (
-  <section className="py-16 bg-white/80">
+  <section className="py-16 bg-[var(--color-mosala-white)]/80">
     <div className="container mx-auto px-4">
-      <h2 className="text-3xl font-bold text-center mb-10 text-mosala-dark">Fonctionnalités avancées</h2>
+      <h2 className="text-3xl font-bold text-center mb-10 text-[var(--color-mosala-dark-500)]">Fonctionnalités avancées</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {features.map((feature) => (
           <Link
             to={feature.to}
             key={feature.title}
-            className="block bg-white rounded-xl shadow-lg p-6 hover:shadow-primary/30 border border-border transition-all group"
+            className="block bg-[var(--color-mosala-white)] rounded-xl shadow-lg p-6 hover:shadow-[var(--color-mosala-green-500)]/30 border border-[var(--color-mosala-dark-200)] transition-all group"
           >
             <div className="flex items-center gap-4 mb-4">
-              <feature.icon className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-mosala-dark group-hover:text-primary">{feature.title}</h3>
+              <feature.icon className="h-8 w-8 text-[var(--color-mosala-green-500)] group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-semibold text-[var(--color-mosala-dark-500)] group-hover:text-[var(--color-mosala-green-500)]">{feature.title}</h3>
             </div>
-            <p className="text-mosala-dark/80">{feature.desc}</p>
+            <p className="text-[var(--color-mosala-dark-700)]/80">{feature.desc}</p>
           </Link>
         ))}
       </div>
-      </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 
 export default Features;

@@ -23,82 +23,15 @@ const Newsletter = () => {
   ];
 
   return (
-    <section className="py-16 bg-background">
+    <section className="py-12 bg-[var(--color-mosala-green-50)]">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left content */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-mosala-dark mb-4">
-              Restez Informé·e
-            </h2>
-            <p className="text-lg text-muted-foreground mb-6">
-              Abonnez-vous à notre newsletter mensuelle :
-            </p>
-            
-            <div className="space-y-4 mb-8">
-              {benefits.map((benefit, index) => (
-                <motion.div
-                  key={benefit.text}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="flex items-center space-x-3"
-                >
-                  <benefit.icon className="h-5 w-5 text-primary" />
-                  <span className="text-mosala-dark">{benefit.text}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Right content - Newsletter form */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white p-8 rounded-2xl shadow-lg border border-border"
-          >
-            <div className="text-center mb-6">
-              <Mail className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-mosala-dark">Newsletter Mosala</h3>
-            </div>
-
-            {isSubscribed ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-8"
-              >
-                <CheckCircle className="h-16 w-16 text-mosala-green mx-auto mb-4" />
-                <h4 className="text-lg font-bold text-mosala-dark mb-2">Merci !</h4>
-                <p className="text-muted-foreground">Votre inscription a été confirmée.</p>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  type="email"
-                  placeholder="votre.email@exemple.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-12"
-                />
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-primary hover:opacity-90 text-white h-12"
-                >
-                  S'abonner à la newsletter
-                </Button>
-              </form>
-            )}
-          </motion.div>
+        <div className="bg-[var(--color-mosala-white)] rounded-2xl shadow-lg p-8 max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold mb-4 text-[var(--color-mosala-green-700)]">Restez informé</h2>
+          <p className="mb-6 text-[var(--color-mosala-dark-700)]">Recevez les dernières offres et actualités Mosala directement dans votre boîte mail.</p>
+          <form className="flex flex-col sm:flex-row gap-4">
+            <input type="email" placeholder="Votre email" className="flex-1 px-4 py-3 rounded-lg border border-[var(--color-mosala-green-200)] focus:border-[var(--color-mosala-green-500)] focus:ring-2 focus:ring-[var(--color-mosala-green-100)] text-[var(--color-mosala-dark-900)] bg-[var(--color-mosala-white)] shadow-inner text-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-mosala-green-300)]" required />
+            <button type="submit" className="px-6 py-3 rounded-lg bg-[var(--color-mosala-green-500)] text-[var(--color-mosala-white)] font-semibold hover:bg-[var(--color-mosala-green-600)] transition text-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-mosala-green-300)]">S'inscrire</button>
+          </form>
         </div>
       </div>
     </section>

@@ -273,3 +273,94 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
 }
+
+/* Palette Mosala */
+:root {
+  --color-mosala-green-50: #E6F9F0;
+  --color-mosala-green-100: #B3F3E1;
+  --color-mosala-green-200: #80ECD1;
+  --color-mosala-green-300: #4DE4C2;
+  --color-mosala-green-500: #009640;
+  --color-mosala-green-600: #007A32;
+  --color-mosala-green-700: #005F25;
+  --color-mosala-green-800: #004418;
+  --color-mosala-green-900: #00280C;
+  --color-mosala-yellow-50: #FFFBE6;
+  --color-mosala-yellow-100: #FFF6B3;
+  --color-mosala-yellow-200: #FFEE80;
+  --color-mosala-yellow-300: #FFE84D;
+  --color-mosala-yellow-500: #FFD500;
+  --color-mosala-yellow-600: #D4B400;
+  --color-mosala-yellow-700: #A38E00;
+  --color-mosala-yellow-800: #736600;
+  --color-mosala-yellow-900: #413E00;
+  --color-mosala-orange-50: #FFF3E6;
+  --color-mosala-orange-100: #FFE1B3;
+  --color-mosala-orange-200: #FFD080;
+  --color-mosala-orange-300: #FFC04D;
+  --color-mosala-orange-500: #F39200;
+  --color-mosala-orange-600: #C07400;
+  --color-mosala-orange-700: #8E5600;
+  --color-mosala-orange-800: #5C3900;
+  --color-mosala-orange-900: #2A1B00;
+  --color-mosala-red-50: #FDE6E7;
+  --color-mosala-red-100: #FBB3B7;
+  --color-mosala-red-200: #F78087;
+  --color-mosala-red-300: #F44D58;
+  --color-mosala-red-500: #E30613;
+  --color-mosala-red-600: #B0040F;
+  --color-mosala-red-700: #83000B;
+  --color-mosala-red-800: #520007;
+  --color-mosala-red-900: #210003;
+  --color-mosala-dark-50: #F2F2F2;
+  --color-mosala-dark-100: #D9D9D9;
+  --color-mosala-dark-200: #BFBFBF;
+  --color-mosala-dark-300: #A6A6A6;
+  --color-mosala-dark-500: #222222;
+  --color-mosala-dark-600: #1B1B1B;
+  --color-mosala-dark-700: #141414;
+  --color-mosala-dark-800: #0D0D0D;
+  --color-mosala-dark-900: #060606;
+  --color-mosala-white: #FFFFFF;
+}
+
+/* Dégradé principal Mosala (vert 300 -> jaune 500) */
+.mosala-gradient-hero {
+  background-image: linear-gradient(
+    to bottom right,
+    rgba(77, 228, 194, 0.8) 0%,
+    rgba(255, 213, 0, 0.8) 100%
+  );
+}
+
+/* Overlay glassmorphism Mosala */
+.mosala-glass-overlay {
+  background: linear-gradient(
+    to bottom right,
+    rgba(230, 249, 240, 0.8), /* green-50 */
+    rgba(255, 255, 255, 0.9), /* white */
+    rgba(255, 251, 230, 0.8)  /* yellow-50 */
+  );
+  backdrop-filter: blur(16px);
+}
+
+/* Blobs animés Mosala */
+.mosala-blob-green { background: var(--color-mosala-green-200); }
+.mosala-blob-yellow { background: var(--color-mosala-yellow-200); }
+.mosala-blob-orange { background: var(--color-mosala-orange-200); }
+
+@keyframes blob {
+  0%, 100% { transform: scale(1) translateY(0); }
+  33% { transform: scale(1.1, 0.9) translateY(-10px); }
+  66% { transform: scale(0.9, 1.1) translateY(10px); }
+}
+.animate-blob { animation: blob 7s infinite ease-in-out; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+@keyframes slow-pan {
+  0%,100% { background-position: center; }
+  50% { background-position: 60% 40%; }
+}
+.animate-slow-pan {
+  animation: slow-pan 30s ease-in-out infinite alternate;
+}

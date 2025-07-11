@@ -8,20 +8,19 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 
 // Nouveaux contrastes optimisés
 const COLORS = {
-  text: "text-gray-50",         // Blanc cassé (meilleure lisibilité)
-  textSecondary: "text-gray-200",
-  textDark: "text-gray-900",    // Pour texte sur fond clair
-  bgDark: "bg-gray-900",        // Fond sombre
-  primary: "bg-mosala-green-600", // Vert plus foncé
-  primaryHover: "bg-mosala-green-700",
-  secondary: "bg-mosala-yellow-600", // Jaune plus foncé
-  secondaryHover: "bg-mosala-yellow-700"
+  text: "text-[var(--color-mosala-dark-50)]",         // Blanc cassé (meilleure lisibilité)
+  textSecondary: "text-[var(--color-mosala-dark-100)]",
+  textDark: "text-[var(--color-mosala-dark-900)]",    // Pour texte sur fond clair
+  bgDark: "bg-[var(--color-mosala-dark-900)]",        // Fond sombre
+  primary: "bg-[var(--color-mosala-green-600)]", // Vert plus foncé
+  primaryHover: "hover:bg-[var(--color-mosala-green-700)]",
+  secondary: "bg-[var(--color-mosala-yellow-600)]", // Jaune plus foncé
+  secondaryHover: "hover:bg-[var(--color-mosala-yellow-700)]"
 };
 
 const Hero = () => {
   // Données réorganisées pour plus de clarté
   const content = {
-    promo: "🚀 Mosala : 1ère plateforme d'emploi et d'accompagnement au Congo !",
     tagline: "Inclusion, innovation, impact social",
     title: "Construisez votre avenir avec",
     highlight: "Mosala",
@@ -43,15 +42,12 @@ const Hero = () => {
   };
 
   return (
-    <section className={`relative min-h-screen ${COLORS.bgDark} overflow-hidden`}>
+    <section className={`relative min-h-screen ${COLORS.bgDark} overflow-hidden pt-32`}>
       {/* Arrière-plan avec effet Ken Burns */}
-      <BackgroundCarousel />
+      <div className="mosala-gradient-hero absolute inset-0 bg-cover bg-center filter blur-sm" style={{zIndex:0}} />
 
       {/* Contenu principal */}
       <div className="relative z-20 container mx-auto px-4 py-16 lg:py-24">
-        {/* Bannière promo */}
-        <PromoBanner text={content.promo} />
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Colonne gauche - Contenu texte */}
           <div className="space-y-8">
@@ -72,12 +68,14 @@ const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <CTAButton 
                 {...content.ctaPrimary} 
-                primary 
+                primary={true}
+                outline={false}
                 className="shadow-lg hover:shadow-xl"
               />
               <CTAButton 
                 {...content.ctaSecondary} 
-                outline 
+                primary={false}
+                outline={true}
                 className="border-2 hover:border-transparent"
               />
             </div>
@@ -132,32 +130,14 @@ const BackgroundCarousel = () => (
   </div>
 );
 
-const PromoBanner = ({ text }) => (
-  <motion.div 
-    initial={{ y: -50, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.6 }}
-    className={`relative z-20 ${COLORS.primary} ${COLORS.text} py-3 mb-8`}
-    aria-label="Promotion"
-  >
-    <div className="container mx-auto px-4 text-center">
-      <div className="flex items-center justify-center space-x-2 text-sm md:text-base font-semibold">
-        <Sparkles className="h-4 w-4" aria-hidden="true" />
-        <span>{text}</span>
-        <Sparkles className="h-4 w-4" aria-hidden="true" />
-      </div>
-    </div>
-  </motion.div>
-);
-
 const Tagline = ({ text }) => (
   <motion.div
     initial={{ y: 20, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
     transition={{ duration: 0.5 }}
   >
-    <div className={`inline-flex items-center ${COLORS.primary}/10 ${COLORS.primary} px-4 py-2 text-sm font-semibold rounded-full`}>
-      <Globe className="h-4 w-4 mr-2" aria-hidden="true" />
+    <div className="inline-flex items-center bg-[var(--color-mosala-white)]/10 text-[var(--color-mosala-white)] px-4 py-2 text-sm font-semibold rounded-full border border-[var(--color-mosala-white)]/20">
+      <Globe className="h-4 w-4 mr-2 text-[var(--color-mosala-white)]" aria-hidden="true" />
       {text}
     </div>
   </motion.div>
@@ -171,7 +151,7 @@ const Title = ({ text, highlight, description }) => (
     className="space-y-4"
   >
     <h1 className={`text-3xl md:text-4xl lg:text-5xl font-bold ${COLORS.text} leading-tight`}>
-      {text} <span className="text-transparent bg-clip-text bg-gradient-to-r from-mosala-green-500 to-mosala-yellow-500">{highlight}</span>
+      {text} <span className="text-transparent bg-clip-text mosala-gradient-hero">{highlight}</span>
     </h1>
     <p className={`text-lg md:text-xl ${COLORS.textSecondary} leading-relaxed max-w-2xl`}>
       {description}
@@ -188,8 +168,8 @@ const FeaturesList = ({ items }) => (
   >
     {items.map((item, index) => (
       <div key={index} className={`flex items-center space-x-3 ${COLORS.text} p-3 rounded-lg bg-white/5`}>
-        <div className="flex-shrink-0 w-8 h-8 bg-mosala-green-500/20 rounded-full flex items-center justify-center">
-          <item.icon className="h-4 w-4 text-mosala-green-500" aria-hidden="true" />
+        <div className="flex-shrink-0 w-8 h-8 bg-[var(--color-mosala-green-500)]/20 rounded-full flex items-center justify-center">
+          <item.icon className="h-4 w-4 text-[var(--color-mosala-green-500)]" aria-hidden="true" />
         </div>
         <span className="text-sm font-medium">{item.text}</span>
       </div>
@@ -205,9 +185,9 @@ const CTAButton = ({ text, icon: Icon, link, primary, outline, className = '' })
       <Button
         className={`${baseClass} ${className} ${
           primary 
-            ? `${COLORS.primary} hover:${COLORS.primaryHover} ${COLORS.text} shadow-lg`
+            ? `${COLORS.primary} ${COLORS.primaryHover} ${COLORS.text} shadow-lg`
             : outline
-              ? `border-mosala-green-500 text-mosala-green-500 hover:bg-mosala-green-500 hover:${COLORS.text} bg-transparent`
+              ? `border-[var(--color-mosala-green-500)] text-[var(--color-mosala-green-500)] hover:bg-[var(--color-mosala-green-500)] hover:${COLORS.text} bg-transparent`
               : ''
         }`}
         size="lg"
@@ -229,8 +209,8 @@ const StatsGrid = ({ items }) => (
   >
     {items.map((item, index) => (
       <div key={index} className="text-center">
-        <div className="flex items-center justify-center w-10 h-10 bg-mosala-green-500/20 rounded-full mx-auto mb-2">
-          <item.icon className="h-5 w-5 text-mosala-green-500" aria-hidden="true" />
+        <div className="flex items-center justify-center w-10 h-10 bg-[var(--color-mosala-green-500)]/20 rounded-full mx-auto mb-2">
+          <item.icon className="h-5 w-5 text-[var(--color-mosala-green-500)]" aria-hidden="true" />
         </div>
         <div className={`text-xl font-bold ${COLORS.text}`}>{item.value}</div>
         <div className={`text-xs ${COLORS.textSecondary}`}>{item.label}</div>
@@ -251,7 +231,7 @@ const IllustrationCard = () => (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-mosala-green-500 to-mosala-yellow-500 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] rounded-full flex items-center justify-center">
               <Briefcase className="h-6 w-6 text-white" aria-hidden="true" />
             </div>
             <div>
@@ -259,25 +239,25 @@ const IllustrationCard = () => (
               <p className="text-sm text-gray-500">Coaching, offres, réseau</p>
             </div>
           </div>
-          <div className="inline-flex items-center bg-mosala-yellow-500/10 text-mosala-yellow-600 px-3 py-1 text-xs font-semibold rounded-full">
+          <div className="inline-flex items-center bg-[var(--color-mosala-yellow-500)]/10 text-[var(--color-mosala-yellow-600)] px-3 py-1 text-xs font-semibold rounded-full">
             Actif
           </div>
         </div>
 
         <div className="space-y-4">
           {[
-            { label: "Coaching personnalisé", value: 95, color: "bg-mosala-green-500" },
-            { label: "Accès aux offres", value: 100, color: "bg-mosala-yellow-500" },
-            { label: "Communauté", value: 90, color: "bg-mosala-orange-500" }
+            { label: "Coaching personnalisé", value: 95, color: "bg-[var(--color-mosala-green-500)]" },
+            { label: "Accès aux offres", value: 100, color: "bg-[var(--color-mosala-yellow-500)]" },
+            { label: "Communauté", value: 90, color: "bg-[var(--color-mosala-orange-500)]" }
           ].map((item, index) => (
             <div key={index} className="flex items-center justify-between gap-2">
               <span className="text-sm font-medium text-gray-700">{item.label}</span>
-              <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="w-20 h-2 bg-[var(--color-mosala-dark-50)] rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${item.value}%` }}
                   transition={{ duration: 1, delay: 0.5 + index * 0.2 }}
-                  className={`h-full ${item.color} rounded-full`}
+                  className={`h-full bg-[var(--color-mosala-green-500)] rounded-full`}
                 />
               </div>
               <span className="text-sm text-gray-500">{item.value}%</span>
@@ -289,7 +269,8 @@ const IllustrationCard = () => (
           text="Découvrir les offres" 
           icon={ArrowRight} 
           link="/jobs"
-          primary
+          primary={true}
+          outline={false}
           className="w-full mt-4"
         />
       </div>

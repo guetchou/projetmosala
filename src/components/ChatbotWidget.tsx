@@ -79,15 +79,15 @@ const ChatbotWidget = () => {
             </button>
           </div>
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-[#F5F5F7]" style={{ maxHeight: 320 }}>
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-[var(--color-mosala-dark-50)]" style={{ maxHeight: 320 }}>
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.from === "bot" ? "items-start" : "justify-end"}`}>
                 {msg.from === "bot" && <ChatbotAvatar size={28} />}
                 <div
                   className={`ml-2 px-3 py-2 rounded-xl text-sm max-w-[80%] shadow-sm ${
                     msg.from === "bot"
-                      ? "bg-white text-[#18182f] border border-[#6E45E2]/10"
-                      : "bg-gradient-to-r from-[#6E45E2] to-[#00FFFF] text-white"
+                      ? "bg-[var(--color-mosala-white)] text-[var(--color-mosala-dark-900)] border border-[var(--color-mosala-green-200)]/10"
+                      : "bg-gradient-to-r from-[var(--color-mosala-green-600)] to-[var(--color-mosala-green-200)] text-[var(--color-mosala-white)]"
                   }`}
                 >
                   {msg.text}

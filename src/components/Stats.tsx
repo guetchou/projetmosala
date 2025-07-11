@@ -36,14 +36,14 @@ const Stats = () => {
     }, [isInView, end]);
 
     return (
-      <span className="text-3xl md:text-4xl font-bold text-mosala-dark">
+      <span className="text-3xl md:text-4xl font-bold text-[var(--color-mosala-dark-500)]">
         {count.toLocaleString()}{suffix}
       </span>
     );
   };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-mosala-light to-white">
+    <section className="py-16 bg-gradient-to-br from-[var(--color-mosala-green-50)] to-[var(--color-mosala-white)]">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -52,7 +52,7 @@ const Stats = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-mosala-dark mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-mosala-dark-500)] mb-4">
             L'Impact en Chiffres
           </h2>
         </motion.div>
@@ -65,12 +65,12 @@ const Stats = () => {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="text-center p-6 bg-white rounded-2xl shadow-lg border border-border"
+              className="text-center p-6 bg-[var(--color-mosala-white)] rounded-2xl shadow-lg border border-[var(--color-mosala-dark-200)]"
             >
               <div className="mb-2">
                 <AnimatedCounter end={stat.count} suffix={stat.suffix} />
               </div>
-              <p className="text-muted-foreground font-medium">{stat.label}</p>
+              <p className="text-[var(--color-mosala-dark-700)] font-medium">{stat.label}</p>
             </motion.div>
           ))}
         </div>

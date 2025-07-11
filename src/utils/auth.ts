@@ -16,7 +16,10 @@ export function getUserRole(): string | null {
   const token = getToken();
   if (!token) return null;
   try {
-    const decoded: any = jwtDecode(token);
+    const decoded = jwtDecode<{
+      role?: string;
+      [key: string]: unknown;
+    }>(token);
     return decoded.role || null;
   } catch {
     return null;
@@ -25,4 +28,9 @@ export function getUserRole(): string | null {
 
 export function isAuthenticated(): boolean {
   return !!getToken();
+}
+
+export function logout() {
+  removeToken();
+  window.location.href = "/login?logout=1";
 } 

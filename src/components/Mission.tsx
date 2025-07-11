@@ -47,10 +47,10 @@ const Mission = () => {
   };
 
   return (
-    <section className="py-16 bg-background relative overflow-hidden">
+    <section className="py-16 bg-[var(--color-mosala-white)] relative overflow-hidden">
       {/* Animated background elements */}
       <motion.div
-        className="absolute top-0 left-1/4 w-64 h-64 bg-mosala-green/5 rounded-full blur-3xl"
+        className="absolute top-0 left-1/4 w-64 h-64 bg-[var(--color-mosala-green-200)]/5 rounded-full blur-3xl"
         animate={{ 
           scale: [1, 1.2, 1], 
           x: [0, 50, 0],
@@ -59,7 +59,7 @@ const Mission = () => {
         transition={{ duration: 8, repeat: Infinity }}
       />
       <motion.div
-        className="absolute bottom-0 right-1/4 w-48 h-48 bg-mosala-orange/5 rounded-full blur-3xl"
+        className="absolute bottom-0 right-1/4 w-48 h-48 bg-[var(--color-mosala-orange-200)]/5 rounded-full blur-3xl"
         animate={{ 
           scale: [1.2, 1, 1.2], 
           x: [0, -30, 0],
@@ -86,7 +86,7 @@ const Mission = () => {
             <Sparkles className="h-6 w-6 text-primary" />
           </motion.div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-mosala-dark mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-mosala-dark-500)] mb-6">
             Notre Mission
           </h2>
           <motion.blockquote 
@@ -124,7 +124,7 @@ const Mission = () => {
             <motion.div
               key={feature.title}
               variants={itemVariants}
-              className="text-center p-6 rounded-2xl bg-white border border-border shadow-sm hover:shadow-mosala transition-all group cursor-pointer relative overflow-hidden"
+              className="text-center p-6 rounded-2xl bg-[var(--color-mosala-white)] border border-[var(--color-mosala-dark-200)] shadow-sm hover:shadow-[var(--color-mosala-green-500)] transition-all group cursor-pointer relative overflow-hidden"
               whileHover={{ 
                 y: -10, 
                 scale: 1.05,
@@ -140,7 +140,7 @@ const Mission = () => {
               />
 
               <motion.div 
-                className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 relative z-10"
+                className="w-16 h-16 bg-gradient-to-br from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] rounded-full flex items-center justify-center mx-auto mb-4 relative z-10"
                 whileHover={{ rotate: 360, scale: 1.1 }}
                 transition={{ duration: 0.6 }}
               >
@@ -161,7 +161,7 @@ const Mission = () => {
               </motion.div>
 
               <motion.h3 
-                className="text-xl font-bold text-mosala-dark mb-3 relative z-10"
+                className="text-xl font-bold text-[var(--color-mosala-dark-500)] mb-3 relative z-10"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >

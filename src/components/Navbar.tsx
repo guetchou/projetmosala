@@ -1,9 +1,66 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useReducer, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, User, LogOut, Bell, Search, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isAuthenticated, logout, getUserRole } from "@/utils/auth";
 import { useUser } from "@/hooks/useUser";
+import "@/styles/navbar.css";
+
+// Types pour le reducer
+type NavbarState = {
+  menuOpen: boolean;
+  showNavbar: boolean;
+  notifOpen: boolean;
+  searchOpen: boolean;
+  searchValue: string;
+  darkMode: boolean;
+};
+
+type NavbarAction = 
+  | { type: 'TOGGLE_MENU' }
+  | { type: 'SET_SHOW_NAVBAR'; payload: boolean }
+  | { type: 'TOGGLE_NOTIF' }
+  | { type: 'SET_SEARCH_OPEN'; payload: boolean }
+  | { type: 'SET_SEARCH_VALUE'; payload: string }
+  | { type: 'TOGGLE_DARK_MODE' }
+  | { type: 'CLOSE_ALL' };
+
+// Reducer pour centraliser la logique d'état
+const navbarReducer = (state: NavbarState, action: NavbarAction): NavbarState => {
+  switch (action.type) {
+    case 'TOGGLE_MENU':
+      return { ...state, menuOpen: !state.menuOpen, notifOpen: false, searchOpen: false };
+    case 'SET_SHOW_NAVBAR':
+      return { ...state, showNavbar: action.payload };
+    case 'TOGGLE_NOTIF':
+      return { ...state, notifOpen: !state.notifOpen, menuOpen: false, searchOpen: false };
+    case 'SET_SEARCH_OPEN':
+      return { ...state, searchOpen: action.payload, menuOpen: false, notifOpen: false };
+    case 'SET_SEARCH_VALUE':
+      return { ...state, searchValue: action.payload };
+    case 'TOGGLE_DARK_MODE':
+      return { ...state, darkMode: !state.darkMode };
+    case 'CLOSE_ALL':
+      return { ...state, menuOpen: false, notifOpen: false, searchOpen: false };
+    default:
+      return state;
+  }
+};
+
+// État initial
+const initialState: NavbarState = {
+  menuOpen: false,
+  showNavbar: true,
+  notifOpen: false,
+  searchOpen: false,
+  searchValue: "",
+  darkMode: (() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("mosala-theme") === "dark" || window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  })(),
+};
 
 const navLinks = [
   { to: "/", label: "Accueil" },
@@ -13,67 +70,119 @@ const navLinks = [
   { to: "/jobs", label: "Emplois" },
 ];
 
+// Hook personnalisé pour le debounce
+const useDebounce = (value: any, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [showNavbar, setShowNavbar] = useState(true);
+  const [state, dispatch] = useReducer(navbarReducer, initialState);
   const lastScrollY = useRef(0);
   const navigate = useNavigate();
   const { user } = useUser ? useUser() : { user: null };
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("mosala-theme") === "dark" || window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-    return false;
-  });
+  
+  // Debounce pour les performances de scroll
+  const debouncedScrollY = useDebounce(lastScrollY.current, 10);
 
-  // Suggestions mock
+  // Suggestions mock avec debounce
   const suggestions = [
     { label: "Services Mosala", to: "/services" },
     { label: "Formations", to: "/formations" },
     { label: "Candidats", to: "/candidates" },
     { label: "Emplois", to: "/jobs" },
     { label: "Mon profil", to: "/profile" },
-  ].filter(s => s.label.toLowerCase().includes(searchValue.toLowerCase()));
+  ].filter(s => s.label.toLowerCase().includes(state.searchValue.toLowerCase()));
 
+  // Gestion du scroll optimisée
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY < 40) {
-        setShowNavbar(true);
+        dispatch({ type: 'SET_SHOW_NAVBAR', payload: true });
         lastScrollY.current = window.scrollY;
         return;
       }
       if (window.scrollY > lastScrollY.current) {
-        setShowNavbar(false); // scroll down
+        dispatch({ type: 'SET_SHOW_NAVBAR', payload: false });
       } else {
-        setShowNavbar(true); // scroll up
+        dispatch({ type: 'SET_SHOW_NAVBAR', payload: true });
       }
       lastScrollY.current = window.scrollY;
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    // Throttle pour les performances
+    let ticking = false;
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", throttledHandleScroll);
+    return () => window.removeEventListener("scroll", throttledHandleScroll);
   }, []);
 
+  // Gestion du dark mode
   useEffect(() => {
-    if (darkMode) {
+    if (state.darkMode) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("mosala-theme", "dark");
     } else {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("mosala-theme", "light");
     }
-  }, [darkMode]);
+  }, [state.darkMode]);
 
-  const handleLogout = () => {
+  // Gestion des clics en dehors
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('[data-navbar]')) {
+        dispatch({ type: 'CLOSE_ALL' });
+      }
+    };
+
+    if (state.menuOpen || state.notifOpen || state.searchOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [state.menuOpen, state.notifOpen, state.searchOpen]);
+
+  const handleLogout = useCallback(() => {
     logout();
     navigate("/login");
-  };
+  }, [navigate]);
+
+  // Actions optimisées
+  const toggleMenu = useCallback(() => dispatch({ type: 'TOGGLE_MENU' }), []);
+  const toggleNotif = useCallback(() => dispatch({ type: 'TOGGLE_NOTIF' }), []);
+  const toggleDarkMode = useCallback(() => dispatch({ type: 'TOGGLE_DARK_MODE' }), []);
+  const setSearchOpen = useCallback((open: boolean) => dispatch({ type: 'SET_SEARCH_OPEN', payload: open }), []);
+  const setSearchValue = useCallback((value: string) => dispatch({ type: 'SET_SEARCH_VALUE', payload: value }), []);
 
   return (
-    <header className={`fixed top-6 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 ${showNavbar ? "translate-y-0" : "-translate-y-32"}`}>
-      <nav className="pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 py-4 bg-[var(--color-mosala-white)]/80 dark:bg-[var(--color-mosala-dark-900)]/80 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] min-h-[80px] transition-colors duration-500" role="navigation" aria-label="Navigation principale Mosala">
+    <header className={`fixed top-6 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 ${state.showNavbar ? "translate-y-0" : "-translate-y-32"}`}>
+      <nav 
+        data-navbar
+        className="pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 py-4 bg-[var(--color-mosala-white)]/80 dark:bg-[var(--color-mosala-dark-900)]/80 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] min-h-[80px] transition-colors duration-500" 
+        role="navigation" 
+        aria-label="Navigation principale Mosala"
+      >
         {/* Logo Mosala */}
         <Link to="/" className="flex items-center gap-3 font-extrabold text-3xl text-[var(--color-mosala-green-600)] tracking-tight focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-mosala-green-300)] transition-transform duration-200 hover:-translate-y-1">
           <img src="/lovable-uploads/logo-mosala1.png" alt="Logo Mosala" className="h-14 w-14 rounded-full bg-[var(--color-mosala-white)] border-2 border-[var(--color-mosala-green-200)] shadow-lg" />
@@ -100,7 +209,7 @@ const Navbar = () => {
             <Search className="w-6 h-6 text-[var(--color-mosala-green-700)]" />
           </button>
           {/* Overlay recherche */}
-          {searchOpen && (
+          {state.searchOpen && (
             <div className="fixed inset-0 z-[999] flex items-start justify-center bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setSearchOpen(false)}>
               <div className="mt-32 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border-2 border-mosala-green-200 w-full max-w-lg mx-auto p-6 flex flex-col gap-4 relative" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Recherche Mosala">
                 <div className="flex items-center gap-2">
@@ -108,7 +217,7 @@ const Navbar = () => {
                   <input
                     autoFocus
                     type="text"
-                    value={searchValue}
+                    value={state.searchValue}
                     onChange={e => setSearchValue(e.target.value)}
                     placeholder="Rechercher sur Mosala..."
                     className="flex-1 px-3 py-2 rounded-lg border border-mosala-green-200 focus:border-mosala-green-500 focus:ring-2 focus:ring-mosala-green-100 text-mosala-dark-900 bg-white dark:bg-gray-800 shadow-inner text-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mosala-green-300"
@@ -142,16 +251,16 @@ const Navbar = () => {
                 className="p-3 rounded-full hover:bg-[var(--color-mosala-green-100)] transition relative focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-mosala-green-300)] ripple"
                 aria-label="Notifications"
                 aria-haspopup="true"
-                aria-expanded={notifOpen}
+                aria-expanded={state.notifOpen}
                 tabIndex={0}
-                onClick={() => setNotifOpen(v => !v)}
+                onClick={toggleNotif}
               >
                 <Bell className="w-6 h-6 text-[var(--color-mosala-green-700)]" />
                 {/* Badge notifications (exemple statique) */}
                 <span className="absolute -top-1 -right-1 bg-mosala-yellow-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5 shadow">3</span>
               </button>
               {/* Menu notifications */}
-              {notifOpen && (
+              {state.notifOpen && (
                 <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-mosala-green-100 z-50 animate-fade-in-up" role="menu" aria-label="Notifications" aria-live="polite">
                   <div className="p-4 text-mosala-dark-700 font-semibold border-b border-mosala-green-50">Notifications</div>
                   <ul className="divide-y divide-mosala-green-50">
@@ -169,11 +278,11 @@ const Navbar = () => {
           {/* Dark mode toggle */}
           <button
             className="p-3 rounded-full hover:bg-[var(--color-mosala-green-100)] dark:hover:bg-[var(--color-mosala-dark-700)] transition focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-mosala-green-300)] ripple"
-            aria-label={darkMode ? "Activer le mode clair" : "Activer le mode sombre"}
+            aria-label={state.darkMode ? "Activer le mode clair" : "Activer le mode sombre"}
             tabIndex={0}
-            onClick={() => setDarkMode(v => !v)}
+            onClick={toggleDarkMode}
           >
-            {darkMode ? (
+            {state.darkMode ? (
               <Sun className="w-6 h-6 text-[var(--color-mosala-yellow-500)] transition-transform duration-300 rotate-0" />
             ) : (
               <Moon className="w-6 h-6 text-[var(--color-mosala-green-700)] transition-transform duration-300 rotate-0" />
@@ -186,15 +295,15 @@ const Navbar = () => {
                 className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-[var(--color-mosala-green-500)] text-[var(--color-mosala-white)] font-semibold hover:bg-[var(--color-mosala-green-600)] shadow-lg border-2 border-[var(--color-mosala-green-200)] transition text-lg focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-mosala-green-300)] ripple hover:animate-cta-lift focus:animate-cta-lift"
                 aria-label="Mon espace Mosala"
                 aria-haspopup="true"
-                aria-expanded={menuOpen}
+                aria-expanded={state.menuOpen}
                 tabIndex={0}
-                onClick={() => setMenuOpen(v => !v)}
+                onClick={toggleMenu}
               >
                 <User className="w-6 h-6" />
                 {user?.name || "Mon espace"}
               </button>
               {/* Menu déroulant profil */}
-              {menuOpen && (
+              {state.menuOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-mosala-green-100 z-50 animate-fade-in-up" role="menu" aria-label="Menu utilisateur">
                   <ul className="py-2">
                     <li>
@@ -220,17 +329,17 @@ const Navbar = () => {
             </Link>
           )}
           {/* Burger menu mobile */}
-          <button className="md:hidden ml-2 p-3 rounded-full hover:bg-[var(--color-mosala-green-100)] transition" onClick={() => setMenuOpen(v => !v)} aria-label="Menu">
-            {menuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+          <button className="md:hidden ml-2 p-3 rounded-full hover:bg-[var(--color-mosala-green-100)] transition" onClick={toggleMenu} aria-label="Menu">
+            {state.menuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
           </button>
         </div>
         {/* Menu mobile */}
-        {menuOpen && (
+        {state.menuOpen && (
           <div className="absolute top-20 left-0 right-0 mx-auto w-11/12 max-w-md bg-[var(--color-mosala-white)] dark:bg-[var(--color-mosala-dark-900)] rounded-3xl shadow-2xl border-2 border-[var(--color-mosala-green-200)] flex flex-col items-center py-8 z-50 animate-fade-in-up">
             <ul className="flex flex-col gap-6 w-full items-center text-lg">
               {navLinks.map(link => (
                 <li key={link.to} className="w-full">
-                  <Link to={link.to} className="block w-full text-center text-[var(--color-mosala-dark-700)] font-semibold px-6 py-4 rounded-full hover:bg-[var(--color-mosala-green-100)] transition text-lg" onClick={() => setMenuOpen(false)}>
+                  <Link to={link.to} className="block w-full text-center text-[var(--color-mosala-dark-700)] font-semibold px-6 py-4 rounded-full hover:bg-[var(--color-mosala-green-100)] transition text-lg" onClick={() => dispatch({ type: 'CLOSE_ALL' })}>
                     {link.label}
                   </Link>
                 </li>
@@ -257,17 +366,6 @@ const Navbar = () => {
           </div>
         )}
       </nav>
-      {/* Animation keyframes pour micro-animation CTA */}
-      <style>{`
-        @keyframes cta-lift {
-          0% { transform: scale(1) translateY(0); box-shadow: 0 4px 24px 0 #00964033; }
-          60% { transform: scale(1.06) translateY(-3px); box-shadow: 0 8px 32px 0 #00964055; }
-          100% { transform: scale(1.02) translateY(-1px); box-shadow: 0 6px 28px 0 #00964044; }
-        }
-        .animate-cta-lift {
-          animation: cta-lift 0.35s cubic-bezier(0.4,0,0.2,1);
-        }
-      `}</style>
     </header>
   );
 };

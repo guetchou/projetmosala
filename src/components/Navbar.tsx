@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useReducer, useCallback } from "react";
+import { useState, useEffect, useRef, useReducer, useCallback, forwardRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, User, LogOut, Bell, Search, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -88,7 +88,7 @@ const useDebounce = (value: any, delay: number) => {
   return debouncedValue;
 };
 
-const Navbar = () => {
+const Navbar = forwardRef<HTMLElement, any>((props, ref) => {
   const [state, dispatch] = useReducer(navbarReducer, initialState);
   const lastScrollY = useRef(0);
   const navigate = useNavigate();
@@ -178,10 +178,10 @@ const Navbar = () => {
   const setSearchValue = useCallback((value: string) => dispatch({ type: 'SET_SEARCH_VALUE', payload: value }), []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 ${state.showNavbar ? "translate-y-0" : "-translate-y-32"} ${shrink ? "h-16" : "h-26"}`} style={{ height: shrink ? '64px' : '104px' }}>
+    <header ref={ref} className={`fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 my-4 ${state.showNavbar ? "translate-y-0" : "-translate-y-32"} ${shrink ? "h-16" : "h-26"}`} style={{ height: shrink ? '64px' : '104px' }}>
       <nav 
         data-navbar
-        className={`pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 ${shrink ? "py-2" : "py-6"} bg-white/95 dark:bg-[var(--color-mosala-dark-900)]/95 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] transition-all duration-500 ${shrink ? "min-h-[64px]" : "min-h-[104px]"}`} 
+        className={`pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 py-4 bg-white/95 dark:bg-[var(--color-mosala-dark-900)]/95 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] transition-all duration-500 min-h-[64px]`} 
         role="navigation" 
         aria-label="Navigation principale Mosala"
       >
@@ -370,6 +370,6 @@ const Navbar = () => {
       </nav>
     </header>
   );
-};
+});
 
 export default Navbar;

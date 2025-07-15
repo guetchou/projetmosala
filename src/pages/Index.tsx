@@ -9,12 +9,29 @@ import CaravaneMosala from "@/components/CaravaneMosala";
 import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
 import ActualitesSection from "@/components/ActualitesSection";
+import { useRef, useEffect, useState } from "react";
 
 const Index = () => {
+  const navbarRef = useRef<HTMLElement>(null);
+  const [navbarHeight, setNavbarHeight] = useState(0);
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      setNavbarHeight(navbarRef.current.offsetHeight);
+    }
+    const handleResize = () => {
+      if (navbarRef.current) {
+        setNavbarHeight(navbarRef.current.offsetHeight);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-sans">
+    <div className="min-h-screen bg-white text-gray-900 font-sans" style={{ paddingTop: navbarHeight }}>
       {/* Navbar institutionnelle */}
-      <Navbar />
+      <Navbar ref={navbarRef} />
 
       {/* HERO UNESCO-STYLE */}
       <Hero />

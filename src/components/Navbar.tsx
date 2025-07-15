@@ -178,10 +178,10 @@ const Navbar = forwardRef<HTMLElement, any>((props, ref) => {
   const setSearchValue = useCallback((value: string) => dispatch({ type: 'SET_SEARCH_VALUE', payload: value }), []);
 
   return (
-    <header ref={ref} className={`fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 my-4 ${state.showNavbar ? "translate-y-0" : "-translate-y-32"} ${shrink ? "h-16" : "h-26"}`} style={{ height: shrink ? '64px' : '104px' }}>
+    <header ref={ref} className={`fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 my-4 ${state.showNavbar ? "translate-y-0" : "-translate-y-32"} h-16`} style={{ height: '64px' }}>
       <nav 
         data-navbar
-        className={`pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 py-4 bg-white/95 dark:bg-[var(--color-mosala-dark-900)]/95 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] transition-all duration-500 min-h-[64px]`} 
+        className={`pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 py-2 bg-white/95 dark:bg-[var(--color-mosala-dark-900)]/95 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] transition-all duration-500 min-h-[64px]`} 
         role="navigation" 
         aria-label="Navigation principale Mosala"
       >

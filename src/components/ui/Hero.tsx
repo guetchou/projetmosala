@@ -2,616 +2,420 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { 
   ArrowRight, Star, Users, Briefcase, TrendingUp, Sparkles, Globe, BookOpen, 
-  Play, Quote, Award, CheckCircle, Heart, Zap, Search
+  Play, Quote, Award, CheckCircle, Heart, Zap, Search, Users as Community
 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-// Nouveaux contrastes optimisés
+// Palette de couleurs optimisée pour l'accessibilité
 const COLORS = {
-  text: "text-[var(--color-mosala-dark-50)]",         // Blanc cassé (meilleure lisibilité)
-  textSecondary: "text-[var(--color-mosala-dark-100)]",
-  textDark: "text-[var(--color-mosala-dark-900)]",    // Pour texte sur fond clair
-  bgDark: "bg-[var(--color-mosala-dark-900)]",        // Fond sombre
-  primary: "bg-[var(--color-mosala-green-600)]", // Vert plus foncé
-  primaryHover: "hover:bg-[var(--color-mosala-green-700)]",
-  secondary: "bg-[var(--color-mosala-yellow-600)]", // Jaune plus foncé
-  secondaryHover: "hover:bg-[var(--color-mosala-yellow-700)]"
+  primary: {
+    main: "bg-[#4F46E5]",
+    hover: "hover:bg-[#4338CA]",
+    text: "text-[#4F46E5]"
+  },
+  secondary: {
+    main: "bg-[#F59E0B]",
+    hover: "hover:bg-[#D97706]",
+    text: "text-[#F59E0B]"
+  },
+  dark: {
+    main: "bg-[#1F2937]",
+    text: "text-[#1F2937]"
+  },
+  light: {
+    main: "bg-[#F9FAFB]",
+    text: "text-[#F9FAFB]"
+  },
+  accent: {
+    purple: "bg-[#7C3AED]",
+    amber: "bg-[#F59E0B]"
+  }
 };
 
-const Hero = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 300], [0, -100]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0.3]);
+// Images pour le carrousel Ken Burns
+const KEN_BURNS_IMAGES = [
+  "/lovable-uploads/carrousel/mosala1.jpeg",
+  "/lovable-uploads/carrousel/mosala2.jpeg",
+  "/lovable-uploads/carrousel/mosala3.jpeg",
+  "/lovable-uploads/carrousel/mosala4.jpeg",
+];
 
-  // Données réorganisées pour plus de clarté
-  const content = {
-    tagline: "Inclusion, innovation, impact social",
-    title: "Construisez votre avenir avec",
-    highlight: "Mosala",
-    description: "Plateforme inclusive pour l'emploi, l'accompagnement et la réussite professionnelle.",
-    features: [
-      { icon: Briefcase, text: "Offres d'emploi et stages" },
-      { icon: Users, text: "Réseau professionnel" },
-      { icon: Sparkles, text: "Coaching personnalisé" },
-      { icon: Globe, text: "Plateforme innovante" }
-    ],
-    stats: [
-      { icon: Users, value: "15,000+", label: "Jeunes accompagnés" },
-      { icon: Briefcase, value: "2,500+", label: "Offres d'emploi" },
-      { icon: Star, value: "4.8/5", label: "Satisfaction" },
-      { icon: TrendingUp, value: "100+", label: "Partenaires" }
-    ],
-    ctaPrimary: { text: "Trouver un emploi", icon: Briefcase, link: "/jobs" },
-    ctaSecondary: { text: "Démarrer mon orientation", icon: BookOpen, link: "/orientation" },
-    testimonials: [
-      {
-        name: "Sarah M.",
-        role: "Développeuse Full-Stack",
-        company: "Tech Congo",
-        content: "Mosala m'a permis de trouver ma voie et d'intégrer une entreprise tech innovante.",
-        avatar: "/lovable-uploads/avatars/sarah.jpg",
-        rating: 5
-      },
-      {
-        name: "David K.",
-        role: "Chef de projet",
-        company: "Innovation Hub",
-        content: "L'accompagnement personnalisé de Mosala a été déterminant dans ma carrière.",
-        avatar: "/lovable-uploads/avatars/david.jpg",
-        rating: 5
-      }
-    ],
-    partners: [
-      "Tech Congo", "Innovation Hub", "Digital Academy", "Green Tech", "Social Impact"
-    ]
-  };
-
-  // Auto-rotation du carrousel
+const KenBurnsSlideshow = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
-    }, 5000);
+      setCurrentIndex(prev => (prev + 1) % KEN_BURNS_IMAGES.length);
+    }, 7000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <section className={`relative min-h-screen ${COLORS.bgDark} overflow-hidden pt-32`}>
-      {/* Carrousel d'arrière-plan dynamique */}
-      <BackgroundCarousel currentSlide={currentSlide} />
-
-      {/* Particules flottantes */}
-      <FloatingParticles />
-
-      {/* Contenu principal */}
-      <motion.div 
-        style={{ y, opacity }}
-        className="relative z-20 container mx-auto px-4 py-16 lg:py-24"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Colonne gauche - Contenu texte */}
-          <div className="space-y-8">
-            {/* Tagline */}
-            <Tagline text={content.tagline} />
-
-            {/* Titre principal */}
-            <Title 
-              text={content.title} 
-              highlight={content.highlight} 
-              description={content.description}
-            />
-
-            {/* Features */}
-            <FeaturesList items={content.features} />
-
-            {/* Boutons CTA */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <CTAButton 
-                {...content.ctaPrimary} 
-                primary={true}
-                outline={false}
-                className="shadow-lg hover:shadow-xl"
-              />
-              <CTAButton 
-                {...content.ctaSecondary} 
-                primary={false}
-                outline={true}
-                className="border-2 hover:border-transparent"
-              />
-            </div>
-
-            {/* Statistiques */}
-            <StatsGrid items={content.stats} />
-
-            {/* Recherche rapide */}
-            <QuickSearch />
-          </div>
-
-          {/* Colonne droite - Illustration */}
-          <IllustrationCard />
-        </div>
-
-        {/* Section témoignages */}
-        <TestimonialsSection testimonials={content.testimonials} />
-
-        {/* Section partenaires */}
-        <PartnersSection partners={content.partners} />
-      </motion.div>
-
-      {/* Vague décorative */}
-      <WaveDecoration />
-
-      {/* Indicateurs de carrousel */}
-      <CarouselIndicators currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} />
-
-      {/* Animations CSS */}
-      <style>{`
-        @keyframes shine {
-          0% { transform: translateX(-100%) skewX(-12deg); }
-          100% { transform: translateX(200%) skewX(-12deg); }
-        }
-        .animate-shine {
-          animation: shine 3s ease-in-out infinite;
-        }
-      `}</style>
-    </section>
+    <div className="absolute inset-0 z-0 overflow-hidden aspect-[16/9]">
+      {KEN_BURNS_IMAGES.map((src, index) => (
+        <motion.img
+          key={src}
+          src={src}
+          alt={`Scène Mosala ${index + 1}`}
+          initial={false}
+          animate={{
+            scale: index === currentIndex ? 1.08 : 1,
+            opacity: index === currentIndex ? 1 : 0
+          }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+          className={`absolute inset-0 w-full h-full object-cover object-top transition-all duration-1000 ${
+            index === currentIndex ? "z-10" : "z-0"
+          }`}
+          style={{ 
+            filter: 'brightness(0.6) contrast(1.05)',
+            objectPosition: 'center'
+          }}
+        />
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/80" aria-hidden="true" />
+    </div>
   );
 };
 
-// Composants améliorés
-
-const BackgroundCarousel = ({ currentSlide }) => (
-  <div className="absolute inset-0 z-0 overflow-hidden">
-    <Carousel opts={{ loop: true }} className="h-full w-full">
-      <CarouselContent>
-        {[1, 2, 3].map((idx) => (
-          <CarouselItem key={idx}>
-            <motion.div
-              className="w-full h-screen relative"
-              initial={{ scale: 1.1 }}
-              animate={{ scale: 1 }}
-              transition={{ 
-                duration: 12,
-                ease: "linear",
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-            >
-              <img
-                src={`/lovable-uploads/carrousel/mosala${idx}.jpeg`}
-                alt={`Mosala background ${idx}`}
-                className="object-cover w-full h-full brightness-[.35]"
-                loading="lazy"
-                decoding="async"
-              />
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-900/90 via-gray-800/95 to-gray-700/90" />
-            </motion.div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-    </Carousel>
-  </div>
-);
-
-const FloatingParticles = () => (
-  <div className="absolute inset-0 z-10 pointer-events-none">
-    {[...Array(20)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute w-2 h-2 bg-[var(--color-mosala-green-500)]/30 rounded-full"
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-        }}
-        animate={{
-          y: [0, -20, 0],
-          opacity: [0.3, 0.8, 0.3],
-        }}
-        transition={{
-          duration: 3 + Math.random() * 2,
-          repeat: Infinity,
-          delay: Math.random() * 2,
-        }}
-      />
-    ))}
-  </div>
-);
-
-const CarouselIndicators = ({ currentSlide, setCurrentSlide }) => (
-  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2">
-    {[0, 1, 2].map((index) => (
-      <button
-        key={index}
-        onClick={() => setCurrentSlide(index)}
-        className={`w-3 h-3 rounded-full transition-all duration-300 ${
-          currentSlide === index 
-            ? 'bg-[var(--color-mosala-green-500)] scale-125' 
-            : 'bg-white/50 hover:bg-white/75'
-        }`}
-        aria-label={`Aller à l'image ${index + 1}`}
-      />
-    ))}
-  </div>
-);
-
-const Tagline = ({ text }) => (
-  <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.5 }}
-  >
-    <div className="inline-flex items-center bg-[var(--color-mosala-white)]/10 text-[var(--color-mosala-white)] px-4 py-2 text-sm font-semibold rounded-full border border-[var(--color-mosala-white)]/20 backdrop-blur-sm">
-      <Globe className="h-4 w-4 mr-2 text-[var(--color-mosala-white)]" aria-hidden="true" />
-      {text}
+const StatsCard = ({ icon: Icon, value, label, color }) => (
+  <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg">
+    <div className={`p-3 rounded-full ${color} mb-4`}>
+      <Icon className="h-6 w-6 text-white" />
     </div>
+    <span className="text-3xl font-bold text-gray-900">{value}</span>
+    <span className="text-sm text-gray-600">{label}</span>
+  </div>
+);
+
+const AccomplishmentCard = () => (
+  <motion.div
+    initial={{ y: 50, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ duration: 0.8, delay: 0.5 }}
+    className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100"
+  >
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center space-x-3">
+        <Sparkles className="h-7 w-7 text-indigo-600" />
+        <h3 className="text-xl font-bold text-gray-900">Notre Impact</h3>
+      </div>
+      <Award className="h-6 w-6 text-amber-500" />
+    </div>
+    
+    <div className="grid grid-cols-2 gap-4 mb-6">
+      <StatsCard 
+        icon={Users} 
+        value="+1200" 
+        label="Candidats accompagnés" 
+        color="bg-indigo-100" 
+      />
+      <StatsCard 
+        icon={Briefcase} 
+        value="+50" 
+        label="Entreprises partenaires" 
+        color="bg-amber-100" 
+      />
+    </div>
+
+    <div className="space-y-4 mb-6">
+      <div className="flex items-center space-x-2">
+        <CheckCircle className="h-5 w-5 text-green-500" />
+        <span className="text-gray-700">Accompagnement personnalisé</span>
+      </div>
+      <div className="flex items-center space-x-2">
+        <TrendingUp className="h-5 w-5 text-blue-500" />
+        <span className="text-gray-700">Taux de réussite de 92%</span>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Community className="h-5 w-5 text-purple-500" />
+        <span className="text-gray-700">Communauté active</span>
+      </div>
+    </div>
+
+    <Link to="/jobs">
+      <Button className="w-full bg-gradient-to-r from-indigo-600 to-amber-500 hover:from-indigo-700 hover:to-amber-600 text-white">
+        Explorer les opportunités
+        <ArrowRight className="h-4 w-4 ml-2" />
+      </Button>
+    </Link>
   </motion.div>
 );
 
-const Title = ({ text, highlight, description }) => (
-  <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.5, delay: 0.2 }}
-    className="space-y-4"
-  >
-    <h1 className={`text-3xl md:text-4xl lg:text-5xl font-bold ${COLORS.text} leading-tight`}>
-      {text} <span className="text-transparent bg-clip-text mosala-gradient-hero">{highlight}</span>
-    </h1>
-    <p className={`text-lg md:text-xl ${COLORS.textSecondary} leading-relaxed max-w-2xl`}>
-      {description}
-    </p>
-  </motion.div>
+const testimonials = [
+  {
+    quote: "Mosala a transformé ma carrière. En 3 mois, j'ai trouvé un poste qui correspond parfaitement à mes compétences.",
+    author: "Sarah M.",
+    role: "Développeuse Full-Stack",
+    company: "Tech Congo",
+    avatar: "/lovable-uploads/avatars/sarah.jpg",
+    rating: 5,
+  },
+  {
+    quote: "L'accompagnement sur-mesure m'a permis de négocier une augmentation de 30% par rapport à mon précédent poste.",
+    author: "David K.",
+    role: "Chef de projet",
+    company: "Innovation Hub",
+    avatar: "/lovable-uploads/avatars/david.jpg",
+    rating: 5,
+  },
+];
+
+const TestimonialCard = ({ testimonial }) => (
+  <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col h-full">
+    <div className="flex items-center mb-4">
+      {[...Array(testimonial.rating)].map((_, i) => (
+        <Star key={i} className="h-5 w-5 text-amber-400 fill-current" />
+      ))}
+    </div>
+    <p className="text-gray-700 italic mb-6 flex-grow">"{testimonial.quote}"</p>
+    <div className="flex items-center">
+      <img 
+        src={testimonial.avatar} 
+        alt={`Photo de ${testimonial.author}`} 
+        className="w-16 h-16 rounded-full object-cover object-center border-2 border-indigo-100 shadow-lg ring-2 ring-indigo-200"
+      />
+      <div className="ml-4">
+        <p className="font-semibold text-gray-900">{testimonial.author}</p>
+        <p className="text-sm text-gray-600">{testimonial.role}, {testimonial.company}</p>
+      </div>
+    </div>
+  </div>
 );
 
-const FeaturesList = ({ items }) => (
-  <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.5, delay: 0.4 }}
-    className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-  >
-    {items.map((item, index) => (
-      <motion.div 
-        key={index} 
-        className={`flex items-center space-x-3 ${COLORS.text} p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10`}
-        whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.1)" }}
-        transition={{ duration: 0.2 }}
+const partners = [
+  { name: "Tech Congo", logo: "/logos/tech-congo.svg" },
+  { name: "Innovation Hub", logo: "/logos/innovation-hub.svg" },
+  { name: "Digital Academy", logo: "/logos/digital-academy.svg" },
+  { name: "Green Tech", logo: "/logos/green-tech.svg" },
+  { name: "Social Impact", logo: "/logos/social-impact.svg" },
+];
+
+const PartnerLogo = ({ partner }) => (
+  <div className="flex items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-md min-w-[80px] min-h-[80px] aspect-square hover:bg-gray-50 transition-all">
+    <img 
+      src={partner.logo} 
+      alt={`Logo ${partner.name}`} 
+      className="object-contain object-center w-full h-full"
+      style={{ background: '#fff' }}
+    />
+  </div>
+);
+
+const HeroSection = () => (
+  // pt-26 = 104px (hauteur Navbar), min-h-[calc(100vh-104px)] pour que la Hero soit toujours visible sous la Navbar
+  <section className="relative z-0 pt-26 min-h-[calc(100vh-104px)] flex items-center justify-center overflow-hidden pb-16 md:pb-32">
+    {/* Ken Burns Slideshow en fond (z-0) */}
+    <KenBurnsSlideshow />
+    {/* Overlay dégradé + blur (z-0) */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-transparent backdrop-blur-sm z-0" aria-hidden="true" />
+    {/* Contenu Hero (z-10) */}
+    <div className="relative z-10 container mx-auto px-6 py-24 flex flex-col items-center text-center max-w-3xl">
+      {/* Badge stylisé */}
+      <motion.span
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+        className="inline-flex items-center gap-2 px-5 py-2 bg-yellow-100/90 text-yellow-800 rounded-full text-base font-semibold mb-6 tracking-widest shadow-lg backdrop-blur-md border border-yellow-200"
       >
-        <div className="flex-shrink-0 w-8 h-8 bg-[var(--color-mosala-green-500)]/20 rounded-full flex items-center justify-center">
-          <item.icon className="h-4 w-4 text-[var(--color-mosala-green-500)]" aria-hidden="true" />
-        </div>
-        <span className="text-sm font-medium">{item.text}</span>
-      </motion.div>
-    ))}
-  </motion.div>
-);
-
-const CTAButton = ({ text, icon: Icon, link, primary, outline, className = '' }) => {
-  const baseClass = `font-semibold px-6 py-3 text-lg transition-all duration-300 group flex items-center justify-center gap-2`;
-  
-  return (
-    <Link to={link} className="w-full sm:w-auto">
+        <Sparkles className="h-5 w-5 text-yellow-500" />
+        Jeunesse & Impact
+      </motion.span>
+      {/* Titre avec effet gradient (doré, neutre, plus de bleu) */}
+      <motion.h1
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        className="text-4xl md:text-6xl font-extrabold mb-6 drop-shadow-lg bg-gradient-to-r from-yellow-400 via-white to-amber-500 text-transparent bg-clip-text"
+      >
+        Votre réussite professionnelle commence ici
+      </motion.h1>
+      {/* Sous-titre amélioré */}
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="text-xl md:text-2xl text-white/90 mb-6 max-w-2xl mx-auto font-medium drop-shadow"
+      >
+        Mosala accompagne la jeunesse congolaise vers l’emploi, l’innovation et l’inclusion.
+      </motion.p>
+      {/* Citation inspirante */}
+      <motion.blockquote
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
+        className="italic text-lg text-white/80 mb-10 flex items-center justify-center gap-2"
+      >
+        <Quote className="h-6 w-6 text-yellow-300 opacity-80" />
+        "L’avenir appartient à ceux qui croient en la beauté de leurs rêves."
+      </motion.blockquote>
+      {/* CTA principal (doré, plus de bleu) */}
       <motion.div
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7, delay: 1.1 }}
+        className="w-full flex justify-center"
       >
-        <Button
-          className={`${baseClass} ${className} ${
-            primary 
-              ? `${COLORS.primary} ${COLORS.primaryHover} ${COLORS.text} shadow-lg`
-              : outline
-                ? `border-[var(--color-mosala-green-500)] text-[var(--color-mosala-green-500)] hover:bg-[var(--color-mosala-green-500)] hover:${COLORS.text} bg-transparent`
-                : ''
-          }`}
-          size="lg"
-        >
-          <Icon className="h-5 w-5 group-hover:scale-110 transition-transform" aria-hidden="true" />
-          {text}
-          {primary && <ArrowRight className="h-5 w-5 ml-1 group-hover:translate-x-1 transition-transform" aria-hidden="true" />}
+        <Button className="px-12 py-5 bg-gradient-to-r from-yellow-500 to-amber-400 text-white text-lg rounded-full shadow-xl hover:scale-105 hover:from-yellow-600 hover:to-amber-500 transition-all font-bold">
+          Commencer maintenant
         </Button>
       </motion.div>
-    </Link>
-  );
-};
-
-const StatsGrid = ({ items }) => {
-  const [counts, setCounts] = useState(items.map(() => 0));
-
-  useEffect(() => {
-    const intervals = items.map((item, index) => {
-      const target = parseInt(item.value.replace(/[^0-9]/g, ''));
-      const increment = target / 50;
-      let current = 0;
-      
-      return setInterval(() => {
-        current += increment;
-        if (current >= target) {
-          current = target;
-          clearInterval(intervals[index]);
-        }
-        setCounts(prev => {
-          const newCounts = [...prev];
-          newCounts[index] = Math.floor(current);
-          return newCounts;
-        });
-      }, 50);
-    });
-
-    return () => intervals.forEach(clearInterval);
-  }, [items]);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, delay: 0.6 }}
-      className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-gray-700"
-    >
-      {items.map((item, index) => (
-        <motion.div 
-          key={index} 
-          className="text-center"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="flex items-center justify-center w-10 h-10 bg-[var(--color-mosala-green-500)]/20 rounded-full mx-auto mb-2">
-            <item.icon className="h-5 w-5 text-[var(--color-mosala-green-500)]" aria-hidden="true" />
-          </div>
-          <div className={`text-xl font-bold ${COLORS.text}`}>
-            {item.value.includes('+') ? `${counts[index]}+` : 
-             item.value.includes('/') ? `${counts[index]}/5` : 
-             counts[index]}
-          </div>
-          <div className={`text-xs ${COLORS.textSecondary}`}>{item.label}</div>
-        </motion.div>
-      ))}
-    </motion.div>
-  );
-};
-
-const TestimonialsSection = ({ testimonials }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8, delay: 0.8 }}
-    className="mt-20"
-  >
-    <div className="text-center mb-12">
-      <h2 className={`text-2xl md:text-3xl font-bold ${COLORS.text} mb-4`}>
-        Ils ont réussi avec Mosala
-      </h2>
-      <p className={`text-lg ${COLORS.textSecondary}`}>
-        Découvrez les témoignages de nos utilisateurs
-      </p>
     </div>
-    
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {testimonials.map((testimonial, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 1 + index * 0.2 }}
-          className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
-        >
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] rounded-full flex items-center justify-center">
-              <Quote className="h-6 w-6 text-white" />
+    {/* Séparateur SVG vague */}
+    <div className="absolute bottom-0 left-0 w-full z-30 pointer-events-none">
+      <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-16">
+        <path d="M0,0 C480,60 960,0 1440,60 L1440,0 L0,0 Z" fill="#fff" fillOpacity="1" />
+      </svg>
+    </div>
+  </section>
+);
+
+const ResultsSection = () => (
+  <section className="py-20 bg-white">
+    <div className="container mx-auto px-4">
+      {/* Titre et introduction */}
+      <div className="max-w-3xl mx-auto text-center mb-16">
+        <span className="inline-block px-4 py-2 bg-indigo-100 text-indigo-600 rounded-full text-sm font-medium mb-4">
+          Nos résultats
+        </span>
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Des résultats concrets
+        </h2>
+        <p className="text-xl text-gray-600">
+          Nos candidats trouvent des postes plus rapidement et avec de meilleures conditions
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        {/* Section Notre Impact */}
+        <div className="bg-gray-50 rounded-3xl p-8 shadow-sm">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+            <span className="w-3 h-3 bg-indigo-500 rounded-full mr-2"></span>
+            Notre Impact
+          </h3>
+
+          <div className="grid grid-cols-2 gap-6 mb-10">
+            <div className="bg-white p-6 rounded-xl shadow border border-gray-100">
+              <div className="flex items-center mb-3">
+                <div className="p-2 bg-indigo-100 rounded-lg mr-3">
+                  <Users className="h-5 w-5 text-indigo-600" />
+                </div>
+                <span className="text-sm text-gray-500">Candidats</span>
+              </div>
+              <p className="text-4xl font-bold text-gray-900">+1200</p>
             </div>
-            <div className="flex-1">
-              <p className={`text-sm ${COLORS.textSecondary} mb-4`}>
-                "{testimonial.content}"
-              </p>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className={`font-semibold ${COLORS.text}`}>{testimonial.name}</p>
-                  <p className={`text-xs ${COLORS.textSecondary}`}>
-                    {testimonial.role} chez {testimonial.company}
-                  </p>
+
+            <div className="bg-white p-6 rounded-xl shadow border border-gray-100">
+              <div className="flex items-center mb-3">
+                <div className="p-2 bg-amber-100 rounded-lg mr-3">
+                  <Briefcase className="h-5 w-5 text-amber-600" />
                 </div>
-                <div className="flex items-center gap-1">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-[var(--color-mosala-yellow-500)] fill-current" />
-                  ))}
-                </div>
+                <span className="text-sm text-gray-500">Entreprises</span>
+              </div>
+              <p className="text-4xl font-bold text-gray-900">+50</p>
+            </div>
+          </div>
+
+          <div className="space-y-4 mb-10">
+            <div className="flex items-start">
+              <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0 mt-1 mr-3" />
+              <div>
+                <h4 className="font-medium text-gray-900">Accompagnement personnalisé</h4>
+                <p className="text-gray-600 text-sm">Programmes adaptés à chaque profil</p>
+              </div>
+            </div>
+
+            <div className="flex items-start">
+              <TrendingUp className="h-6 w-6 text-blue-500 flex-shrink-0 mt-1 mr-3" />
+              <div>
+                <h4 className="font-medium text-gray-900">Taux de réussite de 92%</h4>
+                <p className="text-gray-600 text-sm">Intégration en entreprise réussie</p>
+              </div>
+            </div>
+
+            <div className="flex items-start">
+              <Community className="h-6 w-6 text-purple-500 flex-shrink-0 mt-1 mr-3" />
+              <div>
+                <h4 className="font-medium text-gray-900">Communauté active</h4>
+                <p className="text-gray-600 text-sm">Réseau de professionnels engagés</p>
               </div>
             </div>
           </div>
-        </motion.div>
-      ))}
-    </div>
-  </motion.div>
-);
 
-const PartnersSection = ({ partners }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8, delay: 1.2 }}
-    className="mt-16"
-  >
-    <div className="text-center mb-8">
-      <h3 className={`text-xl font-semibold ${COLORS.text} mb-2`}>
-        Nos partenaires de confiance
-      </h3>
-    </div>
-    
-    <div className="flex flex-wrap justify-center items-center gap-8">
-      {partners.map((partner, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 1.4 + index * 0.1 }}
-          className="bg-white/5 backdrop-blur-sm rounded-xl px-6 py-3 border border-white/10"
-        >
-          <span className={`text-sm font-medium ${COLORS.textSecondary}`}>
-            {partner}
-          </span>
-        </motion.div>
-      ))}
-    </div>
-  </motion.div>
-);
-
-const IllustrationCard = () => (
-  <motion.div 
-    initial={{ x: 50, opacity: 0 }}
-    animate={{ x: 0, opacity: 1 }}
-    transition={{ duration: 0.8, delay: 0.4 }}
-    className="hidden lg:block relative"
-  >
-    <div className="bg-white rounded-2xl shadow-2xl p-6 border border-gray-200 relative overflow-hidden">
-      {/* Effet de brillance */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-shine" />
-      
-      {/* Contenu de la carte d'illustration */}
-      <div className="space-y-6 relative z-10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <motion.div 
-              className="w-12 h-12 bg-gradient-to-br from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] rounded-full flex items-center justify-center"
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.6 }}
-            >
-              <Briefcase className="h-6 w-6 text-white" aria-hidden="true" />
-            </motion.div>
-            <div>
-              <h3 className="font-bold text-gray-900">Accompagnement Mosala</h3>
-              <p className="text-sm text-gray-500">Coaching, offres, réseau</p>
-            </div>
-          </div>
-          <motion.div 
-            className="inline-flex items-center bg-[var(--color-mosala-yellow-500)]/10 text-[var(--color-mosala-yellow-600)] px-3 py-1 text-xs font-semibold rounded-full"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            Actif
-          </motion.div>
+          <button className="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-md">
+            Explorer les opportunités
+          </button>
         </div>
 
-        <div className="space-y-4">
-          {[
-            { label: "Coaching personnalisé", value: 95, color: "bg-[var(--color-mosala-green-500)]" },
-            { label: "Accès aux offres", value: 100, color: "bg-[var(--color-mosala-yellow-500)]" },
-            { label: "Communauté", value: 90, color: "bg-[var(--color-mosala-orange-500)]" }
-          ].map((item, index) => (
-            <motion.div 
-              key={index} 
-              className="flex items-center justify-between gap-2"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 + index * 0.2 }}
-            >
-              <span className="text-sm font-medium text-gray-700">{item.label}</span>
-              <div className="w-20 h-2 bg-[var(--color-mosala-dark-50)] rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${item.value}%` }}
-                  transition={{ duration: 1, delay: 0.5 + index * 0.2 }}
-                  className={`h-full ${item.color} rounded-full`}
-                />
+        {/* Section Témoignages et Partenaires */}
+        <div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+            <span className="w-3 h-3 bg-amber-500 rounded-full mr-2"></span>
+            Ils nous font confiance
+          </h3>
+
+          <Carousel className="mb-12">
+            <CarouselContent>
+              <CarouselItem>
+                <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                  <blockquote className="text-lg italic text-gray-700 mb-6">
+                    "Mosala a transformé ma carrière. En 3 mois, j'ai trouvé un poste qui correspond parfaitement à mes compétences."
+                  </blockquote>
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                      <span className="text-indigo-600 font-medium">SM</span>
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900">Sarah M.</p>
+                      <p className="text-sm text-gray-600">Développeuse Full-Stack, Tech Congo</p>
+                    </div>
+                  </div>
+                </div>
+              </CarouselItem>
+
+              <CarouselItem>
+                <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                  <blockquote className="text-lg italic text-gray-700 mb-6">
+                    "L'accompagnement sur-mesure m'a permis de négocier une augmentation de 30% par rapport à mon précédent poste."
+                  </blockquote>
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mr-4">
+                      <span className="text-amber-600 font-medium">DK</span>
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900">David K.</p>
+                      <p className="text-sm text-gray-600">Chef de projet, Innovation Hub</p>
+                    </div>
+                  </div>
+                </div>
+              </CarouselItem>
+            </CarouselContent>
+          </Carousel>
+
+          <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+            <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+            Nos partenaires
+          </h4>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {["Tech Congo", "Innovation Hub", "Digital Academy", "Green Tech", "Social Impact"].map((partner) => (
+              <div key={partner} className="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-center shadow-sm hover:shadow-md transition-shadow">
+                <span className="font-medium text-gray-800">{partner}</span>
               </div>
-              <span className="text-sm text-gray-500">{item.value}%</span>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
-
-        <CTAButton 
-          text="Découvrir les offres" 
-          icon={ArrowRight} 
-          link="/jobs"
-          primary={true}
-          outline={false}
-          className="w-full mt-4"
-        />
       </div>
     </div>
-  </motion.div>
+  </section>
 );
 
-// Nouveau composant de recherche rapide
-const QuickSearch = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setIsSearching(true);
-    // Simulation d'une recherche
-    setTimeout(() => {
-      setIsSearching(false);
-      // Redirection vers la page de recherche avec le terme
-      window.location.href = `/jobs?search=${encodeURIComponent(searchTerm)}`;
-    }, 1000);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.6 }}
-      className="mt-8"
-    >
-      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-        <h3 className={`text-lg font-semibold ${COLORS.text} mb-4 text-center`}>
-          Recherche rapide d'emploi
-        </h3>
-        <form onSubmit={handleSearch} className="flex gap-2">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Poste, entreprise, lieu..."
-              className="w-full pl-10 pr-4 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[var(--color-mosala-green-500)] focus:border-transparent"
-            />
-          </div>
-          <motion.button
-            type="submit"
-            disabled={isSearching || !searchTerm.trim()}
-            className="px-6 py-3 bg-[var(--color-mosala-green-500)] text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isSearching ? (
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-              />
-            ) : (
-              "Rechercher"
-            )}
-          </motion.button>
-        </form>
-      </div>
-    </motion.div>
-  );
-};
-
-const WaveDecoration = () => (
-  <div className="absolute bottom-0 left-0 right-0 z-10">
-    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-16">
-      <path
-        d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-        opacity=".25"
-        className="fill-gray-800"
-      />
-      <path
-        d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
-        opacity=".5"
-        className="fill-gray-800"
-      />
-      <path
-        d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
-        className="fill-gray-800/30"
-      />
-    </svg>
-  </div>
+const Hero = () => (
+  <>
+    <HeroSection />
+    {/* ResultsSection sera désormais importé et utilisé ailleurs, après NotreMission */}
+  </>
 );
 
 export default Hero;

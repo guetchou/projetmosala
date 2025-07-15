@@ -204,12 +204,12 @@ const Hero = () => {
                   key={index} 
                   className="text-center group cursor-pointer"
                   whileHover={{ scale: 1.1, y: -5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  transition={{ type: "tween", duration: 0.3 }}
                 >
                   <motion.div 
                     className="flex justify-center mb-2"
                     animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
+                    transition={{ type: "tween", duration: 2, repeat: Infinity, delay: index * 0.3 }}
                   >
                     <stat.icon className="h-6 w-6 text-primary group-hover:text-accent transition-colors" />
                   </motion.div>

@@ -2,119 +2,244 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { BookOpen, Users, Briefcase, Award, ChevronRight, CheckCircle } from "lucide-react";
 
 const formations = [
   {
-    title: "Développement Web",
-    description: "Maîtrisez les bases du web, du HTML/CSS à React et Node.js.",
-    icon: "/lovable-uploads/services/formation.svg"
+    id: "F001",
+    title: "Développement Web Avancé",
+    description: "Programme certifiant de 12 semaines couvrant les technologies modernes du web.",
+    category: "Technologie",
+    duration: "12 semaines",
+    level: "Avancé",
+    certification: true,
+    color: "bg-[#00A651]"
   },
   {
-    title: "Soft Skills & Leadership",
-    description: "Développez votre communication, votre confiance et votre leadership.",
-    icon: "/lovable-uploads/services/softskills.svg"
+    id: "F002",
+    title: "Leadership & Management",
+    description: "Formation intensive pour managers et futurs leaders en entreprise.",
+    category: "Management",
+    duration: "8 semaines",
+    level: "Intermédiaire",
+    certification: true,
+    color: "bg-[#FFD700]"
   },
   {
-    title: "Entrepreneuriat & Innovation",
-    description: "Apprenez à lancer un projet, innover et trouver des financements.",
-    icon: "/lovable-uploads/services/entrepreneur.svg"
+    id: "F003",
+    title: "Entrepreneuriat Digital",
+    description: "Acquérez les compétences clés pour lancer et gérer une entreprise digitale.",
+    category: "Entrepreneuriat",
+    duration: "10 semaines",
+    level: "Débutant",
+    certification: true,
+    color: "bg-[#FFA500]"
   },
   {
-    title: "Carrière & Emploi",
-    description: "Optimisez votre CV, préparez vos entretiens, boostez votre carrière.",
-    icon: "/lovable-uploads/services/career.svg"
+    id: "F004",
+    title: "Communication Professionnelle",
+    description: "Maîtrisez les techniques de communication écrite et orale en milieu professionnel.",
+    category: "Soft Skills",
+    duration: "6 semaines",
+    level: "Tous niveaux",
+    certification: false,
+    color: "bg-[#ED1C24]"
   }
 ];
 
-const partnerLogos = [
-  "/lovable-uploads/partenaires/afd.jpeg",
-  "/lovable-uploads/partenaires/ministere.jpeg",
-  "/lovable-uploads/partenaires/ue.jpeg"
+const partnerInstitutions = [
+  {
+    name: "Ministère de la Jeunesse",
+    logo: "/lovable-uploads/partenaires/ministere.jpeg"
+  },
+  {
+    name: "Agence Française de Développement",
+    logo: "/lovable-uploads/partenaires/afd.jpeg"
+  },
+  {
+    name: "Union Européenne",
+    logo: "/lovable-uploads/partenaires/ue.jpeg"
+  }
 ];
 
 const Formations = () => {
   const [search, setSearch] = useState("");
-  const filteredFormations = formations.filter(f =>
-    f.title.toLowerCase().includes(search.toLowerCase()) ||
-    f.description.toLowerCase().includes(search.toLowerCase())
-  );
+  const [selectedCategory, setSelectedCategory] = useState("Toutes");
+
+  const categories = ["Toutes", "Technologie", "Management", "Entrepreneuriat", "Soft Skills"];
+
+  const filteredFormations = formations.filter(f => {
+    const matchesSearch = f.title.toLowerCase().includes(search.toLowerCase()) || 
+                         f.description.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = selectedCategory === "Toutes" || f.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--color-mosala-green-50)] via-[var(--color-mosala-yellow-50)] to-[var(--color-mosala-dark-50)] relative">
+    <div className="min-h-screen flex flex-col bg-white font-sans">
       <Navbar />
-      {/* Hero/Header section */}
-      <section className="relative w-full flex flex-col items-center justify-center min-h-[340px] md:min-h-[420px] py-12 mb-8 overflow-hidden">
-        <img
-          src="/lovable-uploads/carrousel/mosala2.jpeg"
-          alt="Formations Mosala"
-          className="absolute inset-0 w-full h-full object-cover object-center z-0 opacity-40 blur-sm"
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-mosala-green-700)]/80 via-[var(--color-mosala-yellow-500)]/40 to-[var(--color-mosala-dark-900)]/80 z-10" />
-        <div className="relative z-20 flex flex-col items-center text-center px-4">
-          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[var(--color-mosala-green-400)] to-[var(--color-mosala-yellow-400)] text-transparent bg-clip-text drop-shadow-lg mb-4">Formations</h1>
-          <p className="text-lg md:text-xl text-[var(--color-mosala-white)]/90 mb-6 max-w-2xl">Développez vos compétences et réussissez votre avenir professionnel avec nos parcours certifiants et ateliers pratiques.</p>
-          <button className="bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-[var(--color-mosala-white)] font-bold px-8 py-3 rounded-full shadow-lg hover:from-[var(--color-mosala-green-600)] hover:to-[var(--color-mosala-yellow-600)] transition-all text-lg">Voir le catalogue complet</button>
+      
+      {/* Hero Section avec dégradé Mosala */}
+      <section className="relative bg-gradient-to-r from-[#00A651] to-[#ED1C24] text-white py-20 md:py-28">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-4xl md:text-5xl font-bold mb-6 font-[Poppins]"
+            >
+              Formations Professionnelles Certifiantes
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
+            >
+              Développez vos compétences avec nos programmes élaborés en partenariat avec les institutions nationales et internationales.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              <button className="bg-white text-[#00A651] px-8 py-3 font-semibold rounded-full hover:bg-gray-100 transition duration-300 shadow-md">
+                Voir le catalogue
+              </button>
+              <button className="border-2 border-white text-white px-8 py-3 font-semibold rounded-full hover:bg-white hover:text-[#ED1C24] transition duration-300">
+                Contactez nos conseillers
+              </button>
+            </motion.div>
+          </div>
         </div>
       </section>
-      {/* Sticky search & filters */}
-      <div className="sticky top-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-mosala-green-100/40 py-4 px-4 flex flex-col md:flex-row items-center gap-4 mb-8 shadow-sm">
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Rechercher une formation, une compétence..."
-          className="w-full md:w-96 px-5 py-3 rounded-full border border-mosala-green-200 focus:border-mosala-green-500 focus:ring-2 focus:ring-mosala-green-100 text-mosala-dark-900 bg-white/90 dark:bg-gray-800/80 shadow-inner transition-all"
-          aria-label="Rechercher une formation"
-        />
-        <div className="flex gap-2 flex-wrap">
-          <button className="px-4 py-2 rounded-full bg-[var(--color-mosala-green-100)] text-[var(--color-mosala-green-700)] font-medium hover:bg-[var(--color-mosala-green-200)] transition">Toutes</button>
-          <button className="px-4 py-2 rounded-full bg-[var(--color-mosala-yellow-100)] text-[var(--color-mosala-yellow-700)] font-medium hover:bg-[var(--color-mosala-yellow-200)] transition">Web</button>
-          <button className="px-4 py-2 rounded-full bg-[var(--color-mosala-green-50)] text-[var(--color-mosala-green-700)] font-medium hover:bg-[var(--color-mosala-green-100)] transition">Soft Skills</button>
-          <button className="px-4 py-2 rounded-full bg-[var(--color-mosala-yellow-50)] text-[var(--color-mosala-yellow-700)] font-medium hover:bg-[var(--color-mosala-yellow-100)] transition">Entrepreneuriat</button>
-          <button className="px-4 py-2 rounded-full bg-[var(--color-mosala-green-50)] text-[var(--color-mosala-green-700)] font-medium hover:bg-[var(--color-mosala-green-100)] transition">Carrière</button>
+
+      {/* Barre de recherche et filtres */}
+      <div className="sticky top-0 z-10 bg-white shadow-sm py-4 border-b border-gray-200">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="relative flex-grow max-w-2xl">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Rechercher une formation..."
+                className="w-full px-5 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#00A651] focus:border-[#00A651]"
+              />
+              <BookOpen className="absolute right-3 top-3.5 text-gray-400" size={20} />
+            </div>
+            
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                    selectedCategory === category
+                      ? "bg-[#00A651] text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-      {/* Formations grid or empty state */}
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+
+      {/* Contenu Principal */}
+      <main className="flex-1 container mx-auto px-6 py-12">
         {filteredFormations.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24">
-            <img src="/placeholder.svg" alt="Aucune formation" className="h-32 w-32 mb-6 opacity-60" />
-            <h2 className="text-2xl font-bold text-[var(--color-mosala-green-700)] mb-2">Aucune formation trouvée</h2>
-            <p className="text-[var(--color-mosala-dark-400)] mb-4">Essayez un autre mot-clé ou filtre.</p>
-            <button className="bg-[var(--color-mosala-green-500)] text-[var(--color-mosala-white)] px-6 py-2 rounded-full font-semibold shadow hover:bg-[var(--color-mosala-green-600)] transition">Réinitialiser</button>
+          <div className="text-center py-20">
+            <Users className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+            <h2 className="text-2xl font-bold text-gray-700 mb-2">Aucune formation trouvée</h2>
+            <p className="text-gray-500 mb-6">Veuillez modifier vos critères de recherche.</p>
+            <button 
+              onClick={() => {
+                setSearch("");
+                setSelectedCategory("Toutes");
+              }}
+              className="bg-[#00A651] text-white px-6 py-2 rounded-full font-medium hover:bg-[#008744] transition"
+            >
+              Réinitialiser
+            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredFormations.map((f, i) => (
-              <motion.div
-                key={f.title}
-                className="bg-[var(--color-mosala-white)]/90 dark:bg-[var(--color-mosala-dark-900)]/90 rounded-2xl shadow-xl p-8 flex flex-col items-center text-center border border-[var(--color-mosala-green-100)] hover:scale-105 transition-transform duration-300 group"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.1, duration: 0.6, type: "spring" }}
-                whileHover={{ scale: 1.05 }}
-                tabIndex={0}
-                aria-label={f.title}
-              >
-                <img src={f.icon} alt="" className="h-16 w-16 mb-4 drop-shadow-lg group-hover:scale-110 transition-transform" />
-                <h2 className="text-xl font-bold text-[var(--color-mosala-green-700)] mb-2">{f.title}</h2>
-                <p className="text-[var(--color-mosala-dark-400)] mb-4">{f.description}</p>
-                <button className="mt-auto bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-[var(--color-mosala-white)] font-semibold px-6 py-2 rounded-full shadow hover:from-[var(--color-mosala-green-600)] hover:to-[var(--color-mosala-yellow-600)] transition">Voir plus</button>
-              </motion.div>
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredFormations.map((formation, index) => (
+                <motion.div
+                  key={formation.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className={`h-2 ${formation.color}`}></div>
+                  <div className="p-6">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-xl font-bold text-gray-900">{formation.title}</h3>
+                      {formation.certification && (
+                        <CheckCircle className="h-6 w-6 text-[#00A651]" />
+                      )}
+                    </div>
+                    <p className="text-gray-600 mb-4">{formation.description}</p>
+                    
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <span className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
+                        {formation.category}
+                      </span>
+                      <span className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
+                        {formation.duration}
+                      </span>
+                      <span className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
+                        {formation.level}
+                      </span>
+                    </div>
+                    
+                    <button className={`w-full ${formation.color} hover:opacity-90 text-white py-2 rounded-full font-medium transition flex items-center justify-center gap-2`}>
+                      En savoir plus <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Section Partenaires Institutionnels */}
+            <section className="mt-20 pt-12 border-t border-gray-200">
+              <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+                En partenariat avec des institutions reconnues
+              </h2>
+              <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+                {partnerInstitutions.map((partner, index) => (
+                  <motion.div
+                    key={partner.name}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                    whileHover={{ scale: 1.05 }}
+                    className="flex flex-col items-center"
+                  >
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                      <img 
+                        src={partner.logo} 
+                        alt={partner.name} 
+                        className="h-16 object-contain grayscale hover:grayscale-0 transition"
+                      />
+                    </div>
+                    <span className="mt-2 text-sm text-gray-500">{partner.name}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          </>
         )}
-        {/* Trusted by section */}
-        <div className="mt-16 flex flex-col items-center">
-          <span className="uppercase text-xs text-[var(--color-mosala-dark-400)] tracking-widest mb-4">Ils nous font confiance</span>
-          <div className="flex gap-8 flex-wrap items-center justify-center">
-            {partnerLogos.map((logo, i) => (
-              <img key={i} src={logo} alt="Partenaire Mosala" className="h-12 w-auto grayscale hover:grayscale-0 transition-all drop-shadow-md" />
-            ))}
-          </div>
-        </div>
       </main>
+
       <Footer />
     </div>
   );

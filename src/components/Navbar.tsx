@@ -4,6 +4,7 @@ import { Menu, X, User, LogOut, Bell, Search, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isAuthenticated, logout, getUserRole } from "@/utils/auth";
 import { useUser } from "@/hooks/useUser";
+import { useNavbarShrink } from "@/hooks/useNavbarShrink";
 import "@/styles/navbar.css";
 
 // Types pour le reducer
@@ -95,6 +96,7 @@ const Navbar = () => {
   
   // Debounce pour les performances de scroll
   const debouncedScrollY = useDebounce(lastScrollY.current, 10);
+  const shrink = useNavbarShrink(40);
 
   // Suggestions mock avec debounce
   const suggestions = [
@@ -176,16 +178,16 @@ const Navbar = () => {
   const setSearchValue = useCallback((value: string) => dispatch({ type: 'SET_SEARCH_VALUE', payload: value }), []);
 
   return (
-    <header className={`fixed top-6 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 ${state.showNavbar ? "translate-y-0" : "-translate-y-32"}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 ${state.showNavbar ? "translate-y-0" : "-translate-y-32"} ${shrink ? "h-16" : "h-26"}`} style={{ height: shrink ? '64px' : '104px' }}>
       <nav 
         data-navbar
-        className="pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 py-4 bg-[var(--color-mosala-white)]/80 dark:bg-[var(--color-mosala-dark-900)]/80 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] min-h-[80px] transition-colors duration-500" 
+        className={`pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 ${shrink ? "py-2" : "py-6"} bg-white/95 dark:bg-[var(--color-mosala-dark-900)]/95 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] transition-all duration-500 ${shrink ? "min-h-[64px]" : "min-h-[104px]"}`} 
         role="navigation" 
         aria-label="Navigation principale Mosala"
       >
         {/* Logo Mosala */}
         <Link to="/" className="flex items-center gap-3 font-extrabold text-3xl text-[var(--color-mosala-green-600)] tracking-tight focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-mosala-green-300)] transition-transform duration-200 hover:-translate-y-1">
-          <img src="/lovable-uploads/logo-mosala1.png" alt="Logo Mosala" className="h-14 w-14 rounded-full bg-[var(--color-mosala-white)] border-2 border-[var(--color-mosala-green-200)] shadow-lg" />
+          <img src="/lovable-uploads/logo-mosala1.png" alt="Logo Mosala" className={`rounded-full bg-[var(--color-mosala-white)] border-2 border-[var(--color-mosala-green-200)] shadow-lg transition-all duration-500 ${shrink ? "h-10 w-10" : "h-14 w-14"}`} />
         </Link>
         {/* Menu + actions alignés à droite */}
         <div className="flex items-center gap-1 ml-auto">

@@ -1,81 +1,51 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Star, Sparkles } from "lucide-react";
-import { useRef } from "react";
+import { Star, ChevronRight } from "lucide-react";
 
 const services = [
   {
     id: "1",
-    title: "Accompagnement personnalisé",
-    description: "Coaching, orientation, suivi individuel pour booster votre carrière.",
-    icon: "/lovable-uploads/services/coaching.svg",
-    category: "Coaching",
+    title: "Accompagnement professionnel",
+    description: "Programmes de mentorat et coaching sur mesure pour votre développement de carrière.",
+    icon: "public/services/Accompagnement-pro.png",
+    category: "Accompagnement",
     rating: 4.8
   },
   {
     id: "2",
-    title: "Recrutement & Matching",
-    description: "Mise en relation intelligente entre candidats et employeurs.",
-    icon: "/lovable-uploads/services/matching.svg",
+    title: "Solutions de recrutement",
+    description: "Services complets de sourcing et sélection de talents qualifiés.",
+    icon: "public/services/Solutions de recrutement__Services.jpeg",
     category: "Recrutement",
     rating: 4.5
   },
   {
     id: "3",
-    title: "Formations & Ateliers",
-    description: "Formations certifiantes, ateliers pratiques, e-learning.",
-    icon: "/lovable-uploads/services/formation.svg",
+    title: "Programmes de formation",
+    description: "Formations certifiantes adaptées aux besoins du marché.",
+    icon: "public/services/programme-formation.png",
     category: "Formation",
     rating: 4.7
   },
   {
     id: "4",
-    title: "Réseau & Communauté",
-    description: "Événements, networking, entraide et opportunités.",
+    title: "Réseau professionnel",
+    description: "Accès à notre communauté d'experts et d'opportunités.",
     icon: "/lovable-uploads/community.png",
-    category: "Communauté",
+    category: "Réseau",
     rating: 4.6
   }
 ];
 
-const categories = ["Tous", "Coaching", "Recrutement", "Formation", "Communauté", "Favoris"];
-
-const partnerLogos = [
-  "/lovable-uploads/partenaires/afd.jpeg",
-  "/lovable-uploads/partenaires/ministere.jpeg",
-  "/lovable-uploads/partenaires/ue.jpeg"
-];
-
-const premiumBadges = [
-  { id: "1", label: "Nouveau", color: "from-mosala-green-400 to-mosala-yellow-300" },
-  { id: "3", label: "Populaire", color: "from-mosala-orange-400 to-mosala-yellow-300" }
-];
+const categories = ["Tous", "Accompagnement", "Recrutement", "Formation", "Réseau"];
 
 const Services = () => {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tous");
-  const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem("mosala-favorites");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem("mosala-favorites", JSON.stringify(favorites));
-  }, [favorites]);
-
-  const toggleFavorite = id => {
-    setFavorites(prev =>
-      prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]
-    );
-  };
 
   const filteredServices = services.filter(s => {
-    const matchCategory =
-      selectedCategory === "Tous" ||
-      (selectedCategory === "Favoris" && favorites.includes(s.id)) ||
-      s.category === selectedCategory;
+    const matchCategory = selectedCategory === "Tous" || s.category === selectedCategory;
     const matchSearch =
       s.title.toLowerCase().includes(search.toLowerCase()) ||
       s.description.toLowerCase().includes(search.toLowerCase());
@@ -83,168 +53,131 @@ const Services = () => {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--color-mosala-green-50)] via-[var(--color-mosala-yellow-50)] to-[var(--color-mosala-dark-50)] relative">
+    <div className="min-h-screen flex flex-col bg-white text-gray-800">
       <Navbar />
-      {/* Hero/Header section */}
-      <section className="relative w-full flex flex-col items-center justify-center min-h-[340px] md:min-h-[420px] py-12 mb-8 overflow-hidden">
-        <img
-          src="/lovable-uploads/carrousel/mosala1.jpeg"
-          alt="Services Mosala"
-          className="absolute inset-0 w-full h-full object-cover object-center z-0 opacity-40 blur-sm"
-          aria-hidden="true"
+      
+      {/* Hero institutionnel avec grande photo */}
+      <section className="relative w-full h-[400px] md:h-[500px] bg-gray-900 overflow-hidden">
+        <img 
+          src="public/lovable-uploads/jeunesse-congolaise/jeunesse-congolaise.jpg" 
+          alt="Équipe Mosala en réunion"
+          className="w-full h-full object-cover opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-mosala-green-700)]/80 via-[var(--color-mosala-yellow-500)]/40 to-[var(--color-mosala-dark-900)]/80 z-10" />
-        <div className="relative z-20 flex flex-col items-center text-center px-4">
-          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[var(--color-mosala-green-400)] to-[var(--color-mosala-yellow-400)] text-transparent bg-clip-text drop-shadow-lg mb-4">Découvrez nos services</h1>
-          <p className="text-lg md:text-xl text-[var(--color-mosala-white)]/90 mb-6 max-w-2xl">Trouvez le service adapté à vos besoins professionnels ou personnels. Mosala vous accompagne à chaque étape.</p>
-          <button className="bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-[var(--color-mosala-white)] font-bold px-8 py-3 rounded-full shadow-lg hover:from-[var(--color-mosala-green-600)] hover:to-[var(--color-mosala-yellow-600)] transition-all text-lg">Proposer un service</button>
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 to-transparent flex items-end pb-16 md:pb-24">
+          <div className="container mx-auto px-6 text-white">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Nos Services Professionnels</h1>
+            <p className="text-xl md:text-2xl max-w-2xl mb-6">
+              Des solutions expertes pour votre développement professionnel et organisationnel
+            </p>
+            <div className="flex gap-4">
+              <button className="bg-white text-gray-900 px-6 py-3 rounded-sm font-medium flex items-center hover:bg-gray-100 transition">
+                Découvrir nos programmes <ChevronRight className="ml-2" />
+              </button>
+              <button className="border border-white text-white px-6 py-3 rounded-sm font-medium hover:bg-white/10 transition">
+                Contactez-nous
+              </button>
+            </div>
+          </div>
         </div>
       </section>
-      {/* Sticky search & filters */}
-      <div className="sticky top-0 z-30 bg-[var(--color-mosala-white)]/80 dark:bg-[var(--color-mosala-dark-900)]/80 backdrop-blur-md border-b border-[var(--color-mosala-green-100)]/40 py-4 px-4 flex flex-col md:flex-row items-center gap-4 mb-8 shadow-sm">
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Rechercher un service, une catégorie..."
-          className="w-full md:w-96 px-5 py-3 rounded-full border border-[var(--color-mosala-green-200)] focus:border-[var(--color-mosala-green-500)] focus:ring-2 focus:ring-[var(--color-mosala-green-100)] text-[var(--color-mosala-dark-900)] bg-[var(--color-mosala-white)]/90 dark:bg-[var(--color-mosala-dark-900)]/80 shadow-inner transition-all"
-          aria-label="Rechercher un service"
-        />
-        <div className="flex gap-2 flex-wrap">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full font-medium transition ${
-                selectedCategory === cat
-                  ? "bg-[var(--color-mosala-green-500)] text-[var(--color-mosala-white)]"
-                  : "bg-[var(--color-mosala-green-100)] text-[var(--color-mosala-green-700)] hover:bg-[var(--color-mosala-green-200)]"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-      {/* Services grid or empty state */}
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl relative">
-        {/* Blobs SVG animés en fond */}
-        <div className="absolute -top-32 -left-32 w-[420px] h-[420px] z-0 pointer-events-none animate-blob-move">
-          <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="blobGradient1" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#34d399" />
-                <stop offset="100%" stopColor="#fde68a" />
-              </linearGradient>
-            </defs>
-            <path fill="url(#blobGradient1)" fillOpacity=".4" d="M320,320Q320,400,240,400Q160,400,80,400Q0,400,0,320Q0,240,0,160Q0,80,80,80Q160,80,240,80Q320,80,320,160Q320,240,320,320Z" />
-          </svg>
-        </div>
-        <div className="absolute -bottom-32 -right-32 w-[340px] h-[340px] z-0 pointer-events-none animate-blob-move2">
-          <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="blobGradient2" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#fbbf24" />
-                <stop offset="100%" stopColor="#f59e42" />
-              </linearGradient>
-            </defs>
-            <path fill="url(#blobGradient2)" fillOpacity=".3" d="M320,320Q400,240,320,160Q240,80,160,80Q80,80,80,160Q80,240,160,320Q240,400,320,320Z" />
-          </svg>
-        </div>
-        {filteredServices.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24">
-            <img src="/placeholder.svg" alt="Aucun service" className="h-32 w-32 mb-6 opacity-60" />
-            <h2 className="text-2xl font-bold text-[var(--color-mosala-green-700)] mb-2">Aucun service trouvé</h2>
-            <p className="text-[var(--color-mosala-dark-400)] mb-4">Essayez un autre mot-clé ou filtre.</p>
-            <button className="bg-[var(--color-mosala-green-500)] text-[var(--color-mosala-white)] px-6 py-2 rounded-full font-semibold shadow hover:bg-[var(--color-mosala-green-600)] transition" onClick={() => { setSearch(""); setSelectedCategory("Tous"); }}>Réinitialiser</button>
+
+      {/* Section de contenu principal */}
+      <main className="flex-1 container mx-auto px-4 py-16 max-w-6xl">
+        {/* Filtres */}
+        <div className="mb-12">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">Nos solutions</h2>
+            <div className="w-full md:w-96">
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Rechercher un service..."
+                className="w-full px-4 py-2 border-b border-gray-300 focus:border-blue-600 focus:outline-none"
+              />
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
-            {filteredServices.map((s, i) => {
-              const badge = premiumBadges.find(b => b.id === s.id);
-              const isFormation = s.category === "Formation";
-              return (
-                <motion.div
-                  key={s.id}
-                  className="relative group bg-[var(--color-mosala-white)]/30 dark:bg-[var(--color-mosala-dark-900)]/40 rounded-3xl p-8 flex flex-col items-center text-center border-2 border-transparent shadow-2xl backdrop-blur-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[var(--color-mosala-green-500)] hover:rotate-1 hover:border-gradient-mosala focus-within:ring-4 focus-within:ring-[var(--color-mosala-green-200)]/60"
-                  style={{ borderImage: "linear-gradient(135deg, #34d399, #fde68a, #fbbf24) 1" }}
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.1, duration: 0.6, type: "spring" }}
-                  whileHover={{ scale: 1.05 }}
-                  tabIndex={0}
-                  aria-label={s.title}
-                >
-                  {/* Badge animé */}
-                  {badge && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + i * 0.1, duration: 0.5, type: "spring" }}
-                      className={`absolute left-4 top-4 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r ${badge.color} text-[var(--color-mosala-white)] shadow-lg animate-pop`}
-                    >
-                      <Sparkles className="inline w-4 h-4 mr-1 animate-spin-slow" />{badge.label}
-                    </motion.div>
-                  )}
-                  {/* Bouton favori animé */}
-                  <motion.button
-                    onClick={() => toggleFavorite(s.id)}
-                    aria-label={favorites.includes(s.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
-                    className={`absolute top-4 right-4 p-2 rounded-full shadow transition-all focus:outline-none focus:ring-2 focus:ring-[var(--color-mosala-yellow-400)]/60 ${favorites.includes(s.id) ? "bg-[var(--color-mosala-yellow-400)]" : "bg-[var(--color-mosala-white)]/80"}`}
-                    whileTap={{ scale: 1.2, rotate: 20 }}
-                    animate={favorites.includes(s.id) ? { scale: [1, 1.2, 1], rotate: [0, 20, 0] } : {}}
-                  >
-                    <Star className={`w-5 h-5 ${favorites.includes(s.id) ? "fill-current text-[var(--color-mosala-yellow-600)] animate-pulse" : "text-[var(--color-mosala-dark-300)]"}`} fill={favorites.includes(s.id) ? "currentColor" : "none"} />
-                  </motion.button>
-                  <img src={s.icon} alt="" className="h-16 w-16 mb-4 drop-shadow-lg group-hover:scale-110 transition-transform duration-300" />
-                  <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-mosala-green-700)] mb-2 font-manrope tracking-tight animate-fade-in-up bg-gradient-to-r from-[var(--color-mosala-green-400)] to-[var(--color-mosala-yellow-400)] text-transparent bg-clip-text">
-                    {s.title}
-                  </h2>
-                  <p className="text-[var(--color-mosala-dark-400)] mb-4 text-base md:text-lg leading-relaxed tracking-wide text-opacity-80 animate-fade-in-up">
-                    {s.description}
-                  </p>
-                  {/* Progress bar formations */}
-                  {isFormation && (
-                    <div className="w-full mb-3">
-                      <div className="flex justify-between text-xs text-[var(--color-mosala-green-700)] mb-1">
-                        <span>80% des places prises</span>
-                        <span>Restent 5</span>
-                      </div>
-                      <div className="w-full h-2 bg-[var(--color-mosala-green-100)] rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-[var(--color-mosala-green-400)] to-[var(--color-mosala-yellow-400)]" style={{ width: "80%" }} />
-                      </div>
-                    </div>
-                  )}
-                  {/* Affichage des étoiles */}
-                  <div className="flex items-center justify-center gap-1 mb-2 animate-fade-in-up">
-                    {[1,2,3,4,5].map(n => (
-                      <Star
-                        key={n}
-                        className={`w-5 h-5 ${s.rating >= n - 0.5 ? "text-[var(--color-mosala-yellow-400)]" : "text-[var(--color-mosala-dark-300)]"}`}
-                        fill={s.rating >= n - 0.5 ? "currentColor" : "none"}
-                      />
-                    ))}
-                    <span className="ml-2 text-sm text-[var(--color-mosala-dark-500)]">{s.rating.toFixed(1)}</span>
-                  </div>
-                  {/* Bouton avec effet ripple */}
-                  <button className="mt-auto bg-gradient-to-r from-[var(--color-mosala-green-500)] via-[var(--color-mosala-yellow-400)] to-[var(--color-mosala-orange-300)] text-[var(--color-mosala-white)] font-semibold px-6 py-2 rounded-full shadow-lg hover:from-[var(--color-mosala-green-600)] hover:to-[var(--color-mosala-yellow-600)] focus:outline-none focus:ring-2 focus:ring-[var(--color-mosala-green-300)]/60 transition-all relative overflow-hidden ripple">
-                    <span className="relative z-10">Voir plus</span>
-                  </button>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
-        {/* Trusted by section */}
-        <div className="mt-16 flex flex-col items-center">
-          <span className="uppercase text-xs text-[var(--color-mosala-dark-400)] tracking-widest mb-4">Ils nous font confiance</span>
-          <div className="flex gap-8 flex-wrap items-center justify-center">
-            {partnerLogos.map((logo, i) => (
-              <img key={i} src={logo} alt="Partenaire Mosala" className="h-12 w-auto grayscale hover:grayscale-0 transition-all drop-shadow-md" />
+
+          <div className="flex flex-wrap gap-2 mb-8">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 text-sm font-medium rounded-sm transition-colors
+                  ${selectedCategory === cat
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"}
+                `}
+              >
+                {cat}
+              </button>
             ))}
           </div>
         </div>
+
+        {/* Grille de services */}
+        {filteredServices.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24">
+            <h2 className="text-2xl font-bold text-gray-700 mb-4">Aucun service trouvé</h2>
+            <p className="text-gray-500 mb-6">Veuillez essayer une autre recherche ou catégorie.</p>
+            <button 
+              className="bg-blue-600 text-white px-6 py-2 rounded-sm font-medium hover:bg-blue-700 transition"
+              onClick={() => { setSearch(""); setSelectedCategory("Tous"); }}
+            >
+              Réinitialiser
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {filteredServices.map(service => (
+              <div 
+                key={service.id} 
+                className="border border-gray-200 rounded-sm overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                <div className="h-56 sm:h-64 md:h-72 lg:h-80 xl:h-96 bg-gray-100 overflow-hidden">
+                  <img 
+                    src={service.icon} 
+                    alt={service.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
+                    <div className="flex items-center">
+                      <Star className="text-yellow-400 fill-current" />
+                      <span className="ml-1 text-gray-700">{service.rating}</span>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 mb-6">{service.description}</p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-500">{service.category}</span>
+                    <button className="text-blue-600 font-medium hover:text-blue-800 transition flex items-center">
+                      En savoir plus <ChevronRight className="ml-1 h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Section institutionnelle */}
+        <section className="mt-24 py-16 border-t border-gray-200">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Notre approche institutionnelle</h2>
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+              Mosala s'engage à fournir des services professionnels de haute qualité, en partenariat avec les institutions nationales et internationales. Notre méthodologie rigoureuse et nos conseillers experts garantissent un accompagnement d'excellence.
+            </p>
+            <div className="flex justify-center gap-6">
+              <img src="/lovable-uploads/partenaires/afd.jpeg" alt="AFD" className="h-12 grayscale hover:grayscale-0 transition" />
+              <img src="/lovable-uploads/partenaires/ministere.jpeg" alt="Ministère" className="h-12 grayscale hover:grayscale-0 transition" />
+              <img src="/lovable-uploads/partenaires/ue.jpeg" alt="UE" className="h-12 grayscale hover:grayscale-0 transition" />
+            </div>
+          </div>
+        </section>
       </main>
+
       <Footer />
     </div>
   );

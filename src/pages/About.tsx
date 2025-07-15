@@ -3,25 +3,39 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const About = () => (
-  <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--color-mosala-dark-900)] via-[var(--color-mosala-dark-700)] to-[var(--color-mosala-dark-500)]">
+  <div className="min-h-screen flex flex-col bg-[#F7F7F7] text-gray-900 font-sans">
     <Navbar />
-    <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
-      <div className="mb-8 p-6 rounded-xl bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-[var(--color-mosala-white)] shadow-lg border-2 border-[var(--color-mosala-yellow-500)]">
-        <h2 className="text-2xl font-bold mb-2">Lancement du projet MOSALA</h2>
-        <p className="mb-2 font-semibold">Lancement ce matin 10 octobre 2024 du projet « MOSALA » : un tremplin de la formation vers l’emploi pour une insertion réussie des jeunes.</p>
-        <p className="mb-2">Le top a été donné par le Ministre de la Jeunesse et des Sports, de la Formation Qualifiante et de l’Emploi, Hugues NGOUELONDELE en présence de son homologue des Petites et Moyennes Entreprises, madame Jacqueline Lydia MIKOLO, accompagné de l’Ambassadeur de France au Congo Claire BODONYI.</p>
-        <p className="mb-2">Le projet MOSALA vise entre autres, à renforcer l’employabilité des jeunes et réduire les inégalités du genre. Il permettra de réinsérer cinq mille (5000) jeunes sur l’ensemble du territoire national.</p>
-        <p className="mb-2">Financé à plus de six milliards (6.000.000.000) de francs CFA par l’Agence Française de Développement et l’Union Européenne, c’est un mécanisme d’insertion professionnelle des jeunes.</p>
-        <p className="mb-2">L’Ambassadeur de France au Congo a exhorté les jeunes à la création des richesses et à aller vers l’avenir avec des projets à effet multiplicateur, en mettant un accent sur les métiers du numérique.</p>
-        <p className="mb-2">Le Ministre Hugues NGOUELONDELE espère qu’en cette année de la jeunesse, ce projet va définitivement changer le regard de la jeunesse congolaise désireuse d’apporter sa pierre au développement du pays.</p>
-        <p className="text-xs mt-2 italic">Source : Brazzaville Press, Ambassade de France, Union Européenne, MJSECFQE, AFD</p>
+    {/* Header UNESCO-style */}
+    <section className="w-full flex flex-col items-center justify-center min-h-[180px] py-10 mb-0 bg-white border-b border-gray-200">
+      <div className="flex flex-col items-center text-center px-4 max-w-2xl">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">À propos de Mosala</h1>
+        <div className="w-16 h-1 bg-yellow-400 rounded-full mb-4" />
+        <p className="text-lg md:text-xl text-gray-600 mb-2">
+          Mosala œuvre pour l’inclusion, l’innovation et l’accompagnement des jeunes vers l’emploi au Congo.
+        </p>
       </div>
-      <h1 className="text-3xl md:text-4xl font-extrabold mb-6 bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-transparent bg-clip-text">À propos de Mosala</h1>
-      <p className="text-lg text-[var(--color-mosala-dark-50)] whitespace-pre-line">Inclusion : Un site optimisé pour les connexions faibles et mobile-first
-
-Innovation : Moteur de recherche intelligent & PWA offline
-
-Proximité : Support local 24/7 (chatbot, WhatsApp, email)</p>
+    </section>
+    {/* Corps de page institutionnel */}
+    <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Notre mission</h2>
+        <p className="text-gray-700 text-lg mb-6">
+          Connecter chaque talent congolais aux opportunités qui leur ressemblent, en s’appuyant sur l’innovation, la proximité et l’inclusion.
+        </p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Nos valeurs</h2>
+        <ul className="list-disc pl-6 text-gray-700 text-lg mb-6">
+          <li>Inclusion et égalité des chances</li>
+          <li>Accompagnement personnalisé</li>
+          <li>Innovation et numérique</li>
+          <li>Proximité avec les communautés</li>
+        </ul>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Chiffres clés</h2>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-lg text-gray-800">
+          <li><span className="font-bold text-yellow-500 text-2xl">+1200</span> jeunes accompagnés</li>
+          <li><span className="font-bold text-yellow-500 text-2xl">+50</span> entreprises partenaires</li>
+          <li><span className="font-bold text-yellow-500 text-2xl">92%</span> taux de réussite</li>
+        </ul>
+      </section>
     </main>
     <Footer />
   </div>

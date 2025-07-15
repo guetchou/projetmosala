@@ -6,6 +6,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import { MapPin, Clock, Users, Calendar, Quote } from "lucide-react";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { fetchApi } from "@/api/fetcher";
+import { useNavigate } from "react-router-dom";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -16,13 +19,34 @@ const CaravaneMosala = () => {
   const [formData, setFormData] = useState({
     nom: "",
     email: "",
-    etape: ""
+    etape: "",
+    telephone: "",
+    message: "",
+    consent: false
   });
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Inscription Caravane:", formData);
-    // Handle form submission
+    setLoading(true);
+    setError("");
+    try {
+      await fetchApi("/caravane", {
+        method: "POST",
+        body: JSON.stringify(formData)
+      });
+      setSubmitted(true);
+      setTimeout(() => {
+        navigate("/confirmation-caravane");
+      }, 1200);
+    } catch (err) {
+      setError("Erreur lors de l'envoi. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const schedule = [
@@ -62,6 +86,8 @@ const CaravaneMosala = () => {
       age: "28 ans"
     }
   ];
+
+  const [open, setOpen] = useState(false);
 
   return (
     <section className="py-16 bg-gradient-to-br from-mosala-light to-white">
@@ -187,61 +213,117 @@ const CaravaneMosala = () => {
           </Swiper>
         </motion.div>
 
-        {/* Registration Form */}
+        {/* Registration Form - replaced by button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="max-w-2xl mx-auto"
+          className="flex justify-center"
         >
-          <div className="bg-white p-8 rounded-2xl shadow-lg border border-border">
-            <h3 className="text-2xl font-bold text-mosala-dark mb-6 text-center">
-              Comment participer ?
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Input
-                  type="text"
-                  placeholder="Votre nom complet"
-                  value={formData.nom}
-                  onChange={(e) => setFormData({...formData, nom: e.target.value})}
-                  required
-                  className="h-12"
-                />
-              </div>
-              <div>
-                <Input
-                  type="email"
-                  placeholder="Votre email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  required
-                  className="h-12"
-                />
-              </div>
-              <div>
-                <Select onValueChange={(value) => setFormData({...formData, etape: value})}>
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Sélectionnez votre ville" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {cities.map((city) => (
-                      <SelectItem key={city} value={city.toLowerCase()}>
-                        {city}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full bg-mosala-orange hover:bg-mosala-orange/90 text-white h-12"
-              >
-                Je m'inscris à la Caravane
-              </Button>
-            </form>
-          </div>
+          <Button
+            className="bg-mosala-orange hover:bg-mosala-orange/90 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg"
+            onClick={() => setOpen(true)}
+          >
+            Comment participer ?
+          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent className="max-w-lg w-full bg-gradient-to-br from-mosala-light via-white to-mosala-orange-50 p-0 border-0 shadow-2xl rounded-3xl">
+              <DialogHeader className="flex flex-col items-center pt-8 pb-2 px-8">
+                <img src="/lovable-uploads/logo-mosala1.png" alt="Logo Mosala" width={80} height={80} className="mb-4 drop-shadow-lg" />
+                <DialogTitle className="text-2xl font-bold text-mosala-dark text-center mb-2">Comment participer ?</DialogTitle>
+                <DialogDescription className="text-center text-mosala-dark/80 mb-4">
+                  Remplissez le formulaire pour rejoindre la Caravane Mosala !
+                </DialogDescription>
+              </DialogHeader>
+              {submitted ? (
+                <div className="flex flex-col items-center justify-center py-12 px-8">
+                  <div className="text-4xl mb-4">🎉</div>
+                  <div className="text-lg font-semibold text-mosala-dark mb-2 text-center">Merci pour votre inscription !</div>
+                  <div className="text-mosala-dark/80 text-center mb-4">Nous avons bien reçu votre demande. L'équipe Mosala vous contactera prochainement.</div>
+                  <DialogClose asChild>
+                    <Button type="button" className="w-full mt-2 bg-mosala-orange text-white">Fermer</Button>
+                  </DialogClose>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6 px-8 pb-8">
+                  <div>
+                    <Input
+                      type="text"
+                      placeholder="Votre nom complet"
+                      value={formData.nom}
+                      onChange={(e) => setFormData({...formData, nom: e.target.value})}
+                      required
+                      className="h-12 bg-white/80 border-mosala-orange/30 focus:border-mosala-orange focus:ring-mosala-orange/20 text-mosala-dark"
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      type="email"
+                      placeholder="Votre email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      required
+                      className="h-12 bg-white/80 border-mosala-orange/30 focus:border-mosala-orange focus:ring-mosala-orange/20 text-mosala-dark"
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      type="tel"
+                      placeholder="Votre téléphone (optionnel)"
+                      value={formData.telephone}
+                      onChange={(e) => setFormData({...formData, telephone: e.target.value})}
+                      className="h-12 bg-white/80 border-mosala-orange/30 focus:border-mosala-orange focus:ring-mosala-orange/20 text-mosala-dark"
+                    />
+                  </div>
+                  <div>
+                    <Select onValueChange={(value) => setFormData({...formData, etape: value})}>
+                      <SelectTrigger className="h-12 bg-white/80 border-mosala-orange/30 focus:border-mosala-orange focus:ring-mosala-orange/20 text-mosala-dark">
+                        <SelectValue placeholder="Sélectionnez votre ville" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cities.map((city) => (
+                          <SelectItem key={city} value={city.toLowerCase()}>
+                            {city}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <textarea
+                      placeholder="Votre message (optionnel)"
+                      value={formData.message}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      className="w-full h-24 rounded-xl border border-mosala-orange/30 focus:border-mosala-orange focus:ring-mosala-orange/20 text-mosala-dark bg-white/80 p-3 resize-none"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="consent"
+                      checked={formData.consent}
+                      onChange={e => setFormData({...formData, consent: e.target.checked})}
+                      required
+                      className="accent-mosala-orange w-5 h-5"
+                    />
+                    <label htmlFor="consent" className="text-mosala-dark/80 text-sm">J'accepte la <a href="/politique-confidentialite" target="_blank" rel="noopener noreferrer" className="underline">politique de confidentialité</a> et le traitement de mes données.</label>
+                  </div>
+                  {error && <div className="text-red-600 text-center" role="alert">{error}</div>}
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-mosala-orange hover:bg-mosala-orange/90 text-white h-12 font-bold shadow-md"
+                    disabled={loading}
+                  >
+                    {loading ? "Envoi en cours..." : "Je m'inscris à la Caravane"}
+                  </Button>
+                  <DialogClose asChild>
+                    <Button type="button" variant="ghost" className="w-full mt-2 text-mosala-dark/60 hover:text-mosala-dark/90">Annuler</Button>
+                  </DialogClose>
+                </form>
+              )}
+            </DialogContent>
+          </Dialog>
         </motion.div>
       </div>
     </section>

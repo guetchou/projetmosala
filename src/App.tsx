@@ -30,6 +30,7 @@ import Services from "./pages/Services";
 import Formations from "./pages/Formations";
 import FAQ from "./pages/FAQ";
 import CandidateSpace from "./pages/CandidateSpace";
+import ConfirmationCaravane from "@/pages/ConfirmationCaravane";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => (
           <Route path="/formations" element={<Formations />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/candidate-space" element={<CandidateSpace />} />
+          <Route path="/confirmation-caravane" element={<ConfirmationCaravane />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <ChatbotWidget />

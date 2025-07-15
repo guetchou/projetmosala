@@ -205,7 +205,7 @@ const PartnerLogo = ({ partner }) => (
 
 const HeroSection = () => (
   // pt-26 = 104px (hauteur Navbar), min-h-[calc(100vh-104px)] pour que la Hero soit toujours visible sous la Navbar
-  <section className="relative z-0 pt-26 min-h-[calc(100vh-64px)] flex items-center justify-center overflow-hidden pb-16 md:pb-32 pt-8">
+  <section className="relative z-0 pt-26 min-h-[calc(100vh-64px)] flex items-center justify-center overflow-hidden pb-16 md:pb-32 pt-8 mt-6">
     {/* Ken Burns Slideshow en fond (z-0) */}
     <KenBurnsSlideshow />
     {/* Overlay dégradé + blur (z-0) */}

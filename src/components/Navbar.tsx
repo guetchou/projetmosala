@@ -93,7 +93,14 @@ const Navbar = forwardRef<HTMLElement, any>((props, ref) => {
   const lastScrollY = useRef(0);
   const navigate = useNavigate();
   const { user } = useUser ? useUser() : { user: null };
-  
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   // Debounce pour les performances de scroll
   const debouncedScrollY = useDebounce(lastScrollY.current, 10);
   const shrink = useNavbarShrink(40);
@@ -178,11 +185,14 @@ const Navbar = forwardRef<HTMLElement, any>((props, ref) => {
   const setSearchValue = useCallback((value: string) => dispatch({ type: 'SET_SEARCH_VALUE', payload: value }), []);
 
   return (
-    <header ref={ref} className={`fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none transition-transform duration-500 my-4 ${state.showNavbar ? "translate-y-0" : "-translate-y-32"} h-16`} style={{ height: '64px' }}>
-      <nav 
+    <header
+      ref={ref}
+      className={`fixed top-4 left-1/2 transform -translate-x-1/2 transition-all duration-300 ease-in-out bg-white shadow-md border rounded-full z-50 ${scrolled ? 'w-11/12 py-4' : 'w-2/3 py-2'} flex justify-center pointer-events-none ${state.showNavbar ? "translate-y-0" : "-translate-y-32"}`}
+    >
+      <nav
         data-navbar
-        className={`pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 py-2 bg-white/95 dark:bg-[var(--color-mosala-dark-900)]/95 backdrop-blur-xl rounded-full shadow-2xl border-2 border-[var(--color-mosala-green-200)] transition-all duration-500 min-h-[64px]`} 
-        role="navigation" 
+        className={`pointer-events-auto w-full max-w-6xl mx-auto flex items-center justify-between px-8 bg-white/95 dark:bg-[var(--color-mosala-dark-900)]/95 backdrop-blur-xl rounded-full transition-all duration-500 min-h-[48px]`}
+        role="navigation"
         aria-label="Navigation principale Mosala"
       >
         {/* Logo Mosala */}

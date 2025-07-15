@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useBlog } from "@/hooks/useBlog";
 import Loader from "@/components/ui/Loader";
@@ -25,9 +25,25 @@ const Blog = () => {
         post.excerpt.toLowerCase().includes(search.toLowerCase()))
   );
 
+  const navbarRef = useRef<HTMLElement>(null);
+  const [navbarHeight, setNavbarHeight] = useState(0);
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      setNavbarHeight(navbarRef.current.offsetHeight);
+    }
+    const handleResize = () => {
+      if (navbarRef.current) {
+        setNavbarHeight(navbarRef.current.offsetHeight);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Navbar />
+    <div className="min-h-screen bg-background flex flex-col" style={{ paddingTop: navbarHeight }}>
+      <Navbar ref={navbarRef} />
       <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-transparent bg-clip-text">Blog Mosala</h1>
         <p className="text-lg text-[var(--color-mosala-dark-50)] mb-8">Actualités, conseils carrière, témoignages et innovations pour booster votre avenir professionnel au Congo.</p>

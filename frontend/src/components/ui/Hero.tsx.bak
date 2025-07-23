@@ -1,0 +1,163 @@
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ArrowRight, Sparkles, Award, CheckCircle, TrendingUp, Users as Community, Users, Briefcase } from "lucide-react"; // Garde uniquement les icônes utilisées dans le Hero
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { useState, useEffect, useRef } from "react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import './Hero.css';
+
+// Palette de couleurs optimisée pour l'accessibilité
+const COLORS = {
+  primary: {
+    main: "bg-[#4F46E5]",
+    hover: "hover:bg-[#4338CA]",
+    text: "text-[#4F46E5]"
+  },
+  secondary: {
+    main: "bg-[#F59E0B]",
+    hover: "hover:bg-[#D97706]",
+    text: "text-[#F59E0B]"
+  },
+  dark: {
+    main: "bg-[#1F2937]",
+    text: "text-[#1F2937]"
+  },
+  light: {
+    main: "bg-[#F9FAFB]",
+    text: "text-[#F9FAFB]"
+  },
+  accent: {
+    purple: "bg-[#7C3AED]",
+    amber: "bg-[#F59E0B]"
+  }
+};
+
+const SWIPER_IMAGES = [
+  {
+    src: "public/topcenter-uploads/carrousel/mosala-jeunes1.png?auto=format&fit=crop&w=1200&q=80",
+    legend: "Un avenir lumineux pour la jeunesse congolaise."
+  },
+  {
+    src: "public/topcenter-uploads/carrousel/mosala-jeunes2.png?auto=format&fit=crop&w=1200&q=80",
+    legend: "Des opportunités à portée de main."
+  },
+  {
+    src: "public/topcenter-uploads/carrousel/mosala7.jpeg?auto=format&fit=crop&w=1200&q=80",
+    legend: "Mosala, la plateforme qui éclaire votre parcours."
+  },
+  {
+    src: "public/topcenter-uploads/jeunesse-congolaise/jeunesse-congolaise2.jpg?auto=format&fit=crop&w=1200&q=80",
+    legend: "Ensemble, construisons votre futur."
+  },
+];
+
+// Remplacer le HeroSwiper pour effet zoom
+const HeroSwiper = () => (
+  <div className="absolute inset-0 z-0 overflow-hidden aspect-[16/9]">
+    <Swiper
+      modules={[Autoplay, Pagination]}
+      autoplay={{ delay: 5000, disableOnInteraction: false }}
+      pagination={{ clickable: true }}
+      loop
+      className="h-full w-full"
+    >
+      {SWIPER_IMAGES.map((img, idx) => (
+        <SwiperSlide key={idx}>
+          <div className="relative w-full h-full">
+            <img
+              src={img.src}
+              alt={img.legend}
+              className="w-full h-full object-cover object-center hero-zoom-image"
+            />
+            <div className="absolute bottom-0 left-0 w-full p-6 md:p-10">
+              <p className="text-white text-lg md:text-2xl font-semibold drop-shadow-lg max-w-2xl">{img.legend}</p>
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
+);
+
+const PartnerLogo = ({ partner }) => (
+  <div className="flex items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-md min-w-[80px] min-h-[80px] aspect-square hover:bg-gray-50 transition-all">
+    <img 
+      src={partner.logo} 
+      alt={`Logo ${partner.name}`} 
+      className="object-contain object-center w-full h-full"
+      style={{ background: '#fff' }}
+    />
+  </div>
+);
+
+const HeroSection = () => (
+  // pt-26 = 104px (hauteur Navbar), min-h-[calc(100vh-104px)] pour que la Hero soit toujours visible sous la Navbar
+  <section className="relative z-0 pt-[104px] min-h-[calc(100vh-104px)] flex items-center justify-center overflow-hidden pb-16 md:pb-32">
+    {/* Swiper super flow en fond (z-0) */}
+    <HeroSwiper />
+    {/* Overlay dégradé + blur (z-0) */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-transparent backdrop-blur-sm z-0" aria-hidden="true" />
+    {/* Contenu Hero (z-10) */}
+    <div className="relative z-10 container mx-auto px-6 py-24 flex flex-col items-center text-center max-w-3xl">
+      {/* Badge stylisé */}
+      <motion.span
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+        className="inline-flex items-center gap-2 px-5 py-2 bg-yellow-100/90 text-yellow-800 rounded-full text-base font-semibold mb-6 tracking-widest shadow-lg backdrop-blur-md border border-yellow-200"
+      >
+        <Sparkles className="h-5 w-5 text-yellow-500" />
+        Jeunesse & Impact
+      </motion.span>
+      {/* Titre avec effet gradient (doré, neutre, plus de bleu) */}
+      <motion.h1
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        className="text-4xl md:text-6xl font-extrabold mb-6 drop-shadow-lg bg-gradient-to-r from-yellow-400 via-white to-amber-500 text-transparent bg-clip-text"
+      >
+        Votre réussite professionnelle commence ici
+      </motion.h1>
+      {/* Sous-titre amélioré */}
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.7 }}
+        className="text-lg md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto"
+      >
+        Mosala, la plateforme qui connecte les jeunes du Congo à l'emploi, la formation et l'innovation.
+      </motion.p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Link to="/jobs">
+          <Button className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white font-bold px-8 py-3 rounded-full shadow-lg hover:from-yellow-500 hover:to-yellow-700 transition-all text-lg">
+            Découvrir les opportunités
+          </Button>
+        </Link>
+        <Link to="/formations">
+          <Button variant="outline" className="border-yellow-400 text-yellow-800 hover:bg-yellow-50 font-bold px-8 py-3 rounded-full shadow">
+            Voir les formations
+          </Button>
+        </Link>
+      </div>
+    </div>
+    {/* Séparateur SVG vague */}
+    <div className="absolute bottom-0 left-0 w-full z-30 pointer-events-none">
+      <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-16">
+        <path d="M0,0 C480,60 960,0 1440,60 L1440,0 L0,0 Z" fill="#fff" fillOpacity="1" />
+      </svg>
+    </div>
+  </section>
+);
+
+const Hero = () => (
+  <>
+    <HeroSection />
+    {/* ResultsSection sera désormais importé et utilisé ailleurs, après NotreMission */}
+  </>
+);
+
+export default Hero;

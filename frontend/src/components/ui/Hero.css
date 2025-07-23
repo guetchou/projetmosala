@@ -1,0 +1,131 @@
+/* Effet zoom progressif sur l'image du Hero Swiper */
+.hero-zoom-image {
+  animation: heroZoom 5s linear forwards;
+}
+
+@keyframes heroZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.12);
+  }
+}
+
+/* S'assurer que seule l'image du slide actif est animée */
+.swiper-slide:not(.swiper-slide-active) .hero-zoom-image {
+  animation: none !important;
+  transform: scale(1);
+} 
+
+/* Styles pour l'effet Glassmorphism du Hero */
+
+/* Animation de brillance pour l'effet verre */
+@keyframes glass-shine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Effet de profondeur glassmorphism */
+.glassmorphism-depth {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Animation de flottement pour les éléments glassmorphism */
+@keyframes glass-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.glass-float {
+  animation: glass-float 6s ease-in-out infinite;
+}
+
+/* Effet de bordure lumineuse */
+.glass-border-glow {
+  position: relative;
+}
+
+.glass-border-glow::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.3), 
+    rgba(255, 255, 255, 0.1), 
+    rgba(255, 255, 255, 0.3)
+  );
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-border-glow:hover::before {
+  opacity: 1;
+}
+
+/* Effet de texture de verre */
+.glass-texture {
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+/* Animation de transition pour les images de fond */
+.hero-background-transition {
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Effet de parallaxe subtil */
+.hero-parallax {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimisation des performances pour le glassmorphism */
+.glassmorphism-optimized {
+  will-change: backdrop-filter, transform;
+  transform: translateZ(0);
+}
+
+/* Responsive glassmorphism */
+@media (max-width: 768px) {
+  .glassmorphism-depth {
+    backdrop-filter: blur(15px);
+  }
+}
+
+/* Dark mode pour glassmorphism */
+@media (prefers-color-scheme: dark) {
+  .glassmorphism-depth {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.03) 50%,
+      rgba(255, 255, 255, 0.08) 100%
+    );
+  }
+} 

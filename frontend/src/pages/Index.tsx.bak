@@ -1,0 +1,135 @@
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/ui/Hero";
+import Mission from "@/components/Mission";
+import Features from "@/components/Features";
+import ResultsSection from "@/components/ui/ResultsSection";
+import Testimonials from "@/components/Testimonials";
+import Newsletter from "@/components/Newsletter";
+import CaravaneMosala from "@/components/CaravaneMosala";
+import Footer from "@/components/Footer";
+import { Separator } from "@/components/ui/separator";
+import ActualitesSection from "@/components/ActualitesSection";
+import PartnerSlider from "@/components/ui/PartnerSlider";
+import { useRef, useEffect, useState } from "react";
+
+/*
+  -----------------------------------------------------------------------------
+  MOSALA UI PATTERN : UNIFICATION NAVBAR + HERO (PAGE ACCUEIL)
+  -----------------------------------------------------------------------------
+  Ce fichier applique le modèle Mosala pour unifier l'arrière-plan de la navbar
+  et du Hero (carrousel d'images en haut de page) :
+
+  - Le background (couleur ou gradient) est appliqué sur le container principal
+    (div parent), qui englobe la navbar et le Hero.
+  - La Navbar est rendue en bg-transparent, sans bordure ni ombre basse.
+  - La section Hero n'a pas de background propre : elle hérite du parent.
+  - Résultat : la transition visuelle entre la navbar et le Hero est parfaitement
+    fluide, sans coupure ni différence de couleur.
+
+  Pattern recommandé pour toutes les pages Mosala avec Hero visuel.
+  -----------------------------------------------------------------------------
+*/
+const Index = () => {
+  const navbarRef = useRef<HTMLElement>(null);
+  const [navbarHeight, setNavbarHeight] = useState(0);
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      setNavbarHeight(navbarRef.current.offsetHeight);
+    }
+    const handleResize = () => {
+      if (navbarRef.current) {
+        setNavbarHeight(navbarRef.current.offsetHeight);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <div
+      className="min-h-screen text-gray-900 font-sans"
+      style={{
+        paddingTop: navbarHeight,
+        background: "linear-gradient(90deg, #FFFBEA 0%, #FFF6B3 100%)"
+      }}
+    >
+      {/* Navbar institutionnelle */}
+      <Navbar ref={navbarRef} className="bg-transparent border-0 shadow-none" />
+
+      {/* HERO UNESCO-STYLE */}
+      <Hero />
+
+      {/* SECTION ACTUALITÉS - SECTION PRINCIPALE */}
+      <ActualitesSection />
+
+      {/* SECTION PARTENAIRES INSTITUTIONNELS - MISE EN AVANT */}
+      <PartnerSlider />
+
+      {/* Séparateur décoratif SVG */}
+      <Separator className="my-0 h-4 bg-gradient-to-r from-[#0077C8]/10 via-[#FFD500]/10 to-[#0077C8]/10 border-0" />
+
+      {/* SECTION MISSION (badge, titre, texte, illustration) */}
+      <section className="bg-[#F5F7FA] py-20">
+        <Mission />
+      </section>
+
+      {/* Séparateur décoratif SVG */}
+      <Separator className="my-0 h-4 bg-gradient-to-r from-[#FFD500]/10 via-[#0077C8]/10 to-[#FFD500]/10 border-0" />
+
+      {/* SECTION ACTIONS/SERVICES (grille de cartes, badges, icônes) */}
+      <section className="bg-white py-20">
+        <div className="container mx-auto px-4">
+          <span className="inline-block px-4 py-2 bg-[#0077C8]/10 text-[#0077C8] rounded-full text-sm font-semibold mb-8 tracking-widest shadow">
+            Nos Actions
+          </span>
+          <Features />
+        </div>
+      </section>
+
+      {/* Séparateur décoratif SVG */}
+      <Separator className="my-0 h-4 bg-gradient-to-r from-[#0077C8]/10 via-[#FFD500]/10 to-[#0077C8]/10 border-0" />
+
+      {/* SECTION CHIFFRES CLÉS / IMPACT */}
+      <section className="bg-[#F5F7FA] py-20">
+        <ResultsSection />
+      </section>
+
+      {/* Séparateur décoratif SVG */}
+      <Separator className="my-0 h-4 bg-gradient-to-r from-[#FFD500]/10 via-[#0077C8]/10 to-[#FFD500]/10 border-0" />
+
+      {/* SECTION TÉMOIGNAGES */}
+      <section className="bg-white py-20">
+        <div className="container mx-auto px-4">
+          <span className="inline-block px-4 py-2 bg-[#FFD500]/20 text-[#B8860B] rounded-full text-sm font-semibold mb-8 tracking-widest shadow">
+            Témoignages
+          </span>
+          <Testimonials />
+        </div>
+      </section>
+
+      {/* Séparateur décoratif SVG */}
+      <Separator className="my-0 h-4 bg-gradient-to-r from-[#0077C8]/10 via-[#FFD500]/10 to-[#0077C8]/10 border-0" />
+
+      {/* SECTION CARAVANE MOSALA (événementiel, institutionnel UNESCO) */}
+      <section className="bg-[#F5F7FA] py-20">
+        <CaravaneMosala />
+      </section>
+
+      {/* SECTION NEWSLETTER */}
+      <section className="bg-white py-20">
+        <div className="container mx-auto px-4">
+          <span className="inline-block px-4 py-2 bg-[#0077C8]/10 text-[#0077C8] rounded-full text-sm font-semibold mb-8 tracking-widest shadow">
+            Restez informé
+          </span>
+          <Newsletter />
+        </div>
+      </section>
+
+      {/* FOOTER institutionnel */}
+      <Footer />
+    </div>
+  );
+};
+
+export default Index;

@@ -30,6 +30,45 @@ services:
     networks:
       - mosala-net
 
+  backend-nestjs:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mosala-backend-nestjs
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=mosala
+      - PORT=4002
+    depends_on:
+      - postgres
+    ports:
+      - "4002:4002"
+    networks:
+      - mosala-net
+
+  strapi:
+    image: node:20
+    container_name: mosala-strapi
+    working_dir: /app
+    volumes:
+      - ./mosala-cms:/app
+      - ./mosala-cms/.tmp:/app/.tmp
+      - ./mosala-cms/public/uploads:/app/public/uploads
+    command: sh -c "npm install && npm run develop"
+    ports:
+      - "1337:1337"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - PORT=1337
+    depends_on:
+      - db
+    networks:
+      - mosala-net
+
   db:
     image: mysql:8.0
     container_name: mosala-db
@@ -46,8 +85,24 @@ services:
     networks:
       - mosala-net
 
+  postgres:
+    image: postgres:15
+    container_name: mosala-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mosala
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - mosala-net
+
 volumes:
   db_data:
+  pg_data:
 
 networks:
   mosala-net:

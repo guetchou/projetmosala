@@ -1,4 +1,0 @@
-[
-  { "id": 1, "message": "Nouvelle offre d'emploi disponible !", "read": false },
-  { "id": 2, "message": "Votre candidature a été vue.", "read": true }
-] 

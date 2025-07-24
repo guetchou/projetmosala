@@ -1,3 +1,3 @@
 # Mosala API
 
-API FastAPI pour la plateforme Mosala.
+API FastAPI pour la Projet  Mosala.

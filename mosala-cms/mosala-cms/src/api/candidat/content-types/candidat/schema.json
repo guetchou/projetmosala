@@ -1,0 +1,20 @@
+{
+  "collectionName": "candidats",
+  "info": {
+    "singularName": "candidat",
+    "pluralName": "candidats",
+    "displayName": "Candidat"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "prenom": { "type": "string", "required": true },
+    "nom": { "type": "string", "required": true },
+    "photo": { "type": "media", "multiple": false },
+    "bio": { "type": "text" },
+    "competences": { "type": "string" },
+    "email": { "type": "email" },
+    "telephone": { "type": "string" }
+  }
+}

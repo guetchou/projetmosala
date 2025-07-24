@@ -1,0 +1,19 @@
+{
+  "collectionName": "formations",
+  "info": {
+    "singularName": "formation",
+    "pluralName": "formations",
+    "displayName": "Formation"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titre": { "type": "string", "required": true },
+    "description": { "type": "richtext" },
+    "image": { "type": "media", "multiple": false },
+    "date": { "type": "date" },
+    "lieu": { "type": "string" },
+    "prix": { "type": "decimal" }
+  }
+}

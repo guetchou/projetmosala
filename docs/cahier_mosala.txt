@@ -1,0 +1,151 @@
+Cahier des Charges pour la
+Projet  MOSALA
+
+2
+
+Objectif Principal :
+La Projet  Mosala vise à :
+▪
+▪
+
+Démocratiser l'accès à la formation pour le grand public.
+Offrir un espace en ligne permettant aux citoyens d’accéder facilement à des informations fiables sur
+l’emploi et la formation.
+
+▪
+
+Faciliter la participation à la caravane de formation Mosala.
+
+Public Cible :
+La Projet  s’adresse à :
+▪
+
+Les étudiants cherchant à enrichir leurs compétences.
+
+▪
+
+Les personnes en recherche d’emploi souhaitant des ressources fiables et une mise en relation
+avec des opportunités.
+
+▪
+
+Les citoyens avides de connaissances dans des secteurs divers.
+
+Fonctionnalités Principales :
+O Design Responsive :
+▪ Les étudiants cherchant à enrichir leurs compétences.
+▪ Les personnes en recherche d’emploi souhaitant des ressources fiables et une mise en
+relation avec des opportunités.
+▪ Les citoyens avides de connaissances dans des secteurs divers.
+o
+
+Moteur de Recherche Intelligent :
+▪ Capacité à interpréter les intentions des utilisateurs, au-delà des mots-clés.
+▪ Suggestions personnalisées pour optimiser les résultats de recherche.
+
+3
+o
+
+Formulaire de Demande :
+▪ Intégration d’un formulaire convivial pour :
+▪ Soumettre des questions.
+▪ Proposer des suggestions.
+▪ Solliciter une assistance spécifique.
+
+o
+
+Chatbot Assistant 24/7 :
+▪ Assistance virtuelle accessible à toute heure.
+▪
+
+o
+
+FAQ Dynamique :
+▪ Base de connaissances enrichie en temps réel grâce aux questions fréquentes des
+utilisateurs.
+▪
+
+o
+
+Capacité à guider les utilisateurs et à répondre à des questions précises.
+
+Organisation claire par thématique pour faciliter l’accès aux réponses.
+
+Système d'Abonnement Personnalisé :
+▪ Notifications adaptées aux préférences des utilisateurs.
+▪
+
+Mises à jour régulières sur les sujets d’intérêt.
+
+Spécifications Techniques :
+O Langages et Frameworks :
+▪ Frontend : HTML5, CSS3, JavaScript (React.js).
+▪
+
+Backend : Node.js ou Python (Django/Flask).
+
+▪
+
+Base de données : MySQL ou MongoDB.
+
+O Intégrations Externes :
+▪ API pour le chatbot.
+▪
+
+Module de paiement pour éventuels services premium.
+
+▪
+
+Intégration des services d’e-mailing pour les notifications.
+
+O Hébergement :
+▪ API Infrastructure cloud scalable (AWS, Google Cloud ou Azure).
+▪ Sécurisation des données utilisateur (SSL, systèmes anti-intrusion).
+
+4
+
+Phases de Réalisation :
+Mois
+
+Étapes Clés
+
+Détails des Activités
+
+1
+
+Analyse et Conception
+
+-
+
+Mobilisation des Réunion de cadrage avec le client.
+Analyse des besoins spécifiques et élaboration de maquettes
+UX/UI.
+
+2
+
+Développement
+
+-
+
+Mise en place des différents modules fonctionnels
+Tests unitaires et intégrés pour chaque fonctionnalité.
+
+3
+
+Tests et Optimisation
+
+-
+
+Tests de performance et de sécurité.
+Recueil des retours des utilisateurs pilotes.
+
+4-5
+
+Lancement et Support
+
+-
+
+Mise en ligne officielle.
+Support technique continu pour les utilisateurs.
+
+

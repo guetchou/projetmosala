@@ -74,7 +74,7 @@ const InteractiveMap3D: React.FC = () => {
         <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
           <circle cx="15" cy="15" r="12" fill="${colors[type]}" stroke="white" stroke-width="2"/>
           <text x="15" y="20" text-anchor="middle" fill="white" font-size="12" font-weight="bold">
-            ${type === 'job' ? '💼' : type === 'formation' ? '🎓' : '🏢'}
+            ${type === 'job' ? 'Emploi' : type === 'formation' ? 'Formation' : 'Entreprise'}
           </text>
         </svg>
       `)}`,
@@ -111,7 +111,7 @@ const InteractiveMap3D: React.FC = () => {
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
-              💼 Emplois
+              Emplois
             </button>
             <button
               onClick={() => setSelectedType('formation')}
@@ -121,7 +121,7 @@ const InteractiveMap3D: React.FC = () => {
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
-              🎓 Formations
+              Formations
             </button>
             <button
               onClick={() => setSelectedType('service')}
@@ -131,13 +131,13 @@ const InteractiveMap3D: React.FC = () => {
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
-              🏢 Services
+              Services
             </button>
           </div>
           
           {userLocation && (
             <div className="text-sm text-gray-600">
-              📍 Votre position détectée
+              Votre position détectée
             </div>
           )}
         </div>
@@ -166,7 +166,6 @@ const InteractiveMap3D: React.FC = () => {
             <Marker position={userLocation}>
               <Popup>
                 <div className="text-center">
-                  <div className="text-lg">📍</div>
                   <div className="font-semibold">Votre position</div>
                 </div>
               </Popup>
@@ -192,7 +191,7 @@ const InteractiveMap3D: React.FC = () => {
                     {item.salary && (
                       <div className="mb-2">
                         <span className="font-semibold text-[#7ED9A7]">
-                          💰 Salaire :
+                          Salaire :
                         </span>
                         <span className="text-sm ml-2">{item.salary}</span>
                       </div>
@@ -201,7 +200,7 @@ const InteractiveMap3D: React.FC = () => {
                     {item.duration && (
                       <div className="mb-2">
                         <span className="font-semibold text-[#FFD93D]">
-                          ⏱️ Durée :
+                          Durée :
                         </span>
                         <span className="text-sm ml-2">{item.duration}</span>
                       </div>

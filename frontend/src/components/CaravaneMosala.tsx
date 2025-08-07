@@ -1,164 +1,181 @@
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Users, Calendar, Quote, CheckCircle, TrendingUp, Award } from "lucide-react";
+import React from 'react';
 
-const CaravaneMosala = () => {
-  const bilan = [
-    { 
-      title: "10,000+ participants", 
-      description: "jeunes sensibilisés",
-      icon: Users,
-      color: "text-[var(--color-mosala-green-600)]"
+const CaravaneMosala: React.FC = () => {
+  const caravaneData = {
+    period: "Octobre – Novembre 2024",
+    cities: ["Brazzaville", "Ouesso", "Dolisie", "Pointe-Noire"],
+    stats: {
+      totalEnrolled: 2449,
+      totalVisitors: 6600,
+      disabledPersons: 46,
+      workshopParticipants: 667,
+      qualifiedTrainingDemands: 1708,
+      neets: 1514,
+      jobSeekers: 712,
+      exhibitors: 90,
+      newTrainingOperators: 21,
+      targetedJobs: 280,
+      jobOffers: 32
     },
-    { 
-      title: "2,000+ jeunes formés", 
-      description: "compétences développées",
-      icon: Award,
-      color: "text-[var(--color-mosala-yellow-600)]"
-    },
-    { 
-      title: "6 villes visitées", 
-      description: "Brazzaville, Pointe-Noire, Ouesso, Dolisie, Owando, Makoua",
-      icon: MapPin,
-      color: "text-[var(--color-mosala-orange-600)]"
-    },
-    { 
-      title: "92% de satisfaction", 
-      description: "évaluation des participants",
-      icon: TrendingUp,
-      color: "text-[var(--color-mosala-green-700)]"
-    }
-  ];
-
-  const temoignages = [
-    {
-      quote: "Grâce à l'atelier CV à Pointe-Noire, j'ai appris à mettre en avant mes compétences numériques — j'ai obtenu un stage dès la semaine suivante !",
-      author: "Stéphanie",
-      ville: "Pointe-Noire",
-      age: "22 ans"
-    },
-    {
-      quote: "La simulation d'entretien m'a permis de gagner en confiance. Le coach RH m'a donné des astuces concrètes pour répondre aux questions difficiles.",
-      author: "Bertrand",
-      ville: "Brazzaville",
-      age: "25 ans"
-    },
-    {
-      quote: "J'étais sceptique sur l'utilisation d'une plateforme digitale, mais l'équipe Mosala m'a montré que c'était simple et efficace, même avec une connexion bas débit.",
-      author: "Rose",
-      ville: "Owando",
-      age: "28 ans"
-    }
-  ];
+    results: [
+      "20 jeunes recrutés par CONGO TELECOM à OUESSO",
+      "Discussions en cours avec OLAM, CONGO TELECOM, NOKI NOKI, YA DII",
+      "Base de données de demandeurs de formation disponible",
+      "Enrôlement aux niveaux des CEFA et autres centres de formations privés",
+      "Identification de 700 jeunes entrepreneurs à Dolisie",
+      "Centre de formation dédié aux jeunes en situation de handicap (30 jeunes)"
+    ],
+    requestedFormations: [
+      { name: "ENTREPRENARIAT", percentage: 35 },
+      { name: "LOGISTIQUE", percentage: 25 },
+      { name: "NUMERIQUE", percentage: 20 },
+      { name: "BTP", percentage: 20 }
+    ]
+  };
 
   return (
-    <section className="py-12 bg-gradient-to-br from-[var(--color-mosala-green-50)] to-[var(--color-mosala-yellow-50)]">
+    <section className="py-20 bg-gradient-to-br from-green-50 via-white to-blue-50">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8"
-        >
-          <span className="inline-block px-4 py-2 bg-[var(--color-mosala-green-100)] text-[var(--color-mosala-green-700)] rounded-full text-sm font-semibold mb-4 border border-[var(--color-mosala-green-300)]">
-            Événement Terminé
-          </span>
-          <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-mosala-dark-700)] mb-4">
-            Bilan de la Caravane Mosala 2024
-          </h2>
-          <p className="text-base md:text-lg text-[var(--color-mosala-dark-300)] max-w-3xl mx-auto">
-            Retour sur notre tournée itinérante à travers les provinces du Congo : 
-            sensibilisation, formation et création de liens entre institutions et communautés.
-          </p>
-        </motion.div>
-
-        {/* Bilan chiffré */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
-        >
-          {bilan.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="bg-[var(--color-mosala-white)] p-4 rounded-xl border-2 border-[var(--color-mosala-green-300)] shadow-lg hover:shadow-xl transition-all text-center"
-            >
-              <item.icon className={`h-8 w-8 ${item.color} mx-auto mb-3`} />
-              <div className="text-lg font-bold text-[var(--color-mosala-dark-700)] mb-1">{item.title}</div>
-              <p className="text-[var(--color-mosala-dark-300)] text-xs">{item.description}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Témoignages */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
-          <h3 className="text-xl font-bold text-[var(--color-mosala-dark-700)] mb-6 text-center">
-            Témoignages des participants
-          </h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            {temoignages.map((temoignage, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-[var(--color-mosala-white)] p-4 rounded-lg shadow-lg border-2 border-[var(--color-mosala-green-200)]"
-              >
-                <Quote className="h-6 w-6 text-[var(--color-mosala-yellow-500)] mb-3" />
-                <p className="text-sm text-[var(--color-mosala-dark-300)] mb-3 italic">"{temoignage.quote}"</p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold text-sm text-[var(--color-mosala-dark-700)]">{temoignage.author}</p>
-                    <p className="text-xs text-[var(--color-mosala-dark-300)]">{temoignage.ville} • {temoignage.age}</p>
-                  </div>
-                  <CheckCircle className="h-4 w-4 text-[var(--color-mosala-green-500)]" />
-                </div>
-              </motion.div>
-            ))}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold mb-6">
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            Caravane Itinérante
           </div>
-        </motion.div>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Caravane Mosala
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-4">
+            {caravaneData.period} - {caravaneData.cities.join(", ")}
+          </p>
+          <p className="text-lg text-gray-500">
+            Village de l'emploi itinérant dans 4 villes du Congo
+          </p>
+        </div>
 
-        {/* Call to action */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <div className="bg-[var(--color-mosala-white)] p-6 rounded-xl shadow-lg border-2 border-[var(--color-mosala-green-200)] max-w-2xl mx-auto">
-            <h3 className="text-xl font-bold text-[var(--color-mosala-dark-700)] mb-3">
-              Prochaines étapes
-            </h3>
-            <p className="text-sm text-[var(--color-mosala-dark-300)] mb-4">
-              La Caravane Mosala a posé les bases. Découvrez nos programmes continus 
-              et nos prochains événements pour continuer votre développement professionnel.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button className="bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-[var(--color-mosala-white)] font-bold shadow hover:from-[var(--color-mosala-green-600)] hover:to-[var(--color-mosala-yellow-600)] transition-all border-2 border-[var(--color-mosala-green-500)]">
-                Voir nos formations
-              </Button>
-              <Button variant="outline" className="border-2 border-[var(--color-mosala-green-500)] text-[var(--color-mosala-green-700)] hover:bg-[var(--color-mosala-green-50)]">
-                Prochains événements
-              </Button>
+        {/* Statistiques principales */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 text-center">
+            <div className="text-3xl font-bold text-blue-600 mb-2">{caravaneData.stats.totalEnrolled.toLocaleString()}</div>
+            <div className="text-gray-600 font-medium">Jeunes enrôlés</div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 text-center">
+            <div className="text-3xl font-bold text-green-600 mb-2">{caravaneData.stats.totalVisitors.toLocaleString()}</div>
+            <div className="text-gray-600 font-medium">Visiteurs</div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 text-center">
+            <div className="text-3xl font-bold text-purple-600 mb-2">{caravaneData.stats.qualifiedTrainingDemands.toLocaleString()}</div>
+            <div className="text-gray-600 font-medium">Demandes de formation</div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 text-center">
+            <div className="text-3xl font-bold text-orange-600 mb-2">{caravaneData.stats.jobOffers}</div>
+            <div className="text-gray-600 font-medium">Offres d'emploi</div>
+          </div>
+        </div>
+
+        {/* Détails par ville */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Objectifs atteints</h3>
+            <div className="space-y-4">
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span className="text-gray-700">Village de l'emploi installé dans 4 villes</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span className="text-gray-700">Identification des besoins en accompagnement</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span className="text-gray-700">Ateliers Techniques de recherche d'emploi</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span className="text-gray-700">Base de données entreprises par ville</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span className="text-gray-700">Visibilité nationale (TV, presse, radio)</span>
+              </div>
             </div>
           </div>
-        </motion.div>
+
+          <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Résultats concrets</h3>
+            <div className="space-y-4">
+              {caravaneData.results.map((result, idx) => (
+                <div key={idx} className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2"></div>
+                  <span className="text-gray-700 text-sm">{result}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Formations demandées */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-16">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Formations les plus demandées</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {caravaneData.requestedFormations.map((formation, idx) => (
+              <div key={idx} className="text-center">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                     style={{ backgroundColor: idx === 0 ? '#10B981' : idx === 1 ? '#3B82F6' : idx === 2 ? '#8B5CF6' : '#F59E0B' }}>
+                  {formation.percentage}%
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">{formation.name}</h4>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="h-2 rounded-full transition-all duration-1000 ease-out" 
+                    style={{ 
+                      width: `${formation.percentage}%`, 
+                      backgroundColor: idx === 0 ? '#10B981' : idx === 1 ? '#3B82F6' : idx === 2 ? '#8B5CF6' : '#F59E0B'
+                    }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Recommandations */}
+        <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl p-8 border border-blue-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">Recommandations pour l'avenir</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Renforcer les interactions avec les entreprises</span>
+              </div>
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Accentuer la communication orientée genre</span>
+              </div>
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Démarrer rapidement les formations qualifiantes</span>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Reproduire ce type d'initiatives</span>
+              </div>
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Renforcer les synergies public-privé</span>
+              </div>
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Accompagnement socio-professionnel adéquat</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

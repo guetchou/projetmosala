@@ -151,11 +151,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
                     {location.description}
                   </p>
                   <p className="text-sm text-gray-500 mb-2">
-                    📍 {location.address}
+                    {location.address}
                   </p>
                   {location.contact && (
                     <p className="text-sm text-gray-500 mb-1">
-                      📞 {location.contact}
+                      {location.contact}
                     </p>
                   )}
                   {location.website && (
@@ -165,7 +165,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
                       rel="noopener noreferrer"
                       className="text-sm text-[#7ED9A7] hover:underline"
                     >
-                      🌐 Visiter le site
+                      Visiter le site
                     </a>
                   )}
                 </div>

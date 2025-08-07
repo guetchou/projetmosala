@@ -1,8 +1,11 @@
 
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
+import OptimizedImage from "@/components/ui/OptimizedImage";
+import { motion, useReducedMotion } from "framer-motion";
 import { Users, Award, Globe, Shield, Heart, Briefcase, CheckCircle } from "lucide-react";
+import { useEffect } from "react";
 
 const team = [
   { name: "Jean Mosala", role: "Directeur de projet", avatar: "/topcenter-uploads/avatars/jean-mosala.png" },
@@ -21,130 +24,278 @@ const partners = [
 ];
 
 const values = [
-  { icon: <Heart className="h-7 w-7 text-[#fa496e]" />, title: "Inclusion", desc: "Favoriser l’accès à l’emploi pour tous, sans discrimination." },
-  { icon: <Award className="h-7 w-7 text-[#2fdab8]" />, title: "Excellence", desc: "Former et accompagner avec exigence et bienveillance." },
-  { icon: <Shield className="h-7 w-7 text-[#6476f3]" />, title: "Sécurité & RGPD", desc: "Respect total de la vie privée, conformité RGPD, sécurité des données." },
-  { icon: <Globe className="h-7 w-7 text-[#ff7844]" />, title: "Ouverture", desc: "S’inspirer des meilleures pratiques européennes et africaines." },
-  { icon: <CheckCircle className="h-7 w-7 text-[#BFFF00]" />, title: "Transparence", desc: "Information claire, traçabilité, éthique dans toutes nos actions." },
+  { icon: <Heart className="h-6 w-6 text-[#fa496e]" />, title: "Inclusion", desc: "Favoriser l'accès à l'emploi pour tous, sans discrimination." },
+  { icon: <Award className="h-6 w-6 text-[#2fdab8]" />, title: "Excellence", desc: "Former et accompagner avec exigence et bienveillance." },
+  { icon: <Shield className="h-6 w-6 text-[#6476f3]" />, title: "Sécurité & RGPD", desc: "Respect total de la vie privée, conformité RGPD, sécurité des données." },
+  { icon: <Globe className="h-6 w-6 text-[#ff7844]" />, title: "Ouverture", desc: "S'inspirer des meilleures pratiques européennes et africaines." },
+  { icon: <CheckCircle className="h-6 w-6 text-[#BFFF00]" />, title: "Transparence", desc: "Information claire, traçabilité, éthique dans toutes nos actions." },
 ];
 
-const About = () => (
-  <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--color-mosala-green-50)] via-[var(--color-mosala-yellow-50)] to-[var(--color-mosala-dark-50)]">
-    <Navbar />
-    <main className="flex-1 container mx-auto px-4 py-12 max-w-5xl">
-      {/* Header éditorial */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-12"
-      >
-        <div className="flex justify-center mb-6">
-          <div className="bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] p-4 rounded-full">
-            <Users className="h-8 w-8 text-[var(--color-mosala-white)]" />
+// Composant pour injecter les données structurées JSON-LD
+const StructuredData = () => {
+  useEffect(() => {
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Mosala",
+      "description": "Projet d'insertion professionnelle financé par l'AFD et l'Union Européenne, dédié à la jeunesse congolaise",
+      "url": "https://mosala.cg",
+      "logo": "https://mosala.cg/topcenter-uploads/Logo-Mosala/logo-mosala1.png",
+      "foundingDate": "2024",
+      "location": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "CG",
+          "addressRegion": "Brazzaville"
+        }
+      },
+      "sameAs": [
+        "https://www.afd.fr",
+        "https://europa.eu"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Services d'insertion professionnelle",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Formation professionnelle",
+              "description": "Formations certifiantes et coaching pour les jeunes"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Accompagnement à l'emploi",
+              "description": "Mise en relation avec les employeurs"
+            }
+          }
+        ]
+      },
+      "employee": team.map(member => ({
+        "@type": "Person",
+        "name": member.name,
+        "jobTitle": member.role
+      }))
+    };
+
+    // Supprimer l'ancien script s'il existe
+    const existingScript = document.querySelector('script[data-structured-data="mosala"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Créer et injecter le nouveau script
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-structured-data', 'mosala');
+    script.textContent = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+
+    // Nettoyer lors du démontage
+    return () => {
+      const scriptToRemove = document.querySelector('script[data-structured-data="mosala"]');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
+    };
+  }, []);
+
+  return null;
+};
+
+const About = () => {
+  const shouldReduceMotion = useReducedMotion();
+
+  // Configuration des animations respectant les préférences utilisateur
+  const animationConfig = {
+    initial: shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: shouldReduceMotion ? { duration: 0.1 } : { duration: 0.6 }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--color-mosala-green-50)] via-[var(--color-mosala-yellow-50)] to-[var(--color-mosala-dark-50)]">
+      <StructuredData />
+      <Navbar />
+      <main className="flex-1 container mx-auto px-4 pt-24 md:pt-32 max-w-6xl">
+        {/* Header éditorial */}
+        <motion.div
+          {...animationConfig}
+          className="text-center mb-16"
+        >
+          <div className="flex justify-center mb-8">
+            <div className="bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] p-6 rounded-2xl shadow-lg">
+              <Users className="h-10 w-10 text-[var(--color-mosala-white)]" />
+            </div>
           </div>
-        </div>
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-transparent bg-clip-text">À propos de Mosala</h1>
-        <p className="text-lg text-[var(--color-mosala-dark-600)] max-w-2xl mx-auto">
-          Mosala est un projet d’insertion professionnelle financé par l’AFD et l’Union Européenne, dédié à la jeunesse congolaise. Notre mission : accompagner chaque jeune vers l’emploi durable, l’autonomie et l’excellence, dans le respect des normes européennes et de l’inclusion.
-        </p>
-      </motion.div>
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-transparent bg-clip-text leading-tight">
+            À propos de Mosala
+          </h1>
+          <p className="text-xl text-[var(--color-mosala-dark-600)] max-w-3xl mx-auto leading-relaxed">
+            Mosala est un projet d'insertion professionnelle financé par l'AFD et l'Union Européenne, dédié à la jeunesse congolaise. Notre mission : accompagner chaque jeune vers l'emploi durable, l'autonomie et l'excellence, dans le respect des normes européennes et de l'inclusion.
+          </p>
+        </motion.div>
 
-      {/* Mission */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.6 }}
-        className="mb-12 bg-[var(--color-mosala-white)]/90 backdrop-blur-xl rounded-2xl p-8 shadow-lg border border-[var(--color-mosala-green-100)]"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-[var(--color-mosala-dark-900)] flex items-center gap-2"><Briefcase className="h-6 w-6 text-[#2fdab8]" /> Notre mission</h2>
-        <p className="text-[var(--color-mosala-dark-700)] mb-2">
-          Offrir à chaque jeune du Congo les moyens de réussir professionnellement, grâce à des formations innovantes, un accompagnement personnalisé, et une mise en relation directe avec les employeurs.
-        </p>
-        <ul className="list-disc list-inside text-[var(--color-mosala-dark-600)] ml-6 mt-2">
-          <li>Caravane itinérante dans 6 villes</li>
-          <li>Formations certifiantes et coaching</li>
-          <li>Plateforme digitale accessible et sécurisée</li>
-          <li>Accompagnement à l’entrepreneuriat</li>
-        </ul>
-      </motion.section>
+        {/* Mission */}
+        <motion.section
+          {...animationConfig}
+          transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.1 }}
+          className="mb-16 bg-[var(--color-mosala-white)]/95 backdrop-blur-xl rounded-3xl p-10 shadow-xl border border-[var(--color-mosala-green-100)]"
+        >
+          <h2 className="text-3xl font-bold mb-6 text-[var(--color-mosala-dark-900)] flex items-center gap-3">
+            <Briefcase className="h-8 w-8 text-[#2fdab8]" />
+            Notre mission
+          </h2>
+          <p className="text-lg text-[var(--color-mosala-dark-700)] mb-6 leading-relaxed">
+            Offrir à chaque jeune du Congo les moyens de réussir professionnellement, grâce à des formations innovantes, un accompagnement personnalisé, et une mise en relation directe avec les employeurs.
+          </p>
+          <ul className="list-none space-y-3">
+            {[
+              "Caravane itinérante dans 6 villes",
+              "Formations certifiantes et coaching",
+              "Plateforme digitale accessible et sécurisée",
+              "Accompagnement à l'entrepreneuriat"
+            ].map((item, index) => (
+              <li key={index} className="flex items-center gap-3 text-[var(--color-mosala-dark-600)]">
+                <div className="w-2 h-2 bg-[#2fdab8] rounded-full flex-shrink-0"></div>
+                <span className="text-lg">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.section>
 
-      {/* Valeurs */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        className="mb-12"
-      >
-        <h2 className="text-2xl font-bold mb-8 text-[var(--color-mosala-dark-900)] flex items-center gap-2"><Heart className="h-6 w-6 text-[#fa496e]" /> Nos valeurs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {values.map((v, i) => (
-            <div key={i} className="bg-[var(--color-mosala-white)]/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-[var(--color-mosala-green-100)] flex flex-col items-center text-center">
-              {v.icon}
-              <h3 className="font-bold text-lg mt-3 mb-2 text-[var(--color-mosala-dark-900)]">{v.title}</h3>
-              <p className="text-[var(--color-mosala-dark-600)]">{v.desc}</p>
-            </div>
-          ))}
-        </div>
-      </motion.section>
+        {/* Valeurs */}
+        <motion.section
+          {...animationConfig}
+          transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.2 }}
+          className="mb-16"
+        >
+          <h2 className="text-3xl font-bold mb-12 text-[var(--color-mosala-dark-900)] flex items-center gap-3 justify-center">
+            <Heart className="h-8 w-8 text-[#fa496e]" />
+            Nos valeurs
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {values.map((v, i) => (
+              <motion.div 
+                key={i} 
+                {...animationConfig}
+                transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.2 + i * 0.1 }}
+                className="bg-[var(--color-mosala-white)]/90 backdrop-blur-xl rounded-2xl p-8 shadow-lg border border-[var(--color-mosala-green-100)] hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  {v.icon}
+                  <h3 className="font-bold text-xl text-[var(--color-mosala-dark-900)]">{v.title}</h3>
+                </div>
+                <p className="text-[var(--color-mosala-dark-600)] leading-relaxed">{v.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
 
-      {/* Équipe */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-        className="mb-12"
-      >
-        <h2 className="text-2xl font-bold mb-8 text-[var(--color-mosala-dark-900)] flex items-center gap-2"><Users className="h-6 w-6 text-[#6476f3]" /> L’équipe Mosala</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {team.map((m, i) => (
-            <div key={i} className="bg-[var(--color-mosala-white)]/80 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-[var(--color-mosala-green-100)] flex flex-col items-center text-center">
-              <img src={m.avatar} alt={m.name} className="w-20 h-20 rounded-full mb-3 border-4 border-white shadow" />
-              <h3 className="font-bold text-lg text-[var(--color-mosala-dark-900)] mb-1">{m.name}</h3>
-              <div className="text-sm text-[var(--color-mosala-dark-600)]">{m.role}</div>
-            </div>
-          ))}
-        </div>
-      </motion.section>
+        {/* Équipe */}
+        <motion.section
+          {...animationConfig}
+          transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.3 }}
+          className="mb-16"
+        >
+          <h2 className="text-3xl font-bold mb-12 text-[var(--color-mosala-dark-900)] flex items-center gap-3 justify-center">
+            <Users className="h-8 w-8 text-[#6476f3]" />
+            L'équipe Mosala
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+            {team.map((m, i) => (
+              <motion.div 
+                key={i} 
+                {...animationConfig}
+                transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.3 + i * 0.1 }}
+                className="bg-[var(--color-mosala-white)]/90 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-[var(--color-mosala-green-100)] hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                <OptimizedImage 
+                  src={m.avatar} 
+                  alt={`Photo de ${m.name}`} 
+                  className="w-24 h-24 rounded-full mb-4 border-4 border-white shadow-lg mx-auto"
+                  fallback="/topcenter-uploads/avatars/default-avatar.svg"
+                  width={96}
+                  height={96}
+                />
+                <h3 className="font-bold text-lg text-[var(--color-mosala-dark-900)] mb-2 text-center">{m.name}</h3>
+                <div className="text-sm text-[var(--color-mosala-dark-600)] text-center">{m.role}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
 
-      {/* Partenaires */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.6 }}
-        className="mb-12"
-      >
-        <h2 className="text-2xl font-bold mb-8 text-[var(--color-mosala-dark-900)] flex items-center gap-2"><Globe className="h-6 w-6 text-[#ff7844]" /> Nos partenaires</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 items-center justify-center">
-          {partners.map((p, idx) => (
-            <a key={idx} href={p.url} target="_blank" rel="noopener noreferrer" className="bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center transition hover:scale-105 hover:shadow-lg group">
-              <img src={p.logo} alt={p.name} className="max-h-12 w-auto object-contain mb-2" />
-              <span className="text-xs text-[#22304a] font-semibold group-hover:text-[#6476f3] transition">{p.name}</span>
-            </a>
-          ))}
-        </div>
-      </motion.section>
+        {/* Partenaires */}
+        <motion.section
+          {...animationConfig}
+          transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.4 }}
+          className="mb-16"
+        >
+          <h2 className="text-3xl font-bold mb-12 text-[var(--color-mosala-dark-900)] flex items-center gap-3 justify-center">
+            <Globe className="h-8 w-8 text-[#ff7844]" />
+            Nos partenaires
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center justify-center">
+            {partners.map((p, idx) => (
+              <motion.a 
+                key={idx} 
+                href={p.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                {...animationConfig}
+                transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.4 + idx * 0.1 }}
+                className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-xl group focus:outline-none focus:ring-2 focus:ring-[var(--color-mosala-green-500)] focus:ring-offset-2"
+                aria-label={`Visiter le site de ${p.name}`}
+              >
+                <OptimizedImage 
+                  src={p.logo} 
+                  alt={`Logo ${p.name}`} 
+                  className="max-h-16 w-auto object-contain mb-4"
+                  fallback="/topcenter-uploads/partenaires/default-logo.svg"
+                  width={64}
+                  height={64}
+                />
+                <span className="text-sm text-[#22304a] font-semibold group-hover:text-[#6476f3] transition-colors">{p.name}</span>
+              </motion.a>
+            ))}
+          </div>
+        </motion.section>
 
-      {/* Engagements */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-        className="mb-12 bg-[var(--color-mosala-white)]/90 backdrop-blur-xl rounded-2xl p-8 shadow-lg border border-[var(--color-mosala-green-100)]"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-[var(--color-mosala-dark-900)] flex items-center gap-2"><Shield className="h-6 w-6 text-[#6476f3]" /> Nos engagements</h2>
-        <ul className="list-disc list-inside text-[var(--color-mosala-dark-600)] ml-6 mt-2 space-y-2">
-          <li>Accessibilité numérique (WCAG 2.1 AA)</li>
-          <li>Protection des données (conformité RGPD)</li>
-          <li>Égalité des chances et lutte contre les discriminations</li>
-          <li>Transparence sur l’utilisation des données</li>
-          <li>Accompagnement humain et digital</li>
-        </ul>
-      </motion.section>
-    </main>
-    <Footer />
-  </div>
-);
+        {/* Engagements */}
+        <motion.section
+          {...animationConfig}
+          transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.5 }}
+          className="mb-16 bg-[var(--color-mosala-white)]/95 backdrop-blur-xl rounded-3xl p-10 shadow-xl border border-[var(--color-mosala-green-100)]"
+        >
+          <h2 className="text-3xl font-bold mb-6 text-[var(--color-mosala-dark-900)] flex items-center gap-3">
+            <Shield className="h-8 w-8 text-[#6476f3]" />
+            Nos engagements
+          </h2>
+          <ul className="list-none space-y-4">
+            {[
+              "Accessibilité numérique (WCAG 2.1 AA)",
+              "Protection des données (conformité RGPD)",
+              "Égalité des chances et lutte contre les discriminations",
+              "Transparence sur l'utilisation des données",
+              "Accompagnement humain et digital"
+            ].map((item, index) => (
+              <li key={index} className="flex items-center gap-3 text-[var(--color-mosala-dark-600)]">
+                <div className="w-2 h-2 bg-[#6476f3] rounded-full flex-shrink-0"></div>
+                <span className="text-lg">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.section>
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
 export default About;
  

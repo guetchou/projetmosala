@@ -28,21 +28,21 @@ const InteractiveMap3D = () => (
       {/* Informations supplémentaires */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-          <h3 className="text-xl font-bold text-[#7ED9A7] mb-3">💼 Emplois</h3>
+          <h3 className="text-xl font-bold text-[#7ED9A7] mb-3">Emplois</h3>
           <p className="text-[#F5F5F7] text-sm">
             Découvrez les offres d'emploi à proximité de votre position avec les salaires et descriptions détaillées.
           </p>
         </div>
         
         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-          <h3 className="text-xl font-bold text-[#FFD93D] mb-3">🎓 Formations</h3>
+          <h3 className="text-xl font-bold text-[#FFD93D] mb-3">Formations</h3>
           <p className="text-[#F5F5F7] text-sm">
             Trouvez les centres de formation et programmes certifiants adaptés à vos objectifs professionnels.
           </p>
         </div>
         
         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-          <h3 className="text-xl font-bold text-[#FF6B35] mb-3">🏢 Services</h3>
+          <h3 className="text-xl font-bold text-[#FF6B35] mb-3">Services</h3>
           <p className="text-[#F5F5F7] text-sm">
             Localisez les bureaux Mosala et partenaires pour un accompagnement personnalisé.
           </p>

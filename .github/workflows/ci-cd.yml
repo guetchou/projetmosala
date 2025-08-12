@@ -48,19 +48,23 @@ jobs:
         node-version: '18'
         cache: 'npm'
 
-    - name: Install dependencies
+    - name: Install frontend dependencies
       run: |
-        npm ci
         cd frontend && npm ci
-        cd ../backend && npm ci
 
-    - name: Run linting
+    - name: Install backend dependencies
       run: |
-        npm run lint
-        cd frontend && npm run lint
-        cd ../backend && npm run lint
+        cd backend && npm ci
 
-    - name: Run tests
+    - name: Run frontend linting
+      run: |
+        cd frontend && npm run lint
+
+    - name: Run backend linting
+      run: |
+        cd backend && npm run lint
+
+    - name: Run backend tests
       run: |
         cd backend && npm run test
       env:

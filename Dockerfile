@@ -1,5 +1,5 @@
 # Multi-stage build pour le frontend
-FROM node:18-alpine AS frontend-build
+FROM node:20-alpine AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci --only=production
@@ -7,7 +7,7 @@ COPY frontend/ .
 RUN npm run build
 
 # Multi-stage build pour le backend NestJS
-FROM node:18-alpine AS backend-build
+FROM node:20-alpine AS backend-build
 WORKDIR /app/backend
 COPY backend/package*.json ./
 RUN npm ci --only=production
@@ -30,7 +30,7 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nestjs -u 1001
 
 # Installer Node.js pour le backend
-RUN apk add --no-cache nodejs npm
+RUN apk add --no-cache nodejs20 npm
 
 # Copier le package.json du backend pour les dépendances de production
 COPY backend/package*.json /app/backend/

@@ -1,17 +1,22 @@
 # Build stage
-FROM node:20-alpine AS build
+FROM node:20 AS build
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-RUN npm install
+
+# Install pnpm and dependencies
+RUN npm install -g pnpm && pnpm install
 
 # Copy source code and config files
 COPY . .
 
 # Build the app
-RUN npm run build
+RUN pnpm run build
+
+# Verify the build output
+RUN ls -la dist/
 
 # Production stage
 FROM node:20-alpine
@@ -24,7 +29,7 @@ RUN addgroup -g 1001 -S nodejs && \
 
 # Copy package files
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm install -g pnpm && pnpm install --prod && pnpm store prune
 
 # Copy built app from build stage
 COPY --from=build /app/dist ./dist
@@ -38,7 +43,7 @@ EXPOSE 4002
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node dist/health.js || exit 1
+  CMD node dist/src/main.js || exit 1
 
 # Start the app
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]

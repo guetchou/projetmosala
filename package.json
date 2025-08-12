@@ -5,10 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "cd frontend && npm install && npm run build",
+    "build": "pnpm -r build",
+    "build:frontend": "cd frontend && pnpm install && pnpm run build",
+    "build:backend": "cd backend && pnpm install && pnpm run build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "install:all": "pnpm install --recursive",
+    "clean": "pnpm -r clean",
+    "test": "pnpm -r test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

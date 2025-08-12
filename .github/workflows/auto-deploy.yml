@@ -1,0 +1,102 @@
+name: Auto Deploy to VPS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Frontend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        file: ./frontend/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/mosala-frontend:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build and push Backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        file: ./backend/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/mosala-backend:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build and push Python API image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./mosala-api
+        file: ./mosala-api/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/mosala-api:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to VPS
+      run: |
+        echo "🚀 Déploiement automatique sur le VPS..."
+        
+        # Ajouter la clé SSH au known_hosts
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        
+        # Se connecter au serveur et déployer
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          echo "🔄 Mise à jour automatique du site..."
+          
+          # Créer le répertoire s'il n'existe pas
+          mkdir -p /opt/mosala
+          cd /opt/mosala
+          
+          # Arrêter les services existants
+          docker compose down 2>/dev/null || true
+          docker compose -f docker-compose-projetmosala.yml down 2>/dev/null || true
+          
+          # Pull des dernières images
+          echo "🐳 Pull des dernières images Docker..."
+          docker pull ${{ secrets.DOCKER_USERNAME }}/mosala-frontend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/mosala-backend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/mosala-api:latest
+          
+          # Redémarrer les services
+          echo "🚀 Redémarrage des services..."
+          docker compose -f docker-compose-projetmosala.yml up -d
+          
+          # Nettoyage
+          echo "🧹 Nettoyage des images non utilisées..."
+          docker image prune -f
+          
+          echo "✅ Déploiement automatique terminé!"
+          echo "🌐 Site: http://projetmosala.org"
+          echo "🔧 API: http://api.projetmosala.org"
+          echo "📊 Admin: http://admin.projetmosala.org"
+          
+          # Vérification des services
+          docker compose -f docker-compose-projetmosala.yml ps
+        EOF

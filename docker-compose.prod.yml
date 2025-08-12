@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: ${DOCKER_USERNAME:-galoycg}/mosala-frontend:latest
+    container_name: mosala-frontend
+    restart: unless-stopped
+    ports:
+      - "1199:80"
+    depends_on:
+      - backend-nestjs
+      - strapi
+    networks:
+      - mosala-net
+    environment:
+      - NODE_ENV=production
+
+  backend-nestjs:
+    image: ${DOCKER_USERNAME:-galoycg}/mosala-backend:latest
+    container_name: mosala-backend-nestjs
+    restart: unless-stopped
+    ports:
+      - "4002:4002"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=mosala
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key}
+      - PORT=4002
+    depends_on:
+      - postgres
+    networks:
+      - mosala-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mosala-api:
+    image: ${DOCKER_USERNAME:-galoycg}/mosala-api:latest
+    container_name: mosala-api
+    restart: unless-stopped
+    ports:
+      - "1188:1188"
+    environment:
+      - DATABASE_URL=mysql+aiomysql://mosala:mosala@db:3306/mosala
+      - PYTHON_API_PORT=1188
+    depends_on:
+      - db
+    networks:
+      - mosala-net
+
+  strapi:
+    image: node:20-alpine
+    container_name: mosala-strapi
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - strapi_data:/app
+    command: sh -c "npx create-strapi-app@latest cms --quickstart --no-run --dbclient=mysql --dbhost=db --dbport=3306 --dbname=mosala --dbusername=mosala --dbpassword=mosala && cd cms && npm run develop"
+    ports:
+      - "1337:1337"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_CLIENT=mysql
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=mosala
+      - DATABASE_USERNAME=mosala
+      - DATABASE_PASSWORD=mosala
+    depends_on:
+      - db
+    networks:
+      - mosala-net
+
+  db:
+    image: mysql:8.0
+    container_name: mosala-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mosala
+      MYSQL_USER: mosala
+      MYSQL_PASSWORD: mosala
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - "3326:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backup:/backup
+    networks:
+      - mosala-net
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  postgres:
+    image: postgres:15
+    container_name: mosala-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mosala
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./backup:/backup
+    networks:
+      - mosala-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Reverse proxy avec Traefik (optionnel)
+  traefik:
+    image: traefik:v2.10
+    container_name: mosala-traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # Dashboard Traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+    networks:
+      - mosala-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.entrypoints=web"
+
+volumes:
+  db_data:
+  pg_data:
+  strapi_data:
+
+networks:
+  mosala-net:
+    driver: bridge

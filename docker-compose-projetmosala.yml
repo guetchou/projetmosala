@@ -1,4 +1,4 @@
-version: '3.8'
+# Docker Compose configuration for Mosala with custom domains
 
 services:
   frontend:
@@ -45,7 +45,7 @@ services:
     working_dir: /app
     volumes:
       - strapi_data:/app
-    command: sh -c "npx create-strapi-app@latest cms --quickstart --no-run --dbclient=mysql --dbhost=db --dbport=3306 --dbname=mosala --dbusername=mosala --dbpassword=mosala && cd cms && npm run develop"
+    command: sh -c "if [ ! -d 'cms' ]; then npx create-strapi-app@latest cms --quickstart --no-run --dbclient=mysql --dbhost=db --dbport=3306 --dbname=mosala --dbusername=mosala --dbpassword=mosala; fi && cd cms && npm run develop"
     environment:
       - NODE_ENV=development
       - DATABASE_CLIENT=mysql

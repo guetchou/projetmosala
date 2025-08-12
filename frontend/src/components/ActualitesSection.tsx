@@ -25,6 +25,14 @@ export default function ActualitesSection() {
   const aLaUne = featuredPosts.find(post => post.category === "À la une");
   const autresActualites = featuredPosts.filter(post => post.category !== "À la une").slice(0, 5);
 
+  // Debug pour voir les données
+  console.log('Featured Posts:', featuredPosts.length);
+  console.log('À la une:', aLaUne?.title);
+  console.log('Autres actualités:', autresActualites.length);
+  autresActualites.forEach((post, index) => {
+    console.log(`Autre ${index + 1}:`, post.title);
+  });
+
   return (
     <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Header éditorial */}
@@ -152,7 +160,7 @@ export default function ActualitesSection() {
           {autresActualites.length > 0 && (
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                Autres actualités importantes
+                Autres actualités importantes ({autresActualites.length} articles)
               </h3>
               
               <Swiper

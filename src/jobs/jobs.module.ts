@@ -3,7 +3,7 @@ import { JobsService } from './jobs.service';
 import { JobsController } from './jobs.controller';
 
 @Module({
-  controllers: [JobsController],
   providers: [JobsService],
+  controllers: [JobsController]
 })
 export class JobsModule {}

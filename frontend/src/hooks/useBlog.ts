@@ -64,7 +64,7 @@ const officialMosalaPosts = [
     views: 720,
     likes: 45,
     externalLink: null,
-    featured: false
+    featured: true
   },
   {
     id: "5",
@@ -80,7 +80,7 @@ const officialMosalaPosts = [
     views: 890,
     likes: 56,
     externalLink: null,
-    featured: false
+    featured: true
   },
   {
     id: "6",
@@ -96,7 +96,7 @@ const officialMosalaPosts = [
     views: 650,
     likes: 38,
     externalLink: null,
-    featured: false
+    featured: true
   },
   // Articles de conseils et ressources (complémentaires aux actualités officielles)
   {

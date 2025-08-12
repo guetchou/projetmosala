@@ -2,6 +2,11 @@
 
 set -e
 
+# Backup automatique du dossier frontend avant déploiement
+BACKUP_DIR="frontend-backup-$(date +%Y%m%d-%H%M%S)"
+cp -r frontend "$BACKUP_DIR"
+echo "Backup du frontend créé dans $BACKUP_DIR"
+
 # Build du front-end
 npm install
 npm run build

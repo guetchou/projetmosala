@@ -1,0 +1,5 @@
+packages:
+  - 'frontend'
+  - 'backend'
+  - 'mosala-cms'
+  - 'mosala-api'

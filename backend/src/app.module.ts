@@ -5,6 +5,10 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { ChatGateway } from './chat.gateway';
+import { AuthModule } from './auth/auth.module';
+import { JobsModule } from './jobs/jobs.module';
+import { FormationsModule } from './formations/formations.module';
+import { CandidaturesModule } from './candidatures/candidatures.module';
 
 @Module({
   imports: [
@@ -20,6 +24,10 @@ import { ChatGateway } from './chat.gateway';
       autoLoadEntities: true,
     }),
     UsersModule,
+    AuthModule,
+    JobsModule,
+    FormationsModule,
+    CandidaturesModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],

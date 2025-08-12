@@ -137,17 +137,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.8.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
     - name: Deploy to production server
       run: |
         echo "Deploying to production server..."
-        
-        # Ajouter la clé SSH au known_hosts
-        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
         
         # Se connecter au serveur et déployer
         ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'

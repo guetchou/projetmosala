@@ -36,7 +36,7 @@ if ! command -v gh &> /dev/null; then
 fi
 
 # Vérifier l'authentification
-if ! gh auth status &> /dev/null; then
+if ! gh auth status --hostname github.com &> /dev/null; then
     log_error "Vous n'êtes pas connecté à GitHub CLI"
     log_info "Connectez-vous avec: gh auth login"
     exit 1
@@ -57,11 +57,23 @@ echo ""
 log_warning "Configuration optionnelle pour le déploiement automatique:"
 read -p "Voulez-vous configurer le déploiement automatique? (y/n): " SETUP_DEPLOY
 
+# Configuration automatique pour topcenter-ovh
 if [[ $SETUP_DEPLOY == "y" || $SETUP_DEPLOY == "Y" ]]; then
-    read -p "Adresse du serveur de production (IP ou domaine): " SERVER_HOST
-    read -p "Utilisateur SSH sur le serveur: " SERVER_USER
-    read -s -p "Clé SSH privée (contenu complet): " SSH_PRIVATE_KEY
-    echo ""
+    SERVER_HOST="topcenter-ovh"
+    SERVER_USER="root"
+    
+    log_info "Configuration automatique pour VPS topcenter-ovh"
+    log_info "Serveur: $SERVER_HOST"
+    log_info "Utilisateur: $SERVER_USER"
+    
+    # Tester la connexion SSH
+    log_info "Test de connexion SSH..."
+    if ssh -o ConnectTimeout=10 -o BatchMode=yes $SERVER_HOST "echo 'Connexion SSH réussie'" 2>/dev/null; then
+        log_success "Connexion SSH testée avec succès"
+    else
+        log_warning "Impossible de tester la connexion SSH automatiquement"
+        log_info "Assurez-vous que la clé SSH est configurée pour topcenter-ovh"
+    fi
 fi
 
 # Configurer les secrets
@@ -77,9 +89,9 @@ log_success "Secrets Docker configurés"
 if [[ $SETUP_DEPLOY == "y" || $SETUP_DEPLOY == "Y" ]]; then
     gh secret set SERVER_HOST --body "$SERVER_HOST"
     gh secret set SERVER_USER --body "$SERVER_USER"
-    gh secret set SSH_PRIVATE_KEY --body "$SSH_PRIVATE_KEY"
     
     log_success "Secrets de déploiement configurés"
+    log_info "Note: La clé SSH sera utilisée depuis la configuration locale"
 fi
 
 echo ""

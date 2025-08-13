@@ -75,7 +75,22 @@ const navLinks = [
   { to: "/support", label: "Support" },
 ];
 
+// Hook personnalisé pour le debounce
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 interface NavbarProps {
   className?: string;
@@ -96,8 +111,6 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
       if (navbarRef.current) {
         const height = navbarRef.current.offsetHeight;
         setNavbarHeight(height);
-        // Exposer la hauteur au CSS pour le Hero
-        document.documentElement.style.setProperty('--nav-h', `${height}px`);
       }
     };
 
@@ -106,7 +119,8 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
     return () => window.removeEventListener('resize', updateNavbarHeight);
   }, [setNavbarHeight]);
 
-  // Hook pour le shrink de la navbar
+  // Debounce pour les performances de scroll
+  const debouncedScrollY = useDebounce(lastScrollY.current.toString(), 10);
   const shrink = useNavbarShrink(40);
 
   // Suggestions mock avec debounce
@@ -118,39 +132,20 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
     { label: "Mon profil", to: "/profile" },
   ].filter(s => s.label.toLowerCase().includes(state.searchValue.toLowerCase()));
 
-  // Gestion du scroll optimisée avec seuil et hystérésis
+  // Gestion du scroll optimisée
   useEffect(() => {
-    const THRESHOLD = 40;
-    const HYSTERESIS = 24;
-    let lastIntent: 'up' | 'down' | null = null;
-
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY < THRESHOLD) {
+      if (window.scrollY < 40) {
         dispatch({ type: 'SET_SHOW_NAVBAR', payload: true });
-        lastIntent = null;
-        lastScrollY.current = currentScrollY;
+        lastScrollY.current = window.scrollY;
         return;
       }
-
-      const scrollDelta = currentScrollY - lastScrollY.current;
-      
-      if (Math.abs(scrollDelta) < HYSTERESIS) {
-        return; // Ignorer les petits mouvements
-      }
-
-      if (scrollDelta > 0 && lastIntent !== 'down') {
-        // Scroll vers le bas
+      if (window.scrollY > lastScrollY.current) {
         dispatch({ type: 'SET_SHOW_NAVBAR', payload: false });
-        lastIntent = 'down';
-      } else if (scrollDelta < 0 && lastIntent !== 'up') {
-        // Scroll vers le haut
+      } else {
         dispatch({ type: 'SET_SHOW_NAVBAR', payload: true });
-        lastIntent = 'up';
       }
-
-      lastScrollY.current = currentScrollY;
+      lastScrollY.current = window.scrollY;
     };
 
     // Throttle pour les performances
@@ -180,11 +175,11 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
     }
   }, [state.darkMode]);
 
-  // Gestion des clics en dehors avec ref containment
+  // Gestion des clics en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      if (navbarRef.current && !navbarRef.current.contains(target)) {
+      if (!target.closest('[data-navbar]')) {
         dispatch({ type: 'CLOSE_ALL' });
       }
     };
@@ -199,30 +194,6 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
     logout();
     navigate("/login");
   }, [navigate]);
-
-  // Refs pour le focus return
-  const secondaryMenuButtonRef = useRef<HTMLButtonElement>(null);
-  const searchButtonRef = useRef<HTMLButtonElement>(null);
-
-  // Gestion clavier (Escape)
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        dispatch({ type: 'CLOSE_ALL' });
-        // Return focus au bouton approprié
-        if (state.secondaryMenuOpen && secondaryMenuButtonRef.current) {
-          secondaryMenuButtonRef.current.focus();
-        } else if (state.searchOpen && searchButtonRef.current) {
-          searchButtonRef.current.focus();
-        }
-      }
-    };
-
-    if (state.menuOpen || state.secondaryMenuOpen || state.searchOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [state.menuOpen, state.secondaryMenuOpen, state.searchOpen]);
 
   // Actions optimisées
   const toggleMenu = useCallback(() => dispatch({ type: 'TOGGLE_MENU' }), []);
@@ -265,7 +236,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
             <Link
               key={link.to}
               to={link.to}
-              className="text-mosala-green font-medium hover:text-mosala-yellow transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mosala-green focus-visible:ring-offset-2 rounded-md px-2 py-1 hover:bg-white/30 hover:backdrop-blur-sm"
+              className="text-[#005F25] font-medium hover:text-[#B8860B] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-mosala-green-300)] focus-visible:ring-offset-2 rounded-md px-2 py-1 hover:bg-white/30 hover:backdrop-blur-sm"
             >
               {link.label}
             </Link>
@@ -276,14 +247,11 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
         <div className="flex items-center gap-3">
           {/* Recherche - simplifiée */}
           <Button
-            ref={searchButtonRef}
             variant="ghost"
             size="sm"
             onClick={() => setSearchOpen(!state.searchOpen)}
-            className="p-2 text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
+            className="p-2 text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
             aria-label="Rechercher"
-            aria-expanded={state.searchOpen}
-            aria-controls="navbar-search"
           >
             <Search className="w-4 h-4" />
           </Button>
@@ -291,30 +259,22 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
           {/* Menu secondaire - regroupe les actions */}
           <div className="relative">
             <Button
-              ref={secondaryMenuButtonRef}
               variant="ghost"
               size="sm"
               onClick={toggleSecondaryMenu}
-              className="p-2 text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
+              className="p-2 text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
               aria-label="Menu secondaire"
-              aria-expanded={state.secondaryMenuOpen}
-              aria-controls="navbar-secondary-menu"
             >
               <MoreVertical className="w-4 h-4" />
             </Button>
 
             {/* Menu secondaire déroulant */}
             {state.secondaryMenuOpen && (
-              <div 
-                id="navbar-secondary-menu"
-                role="menu"
-                className="absolute right-0 top-full mt-2 w-48 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl border border-white/60 py-2 z-50"
-              >
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl border border-white/60 py-2 z-50">
                 {/* Mode sombre */}
                 <button
-                  role="menuitem"
                   onClick={toggleDarkMode}
-                  className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left text-sm text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
                 >
                   {state.darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                   {state.darkMode ? "Mode clair" : "Mode sombre"}
@@ -322,27 +282,23 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
 
                 {/* Notifications */}
                 <button
-                  role="menuitem"
                   onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-                  className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left text-sm text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
                 >
                   <Bell className="w-4 h-4" />
                   Notifications
                 </button>
 
                 {/* Support WhatsApp */}
-                {import.meta.env.VITE_MOSALA_WHATSAPP && (
-                  <a
-                    role="menuitem"
-                    href={`https://wa.me/${import.meta.env.VITE_MOSALA_WHATSAPP}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    Support WhatsApp
-                  </a>
-                )}
+                <a
+                  href="https://wa.me/24200000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full px-4 py-2 text-left text-sm text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Support WhatsApp
+                </a>
 
                 <div className="border-t border-white/40 my-1"></div>
 
@@ -350,16 +306,14 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
                 {isAuthenticated() ? (
                   <>
                     <Link
-                      role="menuitem"
                       to="/profile"
                       onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-                      className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
+                      className="w-full px-4 py-2 text-left text-sm text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
                     >
                       <User className="w-4 h-4" />
                       Mon profil
                     </Link>
                     <button
-                      role="menuitem"
                       onClick={() => {
                         handleLogout();
                         dispatch({ type: 'CLOSE_ALL' });
@@ -372,10 +326,9 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
                   </>
                 ) : (
                   <Link
-                    role="menuitem"
                     to="/login"
                     onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-                    className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
+                    className="w-full px-4 py-2 text-left text-sm text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
                   >
                     <User className="w-4 h-4" />
                     Se connecter
@@ -390,7 +343,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
             variant="ghost"
             size="sm"
             onClick={toggleMenu}
-            className="md:hidden p-2 text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
+            className="md:hidden p-2 text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
             aria-label="Menu mobile"
           >
             {state.menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -421,7 +374,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
                       setSearchOpen(false);
                       setSearchValue("");
                     }}
-                    className="block px-3 py-2 text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm rounded-md"
+                    className="block px-3 py-2 text-sm text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm rounded-md"
                   >
                     {suggestion.label}
                   </Link>
@@ -439,7 +392,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
                 key={link.to}
                 to={link.to}
                 onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-                className="block px-4 py-2 text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm"
+                className="block px-4 py-2 text-sm text-[#005F25] hover:bg-white/40 hover:backdrop-blur-sm"
               >
                 {link.label}
               </Link>

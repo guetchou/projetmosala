@@ -105,3 +105,44 @@
     display: none;
   }
 } 
+
+/* Optimisations de performance pour la navbar */
+.navbar {
+  will-change: transform, opacity;
+  transition-property: transform, opacity, height, padding;
+}
+
+/* Support pour les préférences de motion réduit */
+@media (prefers-reduced-motion: reduce) {
+  .navbar {
+    transition-duration: 0.1s !important;
+  }
+  
+  .navbar * {
+    transition-duration: 0.1s !important;
+  }
+}
+
+/* Optimisations pour les animations */
+.navbar-shrink {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Améliorer la performance des backdrop-blur */
+.navbar-glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Optimisations pour les menus déroulants */
+.navbar-menu {
+  will-change: opacity, transform;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Focus visible amélioré */
+.navbar-focus:focus-visible {
+  outline: 2px solid var(--mosala-green);
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+} 

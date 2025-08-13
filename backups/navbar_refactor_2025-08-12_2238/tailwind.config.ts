@@ -54,22 +54,12 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				mosala: {
-					green: '#00A651',
-					yellow: '#FFD700',
-					orange: '#FFA500',
-					red: '#ED1C24',
-					dark: {
-						900: '#0e1a12',
-						800: '#1a2d1f',
-						700: '#2a4a2f',
-						600: '#3a673f',
-						500: '#4a844f',
-						400: '#5aa15f',
-						300: '#6abe6f',
-						200: '#7adb7f',
-						100: '#8af88f',
-						50: '#9aff9f'
-					}
+					green: 'hsl(var(--mosala-green))',
+					yellow: 'hsl(var(--mosala-yellow))',
+					orange: 'hsl(var(--mosala-orange))',
+					red: 'hsl(var(--mosala-red))',
+					dark: 'hsl(var(--mosala-dark))',
+					light: 'hsl(var(--mosala-light))'
 				}
 			},
 			backgroundImage: {

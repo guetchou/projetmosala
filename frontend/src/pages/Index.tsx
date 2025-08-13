@@ -11,7 +11,7 @@ import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
 import ActualitesSection from "@/components/ActualitesSection";
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 
 /*
   -----------------------------------------------------------------------------
@@ -32,53 +32,23 @@ import { useRef, useEffect, useState } from "react";
 */
 const Index = () => {
   const navbarRef = useRef<HTMLElement>(null);
-  const [navbarHeight, setNavbarHeight] = useState(0);
-
-  useEffect(() => {
-    if (navbarRef.current) {
-      setNavbarHeight(navbarRef.current.offsetHeight);
-    }
-    const handleResize = () => {
-      if (navbarRef.current) {
-        setNavbarHeight(navbarRef.current.offsetHeight);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
-    <div className="min-h-screen text-gray-900 font-sans relative bg-gradient-to-br from-green-50 via-emerald-50 to-lime-100">
-      {/* Container principal avec effet glassmorphism optimisé pour mobile */}
-      <div 
-        className="relative w-full h-full min-h-screen glassmorphism-desktop md:glassmorphism-desktop"
-        style={{
-          borderRadius: '0',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          minHeight: '100vh',
-          zIndex: 10,
-        }}
-      >
-        {/* Navbar en absolute au-dessus du Hero */}
-        <Navbar ref={navbarRef} className="bg-white/40 backdrop-blur-md border border-white/30 shadow-lg absolute top-0 left-0 w-full z-30" />
-        
-        {/* HERO UNESCO-STYLE, commence tout en haut, passe sous la navbar */}
-        <div style={{ position: 'relative', zIndex: 20 }}>
-          <Hero navbarHeight={navbarHeight} />
-        </div>
+    <div className="min-h-screen text-gray-900 font-sans relative">
+      {/* Navbar en fixed au-dessus du Hero */}
+      <Navbar ref={navbarRef} className="bg-white/60 backdrop-blur-lg border border-white/40 shadow-xl fixed top-0 left-0 w-full z-50" />
+      
+      {/* HERO en premier, sans gradient de fond */}
+      <Hero />
+      
+      {/* Container principal avec gradient pour le reste du contenu */}
+      <div className="relative bg-gradient-to-r from-[#fef08a] via-[#84cc16] to-[#16a34a]">
         
         {/* Section d'introduction du projet */}
         <ProjectIntro />
         
         {/* Le reste du contenu commence après le Hero */}
         <main
-          style={{ paddingTop: navbarHeight }}
           className="relative z-10"
         >
           {/* Section actualités */}
@@ -94,7 +64,7 @@ const Index = () => {
           <PartnersSection />
           
           {/* Section mission */}
-          <section className="bg-white/90 backdrop-blur-sm py-12">
+          <section className="bg-white/95 backdrop-blur-md py-12 shadow-lg">
             <Mission />
           </section>
           
@@ -102,14 +72,14 @@ const Index = () => {
           <ServicesSection />
           
           {/* Section résultats */}
-          <section className="bg-white/90 backdrop-blur-sm py-12">
+          <section className="bg-white/95 backdrop-blur-md py-12 shadow-lg">
             <ResultsSection />
           </section>
           
           {/* Section témoignages */}
-          <section className="bg-white/90 backdrop-blur-sm py-12">
+          <section className="bg-white/95 backdrop-blur-md py-12 shadow-lg">
             <div className="container mx-auto px-4">
-              <span className="inline-block px-4 py-2 bg-gray-100/90 backdrop-blur-sm text-gray-700 rounded-full text-sm font-semibold mb-6 tracking-widest shadow border border-gray-200/50">
+              <span className="inline-block px-4 py-2 bg-white/80 backdrop-blur-sm text-gray-700 rounded-full text-sm font-semibold mb-6 tracking-widest shadow border border-white/60">
                 Témoignages
               </span>
               <Testimonials />
@@ -117,7 +87,7 @@ const Index = () => {
           </section>
           
           {/* Section newsletter */}
-          <section className="bg-white/90 backdrop-blur-sm py-12">
+          <section className="bg-white/95 backdrop-blur-md py-12 shadow-lg">
             <Newsletter />
           </section>
           

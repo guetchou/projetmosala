@@ -16,18 +16,6 @@
 
   /* Transitions */
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Surfaces et bordures pour light mode */
-  --surface: rgba(255, 255, 255, 0.70);
-  --surface-strong: rgba(255, 255, 255, 0.90);
-  --border: rgba(255, 255, 255, 0.20);
-}
-
-/* Dark mode variables */
-.dark {
-  --surface: rgba(15, 18, 16, 0.70);
-  --surface-strong: rgba(18, 21, 19, 0.90);
-  --border: rgba(255, 255, 255, 0.12);
 }
 
 /* Gradients Mosala */
@@ -73,39 +61,21 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
+  background-color: #fafafa; /* Fond neutre au lieu de noir */
   color: #1a1a1a;
   line-height: 1.6;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Dark mode body styles */
-.dark body {
-  background-color: #0e110f;
-  color: #f7f7f7;
 }
 
 /* Supprimer tout fond noir potentiel */
 body,
 #root,
 #app {
-  background-color: #fafafa;
-}
-
-.dark body,
-.dark #root,
-.dark #app {
-  background-color: #0e110f;
+  background-color: #fafafa !important;
 }
 
 /* Améliorer l'accessibilité */
 :focus {
   outline: 2px solid var(--mosala-green);
-  outline-offset: 2px;
-}
-
-.dark :focus {
-  outline: 2px solid var(--mosala-yellow);
   outline-offset: 2px;
 }
 

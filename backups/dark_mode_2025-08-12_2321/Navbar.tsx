@@ -59,7 +59,7 @@ const initialState: NavbarState = {
   searchValue: "",
   darkMode: (() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("mosala-theme") === "dark";
+      return localStorage.getItem("mosala-theme") === "dark" || window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
     return false;
   })(),
@@ -239,38 +239,33 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
         else if (ref) ref.current = el;
         navbarRef.current = el;
       }}
-      className={`fixed top-0 left-0 right-0 transition-all duration-300 ease-in-out bg-[var(--surface)] backdrop-blur-lg border-b border-white/20 dark:border-white/10 z-50 ${isScrolled ? 'py-1' : 'py-2'} ${state.showNavbar ? "translate-y-0" : "-translate-y-full"}`}
+      className={`fixed top-0 left-0 right-0 transition-all duration-300 ease-in-out bg-white/70 backdrop-blur-lg border-b border-white/20 z-50 ${isScrolled ? 'py-2' : 'py-4'} ${state.showNavbar ? "translate-y-0" : "-translate-y-full"}`}
       style={{
         transitionDuration: prefersReducedMotion ? '0.1s' : '0.3s'
       }}
     >
       <nav
         data-navbar
-        className={`pointer-events-auto w-full max-w-7xl mx-auto flex items-center justify-between px-4 transition-all duration-500 min-h-[40px] ${isScrolled ? 'max-w-6xl' : 'max-w-7xl'}`}
+        className={`pointer-events-auto w-full max-w-7xl mx-auto flex items-center justify-between px-6 transition-all duration-500 min-h-[48px] ${isScrolled ? 'max-w-6xl' : 'max-w-7xl'}`}
         role="navigation"
         aria-label="Navigation principale Mosala"
       >
-        {/* Logo Mosala - Positionné à gauche */}
-        <Link to="/" className="navbar-logo flex items-center gap-3 font-extrabold text-2xl text-mosala-dark-900 dark:text-white tracking-tight transition-transform duration-200 hover:-translate-y-1">
+        {/* Logo Mosala */}
+        <Link to="/" className="flex items-center gap-3 font-extrabold text-2xl text-mosala-dark-900 tracking-tight transition-transform duration-200 hover:-translate-y-1">
           <img 
             src="/topcenter-uploads/Logo-Mosala/logo-mosala1.png" 
             alt="Logo Mosala" 
-            className="w-12 h-12 object-contain dark:hidden"
-          />
-          <img 
-            src="/topcenter-uploads/Logo-Mosala/logo-mosala1.png" 
-            alt="Logo Mosala" 
-            className="w-12 h-12 object-contain hidden dark:block brightness-0 invert"
+            className="w-16 h-16 object-contain"
           />
         </Link>
 
         {/* Navigation principale - visible sur desktop */}
-        <div className="navbar-main-nav hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
-              className="text-mosala-green dark:text-white/90 font-medium hover:text-mosala-yellow dark:hover:text-mosala-yellow transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mosala-green dark:focus-visible:ring-mosala-yellow focus-visible:ring-offset-2 rounded-md px-2 py-1 hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm"
+              className="text-mosala-green font-medium hover:text-mosala-yellow transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mosala-green focus-visible:ring-offset-2 rounded-md px-2 py-1 hover:bg-white/30 hover:backdrop-blur-sm"
             >
               {link.label}
             </Link>
@@ -278,14 +273,14 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
         </div>
 
         {/* Actions principales */}
-        <div className="navbar-actions flex items-center gap-2">
-          {/* Recherche */}
+        <div className="flex items-center gap-3">
+          {/* Recherche - simplifiée */}
           <Button
             ref={searchButtonRef}
             variant="ghost"
             size="sm"
             onClick={() => setSearchOpen(!state.searchOpen)}
-            className="p-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-full"
+            className="p-2 text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
             aria-label="Rechercher"
             aria-expanded={state.searchOpen}
             aria-controls="navbar-search"
@@ -293,90 +288,109 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
             <Search className="w-4 h-4" />
           </Button>
 
-          {/* Notifications */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-            className="p-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-full"
-            aria-label="Notifications"
-          >
-            <Bell className="w-4 h-4" />
-          </Button>
+          {/* Menu secondaire - regroupe les actions */}
+          <div className="relative">
+            <Button
+              ref={secondaryMenuButtonRef}
+              variant="ghost"
+              size="sm"
+              onClick={toggleSecondaryMenu}
+              className="p-2 text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
+              aria-label="Menu secondaire"
+              aria-expanded={state.secondaryMenuOpen}
+              aria-controls="navbar-secondary-menu"
+            >
+              <MoreVertical className="w-4 h-4" />
+            </Button>
 
-          {/* Mode sombre/clair */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleDarkMode}
-            className="p-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-full"
-            aria-label={state.darkMode ? "Passer en mode clair" : "Passer en mode sombre"}
-          >
-            {state.darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </Button>
-
-          {/* Connexion/Profil */}
-          {isAuthenticated() ? (
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleSecondaryMenu}
-                className="px-4 py-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-lg transition-colors duration-200"
-                aria-label="Menu utilisateur"
-                aria-expanded={state.secondaryMenuOpen}
-                aria-controls="navbar-secondary-menu"
+            {/* Menu secondaire déroulant */}
+            {state.secondaryMenuOpen && (
+              <div 
+                id="navbar-secondary-menu"
+                role="menu"
+                className="absolute right-0 top-full mt-2 w-48 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl border border-white/60 py-2 z-50"
               >
-                <User className="w-4 h-4 mr-2" />
-                Mon profil
-              </Button>
-
-              {/* Menu secondaire déroulant */}
-              {state.secondaryMenuOpen && (
-                <div 
-                  id="navbar-secondary-menu"
-                  role="menu"
-                  className="absolute right-0 top-full mt-2 w-48 bg-[var(--surface-strong)] backdrop-blur-lg rounded-xl shadow-xl border border-[var(--border)] py-2 z-50"
+                {/* Mode sombre */}
+                <button
+                  role="menuitem"
+                  onClick={toggleDarkMode}
+                  className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
                 >
+                  {state.darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                  {state.darkMode ? "Mode clair" : "Mode sombre"}
+                </button>
+
+                {/* Notifications */}
+                <button
+                  role="menuitem"
+                  onClick={() => dispatch({ type: 'CLOSE_ALL' })}
+                  className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
+                >
+                  <Bell className="w-4 h-4" />
+                  Notifications
+                </button>
+
+                {/* Support WhatsApp */}
+                {import.meta.env.VITE_MOSALA_WHATSAPP && (
+                  <a
+                    role="menuitem"
+                    href={`https://wa.me/${import.meta.env.VITE_MOSALA_WHATSAPP}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    Support WhatsApp
+                  </a>
+                )}
+
+                <div className="border-t border-white/40 my-1"></div>
+
+                {/* Actions utilisateur */}
+                {isAuthenticated() ? (
+                  <>
+                    <Link
+                      role="menuitem"
+                      to="/profile"
+                      onClick={() => dispatch({ type: 'CLOSE_ALL' })}
+                      className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
+                    >
+                      <User className="w-4 h-4" />
+                      Mon profil
+                    </Link>
+                    <button
+                      role="menuitem"
+                      onClick={() => {
+                        handleLogout();
+                        dispatch({ type: 'CLOSE_ALL' });
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50/80 hover:backdrop-blur-sm flex items-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Se déconnecter
+                    </button>
+                  </>
+                ) : (
                   <Link
                     role="menuitem"
-                    to="/profile"
+                    to="/login"
                     onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-                    className="w-full px-4 py-2 text-left text-sm text-mosala-green dark:text-white/90 hover:bg-[var(--surface)] hover:backdrop-blur-sm flex items-center gap-2"
+                    className="w-full px-4 py-2 text-left text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm flex items-center gap-2"
                   >
                     <User className="w-4 h-4" />
-                    Mon profil
+                    Se connecter
                   </Link>
-                  <button
-                    role="menuitem"
-                    onClick={() => {
-                      handleLogout();
-                      dispatch({ type: 'CLOSE_ALL' });
-                    }}
-                    className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50/80 dark:hover:bg-red-900/20 hover:backdrop-blur-sm flex items-center gap-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Se déconnecter
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className="px-4 py-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-lg transition-colors duration-200 font-medium"
-              aria-label="Se connecter"
-            >
-              Connexion
-            </Link>
-          )}
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Menu mobile */}
           <Button
             variant="ghost"
             size="sm"
             onClick={toggleMenu}
-            className="md:hidden p-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-full"
+            className="md:hidden p-2 text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm rounded-full"
             aria-label="Menu mobile"
           >
             {state.menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -385,7 +399,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
 
         {/* Barre de recherche - simplifiée */}
         {state.searchOpen && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--surface-strong)] backdrop-blur-lg rounded-xl shadow-xl border border-[var(--border)] p-4 z-50">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl border border-white/60 p-4 z-50">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -393,7 +407,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
                 placeholder="Rechercher..."
                 value={state.searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#BFFF00] focus:border-transparent bg-[var(--surface)] backdrop-blur-sm dark:text-white placeholder:text-white/50"
+                className="w-full pl-10 pr-4 py-2 border border-white/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#BFFF00] focus:border-transparent bg-white/80 backdrop-blur-sm"
                 autoFocus
               />
             </div>
@@ -407,7 +421,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
                       setSearchOpen(false);
                       setSearchValue("");
                     }}
-                    className="block px-3 py-2 text-sm text-mosala-green dark:text-white/90 hover:bg-[var(--surface)] hover:backdrop-blur-sm rounded-md"
+                    className="block px-3 py-2 text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm rounded-md"
                   >
                     {suggestion.label}
                   </Link>
@@ -419,13 +433,13 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
 
         {/* Menu mobile */}
         {state.menuOpen && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--surface-strong)] backdrop-blur-lg rounded-xl shadow-xl border border-[var(--border)] py-2 z-50 md:hidden">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white/90 backdrop-blur-lg rounded-xl shadow-xl border border-white/60 py-2 z-50 md:hidden">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-                className="block px-4 py-2 text-sm text-mosala-green dark:text-white/90 hover:bg-[var(--surface)] hover:backdrop-blur-sm"
+                className="block px-4 py-2 text-sm text-mosala-green hover:bg-white/40 hover:backdrop-blur-sm"
               >
                 {link.label}
               </Link>

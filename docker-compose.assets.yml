@@ -14,6 +14,11 @@ services:
     networks:
       - mosala-net
     restart: unless-stopped
+    # 🚀 ALTERNATIVE : Volume pour les assets statiques
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html/public:ro
+      - ./frontend/public/topcenter-uploads:/usr/share/nginx/html/topcenter-uploads:ro
+      - ./frontend/public/images-mosala:/usr/share/nginx/html/images-mosala:ro
 
   backend:
     image: mosala-backend
@@ -88,4 +93,4 @@ volumes:
 
 networks:
   mosala-net:
-    driver: bridge 
+    driver: bridge

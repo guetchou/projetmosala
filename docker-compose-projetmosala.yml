@@ -1,100 +1,61 @@
-# Docker Compose configuration for Mosala with custom domains
+version: '3.8'
 
 services:
+  # Frontend React
   frontend:
-    image: galoycg/mosala-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: mosala-frontend
     restart: unless-stopped
+    ports:
+      - "3000:80"
     networks:
-      - mosala-net
+      - mosala-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`projetmosala.org`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
 
-  backend-nestjs:
-    image: galoycg/mosala-backend:latest
-    container_name: mosala-backend-nestjs
+  # Backend NestJS
+  backend:
+    build:
+      context: ./backend-nestjs
+      dockerfile: Dockerfile
+    container_name: mosala-backend
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASS=postgres
-      - DB_NAME=mosala
-      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key}
+      - DATABASE_URL=mysql://root:password@db:3306/mosala
       - PORT=4002
-    depends_on:
-      - postgres
-    networks:
-      - mosala-net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.projetmosala.org`)"
-      - "traefik.http.routers.api.entrypoints=websecure"
-      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
-      - "traefik.http.services.api.loadbalancer.server.port=4002"
-
-  strapi:
-    image: node:20-alpine
-    container_name: mosala-strapi
-    restart: unless-stopped
-    working_dir: /app
-    volumes:
-      - strapi_data:/app
-    command: sh -c "if [ ! -d 'cms' ]; then npx create-strapi-app@latest cms --quickstart --no-run --dbclient=mysql --dbhost=db --dbport=3306 --dbname=mosala --dbusername=mosala --dbpassword=mosala; fi && cd cms && npm run develop"
-    environment:
-      - NODE_ENV=development
-      - DATABASE_CLIENT=mysql
-      - DATABASE_HOST=db
-      - DATABASE_PORT=3306
-      - DATABASE_NAME=mosala
-      - DATABASE_USERNAME=mosala
-      - DATABASE_PASSWORD=mosala
+    ports:
+      - "4002:4002"
     depends_on:
       - db
     networks:
-      - mosala-net
+      - mosala-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.cms.rule=Host(`admin.projetmosala.org`)"
-      - "traefik.http.routers.cms.entrypoints=websecure"
-      - "traefik.http.routers.cms.tls.certresolver=letsencrypt"
-      - "traefik.http.services.cms.loadbalancer.server.port=1337"
+      - "traefik.http.routers.api.rule=Host(`api.projetmosala.org`)"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.api.loadbalancer.server.port=4002"
 
+  # Base de données MySQL
   db:
     image: mysql:8.0
     container_name: mosala-db
     restart: unless-stopped
     environment:
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: mosala
-      MYSQL_USER: mosala
-      MYSQL_PASSWORD: mosala
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
     volumes:
-      - db_data:/var/lib/mysql
-      - ./backup:/backup
+      - mysql_data:/var/lib/mysql
     networks:
-      - mosala-net
-    command: --default-authentication-plugin=mysql_native_password
+      - mosala-network
 
-  postgres:
-    image: postgres:15
-    container_name: mosala-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mosala
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-      - ./backup:/backup
-    networks:
-      - mosala-net
-
+  # Traefik reverse proxy
   traefik:
     image: traefik:v2.10
     container_name: mosala-traefik
@@ -104,22 +65,23 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik-projetmosala.yml:/etc/traefik/traefik.yml:ro
-      - ./acme.json:/acme.json
+      - traefik_data:/data
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.email=admin@projetmosala.org"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
     networks:
-      - mosala-net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.projetmosala.org`)"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - mosala-network
 
 volumes:
-  db_data:
-  pg_data:
-  strapi_data:
+  mysql_data:
+  traefik_data:
 
 networks:
-  mosala-net:
+  mosala-network:
     driver: bridge

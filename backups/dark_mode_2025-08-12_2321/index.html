@@ -47,7 +47,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico" />
     
     <!-- Préchargement de l'image LCP -->
-    <link rel="preload" as="image" href="/topcenter-uploads/carrousel/mosala-jeunes1.png" fetchpriority="high" />
+    <link rel="preload" as="image" href="/topcenter-uploads/carrousel/mosala-jeunes1.png" />
+    <link rel="preload" as="image" href="/topcenter-uploads/jeunesse-congolaise/jeunesse-congolaise.jpg" />
     
     <!-- Préchargement des routes principales -->
     <link rel="prefetch" href="/jobs" />
@@ -59,7 +60,7 @@
       (function(){
         try {
           const pref = localStorage.getItem('mosala-theme');
-          if (pref === 'dark') {
+          if (pref ? pref === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
           }
         } catch(e){}

@@ -1,11 +1,16 @@
 # Build stage
-FROM node:20-alpine AS build
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install pnpm
+RUN npm install -g pnpm
+
 # Copy package files
-COPY package*.json ./
-RUN npm install -g pnpm && pnpm install
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
@@ -16,11 +21,11 @@ RUN pnpm run build
 # Production stage
 FROM nginx:alpine
 
-# Copy built app from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy built app
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port
 EXPOSE 80

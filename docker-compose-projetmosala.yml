@@ -22,7 +22,7 @@ services:
   # Backend NestJS
   backend:
     build:
-      context: ./backend-nestjs
+      context: ./mosala-api
       dockerfile: Dockerfile
     container_name: mosala-backend
     restart: unless-stopped
@@ -61,8 +61,8 @@ services:
     container_name: mosala-traefik
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "9000:80"
+      - "9443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik_data:/data

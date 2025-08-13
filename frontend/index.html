@@ -41,11 +41,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/topcenter-uploads/Logo-Mosala/logo-mosala1.png" />
-    <link rel="apple-touch-icon" href="/topcenter-uploads/Logo-Mosala/logo-mosala1.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico" />
+    
+    <!-- Préchargement de l'image LCP -->
+    <link rel="preload" as="image" href="/topcenter-uploads/carrousel/mosala-jeunes1.png" fetchpriority="high" />
+    
+    <!-- Préchargement des routes principales -->
+    <link rel="prefetch" href="/jobs" />
+    <link rel="prefetch" href="/formations" />
   </head>
 
   <body>
+    <script>
+      (function(){
+        try {
+          const pref = localStorage.getItem('mosala-theme');
+          if (pref === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch(e){}
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

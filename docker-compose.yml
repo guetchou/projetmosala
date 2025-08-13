@@ -2,17 +2,18 @@ version: '3.8'
 
 services:
   frontend:
-    image: mosala-frontend
+    image: galoycg/mosala-frontend:latest
     container_name: mosala-frontend
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.frontend.final
     ports:
-      - "1199:80"
+      - "1200:80"
     depends_on:
       - backend
     networks:
       - mosala-net
+    restart: unless-stopped
 
   backend:
     image: mosala-backend
@@ -27,25 +28,6 @@ services:
       - DATABASE_URL=mysql+aiomysql://mosala:mosala@db:3306/mosala
     depends_on:
       - db
-    networks:
-      - mosala-net
-
-  backend-nestjs:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: mosala-backend-nestjs
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASS=postgres
-      - DB_NAME=mosala
-      - PORT=4002
-    depends_on:
-      - postgres
-    ports:
-      - "4002:4002"
     networks:
       - mosala-net
 

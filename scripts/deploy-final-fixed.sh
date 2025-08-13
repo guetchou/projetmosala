@@ -8,7 +8,7 @@ set -e
 echo "🚀 Déploiement final sur le VPS avec les images personnalisées..."
 
 # Variables
-VPS_HOST="topcenter-ovh"
+VPS_HOST="5.196.22.149"
 VPS_USER="root"
 VPS_PATH="/opt/mosala"
 
@@ -24,15 +24,11 @@ echo "✅ Connexion SSH établie"
 echo "📁 Vérification du dossier de déploiement..."
 ssh $VPS_USER@$VPS_HOST "mkdir -p $VPS_PATH"
 
-# Copier les fichiers vers /tmp d'abord, puis les déplacer
+# Copier les fichiers directement
 echo "📤 Copie des fichiers vers le VPS..."
-scp docker-compose-projetmosala.yml $VPS_USER@$VPS_HOST:/tmp/
-scp traefik-projetmosala.yml $VPS_USER@$VPS_HOST:/tmp/
-scp .env-projetmosala $VPS_USER@$VPS_HOST:/tmp/
-
-# Déplacer les fichiers vers le bon emplacement
-echo "📂 Déplacement des fichiers..."
-ssh $VPS_USER@$VPS_HOST "mv /tmp/docker-compose-projetmosala.yml $VPS_PATH/ && mv /tmp/traefik-projetmosala.yml $VPS_PATH/ && mv /tmp/.env-projetmosala $VPS_PATH/"
+scp docker-compose-projetmosala.yml $VPS_USER@$VPS_HOST:$VPS_PATH/
+scp traefik-projetmosala.yml $VPS_USER@$VPS_HOST:$VPS_PATH/
+scp .env-projetmosala $VPS_USER@$VPS_HOST:$VPS_PATH/
 
 # Arrêter les services existants
 echo "🛑 Arrêt des services existants..."

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>À propos de Mosala - Projet d'insertion professionnelle au Congo</title>
+    <meta name="description" content="Découvrez Mosala, projet d'insertion professionnelle financé par l'AFD et l'Union Européenne. Accompagnement des jeunes congolais vers l'emploi durable et l'autonomie." />
+    <meta name="author" content="Mosala" />
+    <meta name="keywords" content="Mosala, insertion professionnelle, Congo, jeunesse, emploi, formation, AFD, Union Européenne, Brazzaville, Pointe-Noire" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="fr" />
+    <meta name="geo.region" content="CG" />
+    <meta name="geo.placename" content="Brazzaville" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mosala.cg/about" />
+    <meta property="og:title" content="À propos de Mosala - Projet d'insertion professionnelle au Congo" />
+    <meta property="og:description" content="Découvrez Mosala, projet d'insertion professionnelle financé par l'AFD et l'Union Européenne. Accompagnement des jeunes congolais vers l'emploi durable et l'autonomie." />
+    <meta property="og:image" content="https://mosala.cg/topcenter-uploads/Logo-Mosala/logo-mosala1.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Mosala" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://mosala.cg/about" />
+    <meta name="twitter:title" content="À propos de Mosala - Projet d'insertion professionnelle au Congo" />
+    <meta name="twitter:description" content="Découvrez Mosala, projet d'insertion professionnelle financé par l'AFD et l'Union Européenne. Accompagnement des jeunes congolais vers l'emploi durable et l'autonomie." />
+    <meta name="twitter:image" content="https://mosala.cg/topcenter-uploads/Logo-Mosala/logo-mosala1.png" />
+    <meta name="twitter:site" content="@mosala_cg" />
+
+    <!-- Additional SEO -->
+    <link rel="canonical" href="https://mosala.cg/about" />
+    <meta name="theme-color" content="#2D8A5C" />
+    <meta name="msapplication-TileColor" content="#2D8A5C" />
+    
+    <!-- Preconnect pour améliorer les performances -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico" />
+    
+    <!-- Préchargement de l'image LCP -->
+    <link rel="preload" as="image" href="/topcenter-uploads/carrousel/mosala-jeunes1.png" />
+    
+    <!-- Préchargement des routes principales -->
+    <link rel="prefetch" href="/jobs" />
+    <link rel="prefetch" href="/formations" />
+  </head>
+
+  <body>
+    <script>
+      (function(){
+        try {
+          const pref = localStorage.getItem('mosala-theme');
+          if (pref ? pref === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch(e){}
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

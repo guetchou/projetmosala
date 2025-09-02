@@ -1,0 +1,105 @@
+/* Variables CSS pour Mosala */
+:root {
+  /* Couleurs Mosala */
+  --mosala-green: #00A651;
+  --mosala-yellow: #FFD700;
+  --mosala-orange: #FFA500;
+  --mosala-red: #ED1C24;
+  --mosala-dark: #005F25;
+  --mosala-light: #E8F5E8;
+
+  /* Hauteur navbar */
+  --nav-h: 80px;
+
+  /* Point focal Hero - contrôlable */
+  --hero-focus-y: 22%;
+
+  /* Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Gradients Mosala */
+.bg-mosala-radial {
+  background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+}
+
+.bg-mosala-radial-subtle {
+  background: radial-gradient(ellipse at center, 
+    rgba(0, 166, 81, 0.1) 0%, 
+    rgba(255, 215, 0, 0.1) 50%, 
+    rgba(255, 165, 0, 0.1) 100%
+  );
+}
+
+.bg-mosala-radial-vibrant {
+  background: radial-gradient(ellipse at center, 
+    rgba(0, 166, 81, 0.3) 0%, 
+    rgba(255, 215, 0, 0.3) 50%, 
+    rgba(237, 28, 36, 0.3) 100%
+  );
+}
+
+/* Gradient original adapté avec des couleurs plus neutres */
+.bg-gradient-radial-neutral {
+  background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+}
+
+/* Reset et styles de base */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fafafa; /* Fond neutre au lieu de noir */
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+/* Supprimer tout fond noir potentiel */
+body,
+#root,
+#app {
+  background-color: #fafafa !important;
+}
+
+/* Améliorer l'accessibilité */
+:focus {
+  outline: 2px solid var(--mosala-green);
+  outline-offset: 2px;
+}
+
+/* Optimisations pour les performances */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Support pour les préférences de motion réduit */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Améliorer la lisibilité sur mobile */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px; /* Évite le zoom sur iOS */
+  }
+}

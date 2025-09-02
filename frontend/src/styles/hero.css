@@ -1,0 +1,194 @@
+/* --- Import Swiper styles --- */
+@import 'swiper/css';
+@import 'swiper/css/effect-fade';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+
+/* ===============================
+   HERO RESPONSIVE HEIGHT
+   =============================== */
+@media (min-width: 1024px) {
+  .hero-section { min-height: 140vh; max-height: 160vh; height: 100vh; }
+  .hero-section.slide-1-active { min-height: 150vh; max-height: 170vh; height: 100vh; }
+}
+@media (min-width: 1440px) {
+  .hero-section { min-height: 135vh; max-height: 155vh; height: 100vh; }
+  .hero-section.slide-1-active { min-height: 145vh; max-height: 165vh; height: 100vh; }
+}
+@media screen and (max-resolution: 1dppx) {
+  .hero-section { min-height: 100vh; max-height: 120vh; }
+  .hero-section.slide-1-active { min-height: 110vh; max-height: 130vh; }
+}
+@media screen and (min-resolution: 2dppx) {
+  .hero-section { min-height: 160vh; max-height: 180vh; }
+  .hero-section.slide-1-active { min-height: 170vh; max-height: 190vh; }
+}
+
+/* ===============================
+   HERO SWIPER SLIDES
+   =============================== */
+.hero-swiper { width: 100%; height: 100%; }
+.hero-swiper .swiper-slide { width: 100%; height: 100%; position: relative; overflow: hidden; }
+.hero-swiper .swiper-slide > div { width: 100%; height: 100%; position: relative; }
+.hero-swiper .swiper-slide picture { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+.hero-swiper .swiper-slide img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+
+/* ===============================
+   GLASS MODERNE (Tailwind Style)
+   =============================== */
+.glassmorphism {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(16px) saturate(125%) contrast(105%);
+  -webkit-backdrop-filter: blur(16px) saturate(125%) contrast(105%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.glassmorphism-dark {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.25) 100%);
+  backdrop-filter: blur(16px) saturate(125%) contrast(105%);
+  -webkit-backdrop-filter: blur(16px) saturate(125%) contrast(105%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  transition: all 0.3s ease;
+}
+
+.glassmorphism-content {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+  backdrop-filter: blur(20px) saturate(125%) contrast(105%);
+  -webkit-backdrop-filter: blur(20px) saturate(125%) contrast(105%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.75rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glassmorphism-content-dark {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.2) 100%);
+  backdrop-filter: blur(20px) saturate(125%) contrast(105%);
+  -webkit-backdrop-filter: blur(20px) saturate(125%) contrast(105%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* ===============================
+   ANIMATIONS
+   =============================== */
+.hero-float { animation: heroFloat 6s ease-in-out infinite; }
+@keyframes heroFloat { 0%,100% { transform: translateY(0px) scale(1.05); } 50% { transform: translateY(-10px) scale(1.08); } }
+
+.scale-in { animation: scaleIn 0.8s ease-out; }
+@keyframes scaleIn { 0% { transform: scale(1.1); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+.scale-transition {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.scale-transition:hover {
+  transform: scale(1.05);
+}
+
+.hero-image-scale {
+  transition: transform 8s ease-in-out;
+  transform: scale(1.1);
+}
+.hero-image-scale.active {
+  transform: scale(1);
+  transition: transform 8s ease-in-out;
+}
+
+.stagger-animation > * { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* ===============================
+   SWIPER CONTROLS
+   =============================== */
+.swiper-button-next, .swiper-button-prev {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(16px) saturate(125%) contrast(105%);
+  -webkit-backdrop-filter: blur(16px) saturate(125%) contrast(105%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 50px; height: 50px;
+  transition: all 0.3s ease;
+}
+.swiper-button-next:hover, .swiper-button-prev:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+  transform: scale(1.1);
+}
+.swiper-button-next::after, .swiper-button-prev::after {
+  font-size: 20px; color: white; font-weight: bold;
+}
+
+.swiper-pagination-bullet {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 100%);
+  backdrop-filter: blur(8px) saturate(125%) contrast(105%);
+  -webkit-backdrop-filter: blur(8px) saturate(125%) contrast(105%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+.swiper-pagination-bullet-active {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  transform: scale(1.2);
+}
+
+/* ===============================
+   RESPONSIVE & PERFORMANCE
+   =============================== */
+@media (max-width: 768px) {
+  .glassmorphism-content {
+    backdrop-filter: blur(15px) saturate(125%) contrast(105%);
+    -webkit-backdrop-filter: blur(15px) saturate(125%) contrast(105%);
+  }
+  .hero-float { animation-duration: 4s; }
+  .stagger-animation > * { animation-duration: 0.4s; }
+}
+
+.hero-swiper .swiper-slide { will-change: transform; }
+.hero-image-scale { will-change: transform; }
+
+.hero-swiper .swiper-slide-active .stagger-animation { animation-play-state: running; }
+.hero-swiper .swiper-slide-active .hero-image-scale { animation-play-state: running; }
+
+/* ===============================
+   REDUCED MOTION SUPPORT
+   =============================== */
+@media (prefers-reduced-motion: reduce) {
+  .hero-float { animation: none; }
+  .scale-transition { transition: none; }
+  .hero-image-scale { transition: none; transform: scale(1); }
+  .scale-in { animation: none; }
+  .stagger-animation > * { animation: none; opacity: 1; }
+}
+
+/* ===============================
+   FOCUS STATES
+   =============================== */
+.hero-swiper button:focus, .hero-swiper a:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* ===============================
+   LOADING STATES
+   =============================== */
+.hero-loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

@@ -1,0 +1,20 @@
+{
+  "collectionName": "jobs",
+  "info": {
+    "singularName": "job",
+    "pluralName": "jobs",
+    "displayName": "Job"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titre": { "type": "string", "required": true },
+    "description": { "type": "richtext" },
+    "entreprise": { "type": "string" },
+    "lieu": { "type": "string" },
+    "salaire": { "type": "string" },
+    "date": { "type": "date" },
+    "logo": { "type": "media", "multiple": false }
+  }
+}

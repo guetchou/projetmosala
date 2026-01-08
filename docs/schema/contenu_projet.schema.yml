@@ -1,0 +1,135 @@
+version: 1
+type: object
+required:
+  - identite
+  - contexte
+  - objectifs
+  - resultats
+  - activites
+  - gouvernance
+  - bailleurs
+  - contenus_site
+properties:
+  identite:
+    type: object
+    required: [intitule, acronyme, zone, periode, partenaires]
+    properties:
+      intitule: { type: string }
+      acronyme: { type: string }
+      zone: { type: string }
+      periode: { type: string }
+      bailleurs: { type: array, items: { type: string } }
+      partenaires: { type: array, items: { type: string } }
+      contact: { type: string }
+      liens: { type: array, items: { type: string } }
+  contexte:
+    type: object
+    properties:
+      problematique: { type: string }
+      beneficiaires: { type: array, items: { type: string } }
+      besoins_priorises:
+        type: array
+        items:
+          type: object
+          required: [priorite, besoin]
+          properties:
+            priorite: { type: integer }
+            besoin: { type: string }
+      risques_majeurs: { type: array, items: { type: string } }
+  objectifs:
+    type: object
+    required: [global, specifiques]
+    properties:
+      global: { type: string }
+      specifiques: { type: array, minItems: 1, items: { type: string } }
+  resultats:
+    type: array
+    items:
+      type: object
+      required: [code, intitulé]
+      properties:
+        code: { type: string }
+        intitulé: { type: string }
+        indicateurs:
+          type: array
+          items:
+            type: object
+            required: [nom, definition, unite, source, frequence]
+            properties:
+              nom: { type: string }
+              definition: { type: string }
+              unite: { type: string }
+              source: { type: string }
+              frequence: { type: string }
+  activites:
+    type: array
+    items:
+      type: object
+      required: [code, intitule]
+      properties:
+        code: { type: string }
+        intitule: { type: string }
+        livrables:
+          type: array
+          items:
+            type: object
+            properties:
+              nom: { type: string }
+              format: { type: string }
+              responsable: { type: string }
+              echeance: { type: string }
+  gouvernance:
+    type: object
+    properties:
+      raci:
+        type: array
+        items:
+          type: object
+          properties:
+            responsable: { type: string }
+            appui: { type: array, items: { type: string } }
+            consulte: { type: array, items: { type: string } }
+            informe: { type: array, items: { type: string } }
+      organes: { type: array, items: { type: string } }
+  bailleurs:
+    type: object
+    properties:
+      exigences: { type: array, items: { type: string } }
+      reporting:
+        type: array
+        items:
+          type: object
+          properties:
+            frequence: { type: string }
+            format: { type: string }
+      kpi:
+        type: array
+        items:
+          type: object
+          properties:
+            nom: { type: string }
+            definition: { type: string }
+            calcul: { type: string }
+  contenus_site:
+    type: object
+    properties:
+      rubriques: { type: array, items: { type: string } }
+      taxonomies: { type: array, items: { type: string } }
+      medias:
+        type: array
+        items:
+          type: object
+          properties:
+            type: { type: string }
+            chemin: { type: string }
+            droits: { type: string }
+      seo:
+        type: object
+        properties:
+          mots_cles: { type: array, items: { type: string } }
+          meta_titres: { type: array, items: { type: string } }
+          meta_descriptions: { type: array, items: { type: string } }
+      langues:
+        type: array
+        items: { type: string }
+

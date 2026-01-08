@@ -1,0 +1,787 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MOSALA Design System - All colors MUST be HSL */
+
+@layer base {
+  :root {
+
+  /* Vert Mosala - Adouci */
+  --mosala-green-50:  #F0F9F5;
+  --mosala-green-100: #D1F2E6;
+  --mosala-green-200: #B3EBD7;
+  --mosala-green-300: #95E4C8;
+  --mosala-green-500: #2D8A5C;
+  --mosala-green-600: #246F4A;
+  --mosala-green-700: #1B5438;
+  --mosala-green-800: #123A26;
+  --mosala-green-900: #091F14;
+
+  /* Jaune Mosala - Adouci */
+  --mosala-yellow-50:  #FEFCF0;
+  --mosala-yellow-100: #FDF7D1;
+  --mosala-yellow-200: #FCF2B3;
+  --mosala-yellow-300: #FBED95;
+  --mosala-yellow-500: #E6B800;
+  --mosala-yellow-600: #B89300;
+  --mosala-yellow-700: #8A6E00;
+  --mosala-yellow-800: #5C4A00;
+  --mosala-yellow-900: #2E2500;
+
+  /* Orange Mosala - Adouci */
+  --mosala-orange-50:  #FEF8F0;
+  --mosala-orange-100: #FDEED1;
+  --mosala-orange-200: #FCE4B3;
+  --mosala-orange-300: #FBDA95;
+  --mosala-orange-500: #E67A00;
+  --mosala-orange-600: #B86200;
+  --mosala-orange-700: #8A4900;
+  --mosala-orange-800: #5C3100;
+  --mosala-orange-900: #2E1800;
+
+  /* Rouge Mosala - Adouci */
+  --mosala-red-50:  #FDF0F1;
+  --mosala-red-100: #FAD1D4;
+  --mosala-red-200: #F7B3B7;
+  --mosala-red-300: #F4959A;
+  --mosala-red-500: #CC0510;
+  --mosala-red-600: #A3040D;
+  --mosala-red-700: #7A030A;
+  --mosala-red-800: #520207;
+  --mosala-red-900: #290103;
+
+  /* Neutres - Adoucis */
+  --mosala-dark-50:  #F8F8F8;
+  --mosala-dark-100: #E8E8E8;
+  --mosala-dark-200: #D8D8D8;
+  --mosala-dark-300: #C8C8C8;
+  --mosala-dark-500: #4A4A4A;
+  --mosala-dark-600: #3A3A3A;
+  --mosala-dark-700: #2A2A2A;
+  --mosala-dark-800: #1A1A1A;
+  --mosala-dark-900: #0A0A0A;
+
+  --mosala-white: #FFFFFF;
+
+  /* Variables CSS compatibles avec les composants existants */
+  --color-mosala-green-50: var(--mosala-green-50);
+  --color-mosala-green-100: var(--mosala-green-100);
+  --color-mosala-green-200: var(--mosala-green-200);
+  --color-mosala-green-300: var(--mosala-green-300);
+  --color-mosala-green-500: var(--mosala-green-500);
+  --color-mosala-green-600: var(--mosala-green-600);
+  --color-mosala-green-700: var(--mosala-green-700);
+  --color-mosala-green-800: var(--mosala-green-800);
+  --color-mosala-green-900: var(--mosala-green-900);
+
+  --color-mosala-yellow-50: var(--mosala-yellow-50);
+  --color-mosala-yellow-100: var(--mosala-yellow-100);
+  --color-mosala-yellow-200: var(--mosala-yellow-200);
+  --color-mosala-yellow-300: var(--mosala-yellow-300);
+  --color-mosala-yellow-500: var(--mosala-yellow-500);
+  --color-mosala-yellow-600: var(--mosala-yellow-600);
+  --color-mosala-yellow-700: var(--mosala-yellow-700);
+  --color-mosala-yellow-800: var(--mosala-yellow-800);
+  --color-mosala-yellow-900: var(--mosala-yellow-900);
+
+  --color-mosala-orange-50: var(--mosala-orange-50);
+  --color-mosala-orange-100: var(--mosala-orange-100);
+  --color-mosala-orange-200: var(--mosala-orange-200);
+  --color-mosala-orange-300: var(--mosala-orange-300);
+  --color-mosala-orange-500: var(--mosala-orange-500);
+  --color-mosala-orange-600: var(--mosala-orange-600);
+  --color-mosala-orange-700: var(--mosala-orange-700);
+  --color-mosala-orange-800: var(--mosala-orange-800);
+  --color-mosala-orange-900: var(--mosala-orange-900);
+
+  --color-mosala-red-50: var(--mosala-red-50);
+  --color-mosala-red-100: var(--mosala-red-100);
+  --color-mosala-red-200: var(--mosala-red-200);
+  --color-mosala-red-300: var(--mosala-red-300);
+  --color-mosala-red-500: var(--mosala-red-500);
+  --color-mosala-red-600: var(--mosala-red-600);
+  --color-mosala-red-700: var(--mosala-red-700);
+  --color-mosala-red-800: var(--mosala-red-800);
+  --color-mosala-red-900: var(--mosala-red-900);
+
+  --color-mosala-dark-50: var(--mosala-dark-50);
+  --color-mosala-dark-100: var(--mosala-dark-100);
+  --color-mosala-dark-200: var(--mosala-dark-200);
+  --color-mosala-dark-300: var(--mosala-dark-300);
+  --color-mosala-dark-500: var(--mosala-dark-500);
+  --color-mosala-dark-600: var(--mosala-dark-600);
+  --color-mosala-dark-700: var(--mosala-dark-700);
+  --color-mosala-dark-800: var(--mosala-dark-800);
+  --color-mosala-dark-900: var(--mosala-dark-900);
+
+  --color-mosala-white: var(--mosala-white);
+
+    /* MOSALA Brand Colors - Adoucis */
+    --mosala-green: 158 50% 35%;    /* #2D8A5C - adouci */
+    --mosala-yellow: 45 100% 45%;   /* #E6B800 - adouci */
+    --mosala-orange: 35 100% 45%;   /* #E67A00 - adouci */
+    --mosala-red: 356 95% 40%;      /* #CC0510 - adouci */
+    --mosala-dark: 0 0% 29%;        /* #4A4A4A - adouci */
+    --mosala-light: 40 50% 98%;     /* #FDF8F5 */
+    
+    /* Primary system colors using MOSALA palette */
+    --background: 40 50% 98%;        /* mosala-light */
+    --foreground: 0 0% 29%;          /* mosala-dark */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 29%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 29%;
+
+    --primary: 158 50% 35%;          /* mosala-green - adouci */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 45 100% 45%;        /* mosala-yellow - adouci */
+    --secondary-foreground: 0 0% 29%;
+
+    --muted: 40 20% 95%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 35 100% 45%;           /* mosala-orange - adouci */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 356 95% 40%;      /* mosala-red - adouci */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 20% 90%;
+    --input: 40 20% 90%;
+    --ring: 158 50% 35%;
+
+    --radius: 0.75rem;
+
+    /* Gradients - Adoucis */
+    --gradient-mosala: linear-gradient(135deg, hsl(var(--mosala-green)), hsl(var(--mosala-yellow)), hsl(var(--mosala-orange)), hsl(var(--mosala-red)));
+    --gradient-primary: linear-gradient(135deg, hsl(var(--mosala-green)), hsl(var(--mosala-yellow)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--mosala-orange)), hsl(var(--mosala-red)));
+    
+    /* Shadows - Adoucis */
+    --shadow-mosala: 0 10px 30px -10px hsl(var(--mosala-green) / 0.2);
+    --shadow-glow: 0 0 40px hsl(var(--mosala-yellow) / 0.2);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 0 0% 13%;          /* mosala-dark */
+    --foreground: 40 50% 98%;        /* mosala-light */
+
+    --card: 0 0% 18%;
+    --card-foreground: 40 50% 98%;
+
+    --popover: 0 0% 18%;
+    --popover-foreground: 40 50% 98%;
+
+    --primary: 138 100% 35%;
+    --primary-foreground: 0 0% 13%;
+
+    --secondary: 50 100% 45%;
+    --secondary-foreground: 0 0% 13%;
+
+    --muted: 0 0% 25%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 35 100% 52%;
+    --accent-foreground: 0 0% 13%;
+
+    --destructive: 356 93% 50%;
+    --destructive-foreground: 40 50% 98%;
+
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 138 100% 35%;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+  }
+
+  /* Enhanced Swiper styles */
+  .testimonials-swiper .swiper-button-next,
+  .testimonials-swiper .swiper-button-prev {
+    @apply text-primary;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    margin-top: -22px;
+    transition: all 0.3s ease;
+  }
+
+  .testimonials-swiper .swiper-button-next:hover,
+  .testimonials-swiper .swiper-button-prev:hover {
+    @apply bg-primary text-white shadow-mosala;
+    transform: scale(1.1);
+  }
+
+  .testimonials-swiper .swiper-pagination-bullet {
+    @apply bg-primary/30;
+    width: 12px;
+    height: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .testimonials-swiper .swiper-pagination-bullet-active {
+    @apply bg-primary;
+    transform: scale(1.2);
+  }
+
+  .caravane-testimonials .swiper-button-next,
+  .caravane-testimonials .swiper-button-prev {
+    @apply text-accent;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    margin-top: -22px;
+    transition: all 0.3s ease;
+  }
+
+  .caravane-testimonials .swiper-button-next:hover,
+  .caravane-testimonials .swiper-button-prev:hover {
+    @apply bg-accent text-white;
+    transform: scale(1.1);
+  }
+
+  .caravane-testimonials .swiper-pagination-bullet {
+    @apply bg-accent/30;
+    width: 10px;
+    height: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .caravane-testimonials .swiper-pagination-bullet-active {
+    @apply bg-accent;
+    transform: scale(1.2);
+  }
+
+  /* Custom animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { 
+      box-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)), 0 0 15px hsl(var(--primary));
+    }
+    50% { 
+      box-shadow: 0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary)), 0 0 30px hsl(var(--primary));
+    }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  /* Scroll animations */
+  .scroll-fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+  }
+
+  .scroll-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Enhanced hover effects */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ========================================
+   MOSALA JOB HUB - PALETTE DE COULEURS AMÉLIORÉE
+   ======================================== */
+
+:root {
+  /* ========================================
+     COULEURS MOSALA (ACCENTS)
+     ======================================== */
+  
+  /* Vert Mosala - Couleur principale */
+  --color-mosala-green-50: #f0f9f4;
+  --color-mosala-green-100: #dcf2e3;
+  --color-mosala-green-200: #b8e4c7;
+  --color-mosala-green-300: #8dd4a8;
+  --color-mosala-green-400: #5bc285;
+  --color-mosala-green-500: #2d8a5c;  /* Couleur principale */
+  --color-mosala-green-600: #236f4a;
+  --color-mosala-green-700: #1b5538;
+  --color-mosala-green-800: #143b26;
+  --color-mosala-green-900: #0d2114;
+
+  /* Jaune Mosala - Couleur secondaire */
+  --color-mosala-yellow-50: #fffbf0;
+  --color-mosala-yellow-100: #fff6d9;
+  --color-mosala-yellow-200: #ffedb3;
+  --color-mosala-yellow-300: #ffe08c;
+  --color-mosala-yellow-400: #ffd366;
+  --color-mosala-yellow-500: #e6b800;  /* Couleur secondaire */
+  --color-mosala-yellow-600: #cc9f00;
+  --color-mosala-yellow-700: #b38600;
+  --color-mosala-yellow-800: #996d00;
+  --color-mosala-yellow-900: #805400;
+
+  /* Rouge Mosala - Couleur d'accent */
+  --color-mosala-red-50: #fef2f2;
+  --color-mosala-red-100: #fee2e2;
+  --color-mosala-red-200: #fecaca;
+  --color-mosala-red-300: #fca5a5;
+  --color-mosala-red-400: #f87171;
+  --color-mosala-red-500: #ef4444;  /* Couleur d'accent */
+  --color-mosala-red-600: #dc2626;
+  --color-mosala-red-700: #b91c1c;
+  --color-mosala-red-800: #991b1b;
+  --color-mosala-red-900: #7f1d1d;
+
+  /* ========================================
+     COULEURS NEUTRES (STRUCTURE)
+     ======================================== */
+  
+  /* Blancs et gris clairs */
+  --color-white: #ffffff;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-black: #000000;
+
+  /* ========================================
+     COULEURS FONCTIONNELLES
+     ======================================== */
+  
+  /* Bleu - Liens et actions */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+
+  /* Succès, Warning, Erreur */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* ========================================
+     COULEURS SÉMANTIQUES MOSALA
+     ======================================== */
+  
+  /* Couleurs principales pour l'interface */
+  --color-primary: var(--color-mosala-green-500);
+  --color-primary-light: var(--color-mosala-green-400);
+  --color-primary-dark: var(--color-mosala-green-600);
+  
+  --color-secondary: var(--color-mosala-yellow-500);
+  --color-secondary-light: var(--color-mosala-yellow-400);
+  --color-secondary-dark: var(--color-mosala-yellow-600);
+  
+  --color-accent: var(--color-mosala-red-500);
+  --color-accent-light: var(--color-mosala-red-400);
+  --color-accent-dark: var(--color-mosala-red-600);
+
+  /* ========================================
+     COULEURS D'INTERFACE
+     ======================================== */
+  
+  /* Arrière-plans */
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-gray-50);
+  --color-bg-tertiary: var(--color-gray-100);
+  --color-bg-dark: var(--color-gray-900);
+  
+  /* Textes */
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-700);
+  --color-text-tertiary: var(--color-gray-500);
+  --color-text-inverse: var(--color-white);
+  
+  /* Bordures */
+  --color-border-light: var(--color-gray-200);
+  --color-border-medium: var(--color-gray-300);
+  --color-border-dark: var(--color-gray-400);
+  
+  /* Ombres */
+  --color-shadow-light: rgba(0, 0, 0, 0.05);
+  --color-shadow-medium: rgba(0, 0, 0, 0.1);
+  --color-shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   UTILITAIRES DE COULEURS
+   ======================================== */
+
+/* Couleurs de texte */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+.text-inverse { color: var(--color-text-inverse); }
+
+/* Couleurs d'arrière-plan */
+.bg-primary { background-color: var(--color-bg-primary); }
+.bg-secondary { background-color: var(--color-bg-secondary); }
+.bg-tertiary { background-color: var(--color-bg-tertiary); }
+.bg-dark { background-color: var(--color-bg-dark); }
+
+/* Couleurs Mosala */
+.text-mosala-green { color: var(--color-primary); }
+.text-mosala-yellow { color: var(--color-secondary); }
+.text-mosala-red { color: var(--color-accent); }
+
+.bg-mosala-green { background-color: var(--color-primary); }
+.bg-mosala-yellow { background-color: var(--color-secondary); }
+.bg-mosala-red { background-color: var(--color-accent); }
+
+/* Couleurs neutres */
+.text-white { color: var(--color-white); }
+.text-black { color: var(--color-black); }
+.text-gray { color: var(--color-gray-500); }
+
+.bg-white { background-color: var(--color-white); }
+.bg-black { background-color: var(--color-black); }
+.bg-gray { background-color: var(--color-gray-100); }
+
+/* ========================================
+   GRADIENTS AMÉLIORÉS
+   ======================================== */
+
+.mosala-gradient-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+.mosala-gradient-secondary {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+}
+
+.mosala-gradient-hero {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
+}
+
+.mosala-gradient-subtle {
+  background: linear-gradient(135deg, var(--color-gray-50) 0%, var(--color-gray-100) 100%);
+}
+
+/* ========================================
+   OMBRES AMÉLIORÉES
+   ======================================== */
+
+.shadow-light {
+  box-shadow: 0 1px 3px 0 var(--color-shadow-light), 0 1px 2px 0 var(--color-shadow-light);
+}
+
+.shadow-medium {
+  box-shadow: 0 4px 6px -1px var(--color-shadow-medium), 0 2px 4px -1px var(--color-shadow-medium);
+}
+
+.shadow-dark {
+  box-shadow: 0 10px 15px -3px var(--color-shadow-dark), 0 4px 6px -2px var(--color-shadow-dark);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(45, 138, 92, 0.3);
+}
+
+/* ========================================
+   BORDURES AMÉLIORÉES
+   ======================================== */
+
+.border-light { border-color: var(--color-border-light); }
+.border-medium { border-color: var(--color-border-medium); }
+.border-dark { border-color: var(--color-border-dark); }
+
+.border-mosala-green { border-color: var(--color-primary); }
+.border-mosala-yellow { border-color: var(--color-secondary); }
+.border-mosala-red { border-color: var(--color-accent); }
+
+/* ========================================
+   ÉTATS INTERACTIFS
+   ======================================== */
+
+.hover\:bg-gray:hover { background-color: var(--color-gray-100); }
+.hover\:bg-white:hover { background-color: var(--color-white); }
+.hover\:text-primary:hover { color: var(--color-primary); }
+
+.focus\:ring-primary:focus { --tw-ring-color: var(--color-primary); }
+.focus\:border-primary:focus { border-color: var(--color-primary); }
+
+/* ========================================
+   RESPONSIVE ET ACCESSIBILITÉ
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-primary: var(--color-gray-900);
+    --color-bg-secondary: var(--color-gray-800);
+    --color-bg-tertiary: var(--color-gray-700);
+    
+    --color-text-primary: var(--color-white);
+    --color-text-secondary: var(--color-gray-300);
+    --color-text-tertiary: var(--color-gray-400);
+    
+    --color-border-light: var(--color-gray-700);
+    --color-border-medium: var(--color-gray-600);
+    --color-border-dark: var(--color-gray-500);
+  }
+}
+
+/* ========================================
+   ANIMATIONS ET TRANSITIONS
+   ======================================== */
+
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* ========================================
+   UTILITAIRES SPÉCIAUX MOSALA
+   ======================================== */
+
+/* Cartes avec arrière-plan neutre */
+.card-neutral {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--color-shadow-light);
+}
+
+/* Boutons avec hiérarchie claire */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+}
+
+.btn-secondary {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.btn-neutral {
+  background-color: var(--color-gray-100);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-light);
+}
+
+/* ========================================
+   FIN DE LA PALETTE AMÉLIORÉE
+   ======================================== */
+
+/* Palette Mosala */
+:root {
+  --color-mosala-green-50: #E6F9F0;
+  --color-mosala-green-100: #B3F3E1;
+  --color-mosala-green-200: #80ECD1;
+  --color-mosala-green-300: #4DE4C2;
+  --color-mosala-green-500: #009640;
+  --color-mosala-green-600: #007A32;
+  --color-mosala-green-700: #005F25;
+  --color-mosala-green-800: #004418;
+  --color-mosala-green-900: #00280C;
+  --color-mosala-yellow-50: #FFFBE6;
+  --color-mosala-yellow-100: #FFF6B3;
+  --color-mosala-yellow-200: #FFEE80;
+  --color-mosala-yellow-300: #FFE84D;
+  --color-mosala-yellow-500: #FFD500;
+  --color-mosala-yellow-600: #D4B400;
+  --color-mosala-yellow-700: #A38E00;
+  --color-mosala-yellow-800: #736600;
+  --color-mosala-yellow-900: #413E00;
+  --color-mosala-orange-50: #FFF3E6;
+  --color-mosala-orange-100: #FFE1B3;
+  --color-mosala-orange-200: #FFD080;
+  --color-mosala-orange-300: #FFC04D;
+  --color-mosala-orange-500: #F39200;
+  --color-mosala-orange-600: #C07400;
+  --color-mosala-orange-700: #8E5600;
+  --color-mosala-orange-800: #5C3900;
+  --color-mosala-orange-900: #2A1B00;
+  --color-mosala-red-50: #FDE6E7;
+  --color-mosala-red-100: #FBB3B7;
+  --color-mosala-red-200: #F78087;
+  --color-mosala-red-300: #F44D58;
+  --color-mosala-red-500: #E30613;
+  --color-mosala-red-600: #B0040F;
+  --color-mosala-red-700: #83000B;
+  --color-mosala-red-800: #520007;
+  --color-mosala-red-900: #210003;
+  --color-mosala-dark-50: #F2F2F2;
+  --color-mosala-dark-100: #D9D9D9;
+  --color-mosala-dark-200: #BFBFBF;
+  --color-mosala-dark-300: #A6A6A6;
+  --color-mosala-dark-500: #222222;
+  --color-mosala-dark-600: #1B1B1B;
+  --color-mosala-dark-700: #141414;
+  --color-mosala-dark-800: #0D0D0D;
+  --color-mosala-dark-900: #060606;
+  --color-mosala-white: #FFFFFF;
+}
+
+/* Dégradé principal Mosala (vert 300 -> jaune 500) */
+.mosala-gradient-hero {
+  background-image: linear-gradient(
+    to bottom right,
+    rgba(107, 114, 128, 0.8) 0%,
+    rgba(156, 163, 175, 0.8) 100%
+  );
+}
+
+/* Overlay glassmorphism Mosala */
+.mosala-glass-overlay {
+  background: linear-gradient(
+    to bottom right,
+    rgba(249, 250, 251, 0.8), /* gray-50 */
+    rgba(255, 255, 255, 0.9), /* white */
+    rgba(243, 244, 246, 0.8)  /* gray-100 */
+  );
+  backdrop-filter: blur(16px);
+}
+
+/* Blobs animés Mosala */
+.mosala-blob-green { background: var(--color-gray-300); }
+.mosala-blob-yellow { background: var(--color-gray-400); }
+.mosala-blob-orange { background: var(--color-gray-500); }
+
+@keyframes blob {
+  0%, 100% { transform: scale(1) translateY(0); }
+  33% { transform: scale(1.1, 0.9) translateY(-10px); }
+  66% { transform: scale(0.9, 1.1) translateY(10px); }
+}
+.animate-blob { animation: blob 7s infinite ease-in-out; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+@keyframes slow-pan {
+  0%,100% { background-position: center; }
+  50% { background-position: 60% 40%; }
+}
+.animate-slow-pan {
+  animation: slow-pan 30s ease-in-out infinite alternate;
+}
+
+/* Chatbot Animations */
+@keyframes chat-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes chat-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(79, 70, 229, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(79, 70, 229, 0.6); }
+}
+
+@keyframes typing-dots {
+  0%, 20% { transform: translateY(0); opacity: 1; }
+  40% { transform: translateY(-8px); opacity: 0.5; }
+  60% { transform: translateY(0); opacity: 1; }
+  80%, 100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes message-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes notification-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Chatbot specific classes */
+.chatbot-bounce {
+  animation: chat-bounce 2s ease-in-out infinite;
+}
+
+.chatbot-glow {
+  animation: chat-glow 3s ease-in-out infinite;
+}
+
+.typing-dot {
+  animation: typing-dots 1.4s ease-in-out infinite;
+}
+
+.message-slide-in {
+  animation: message-slide-in 0.3s ease-out;
+}
+
+.notification-pulse {
+  animation: notification-pulse 1s ease-in-out infinite;
+}
+
+/* Enhanced avatar breathing effect */
+.avatar-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Particle effects */
+.particle {
+  animation: particle-float 4s ease-in-out infinite;
+}
+
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+  50% { transform: translateY(-15px) rotate(180deg); opacity: 0.2; }
+}

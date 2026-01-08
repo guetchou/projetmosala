@@ -1,0 +1,53 @@
+.actualites-section {
+  background: #f3f6f8;
+  padding: 3rem 0;
+}
+.actualite-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.actualite-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+.actualite-image {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+}
+.actualite-tag {
+  display: inline-block;
+  margin: 1rem 0 0.5rem 1rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 8px;
+  background: #e8f0fe;
+  color: #1967d2;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.actualite-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+.actualite-date {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+.actualite-summary {
+  color: #333;
+  margin-bottom: 1rem;
+}
+.actualite-link {
+  color: #4F46E5;
+  font-weight: 600;
+  text-decoration: none;
+}
+.actualite-link:hover {
+  text-decoration: underline;
+} 

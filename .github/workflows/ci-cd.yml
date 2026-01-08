@@ -1,0 +1,199 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mosala_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: mosala_test
+          MYSQL_USER: mosala
+          MYSQL_PASSWORD: mosala
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 3306:3306
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend && npm ci
+
+    - name: Install backend dependencies
+      run: |
+        cd backend && npm ci
+
+    - name: Run frontend linting
+      run: |
+        cd frontend && npm run lint || true
+
+    - name: Run backend linting
+      run: |
+        cd backend && npm run lint || true
+
+    - name: Run backend tests
+      run: |
+        cd backend && npm run test
+      env:
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_USER: postgres
+        DB_PASS: postgres
+        DB_NAME: mosala_test
+
+    - name: Build frontend
+      run: |
+        cd frontend && npm run build
+
+    - name: Build backend
+      run: |
+        cd backend && npm run build
+
+  docker-build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Frontend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        file: ./frontend/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/mosala-frontend:${{ github.sha }}
+          ${{ secrets.DOCKER_USERNAME }}/mosala-frontend:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build and push Backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        file: ./backend/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/mosala-backend:${{ github.sha }}
+          ${{ secrets.DOCKER_USERNAME }}/mosala-backend:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build and push Python API image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./mosala-api
+        file: ./mosala-api/Dockerfile
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/mosala-api:${{ github.sha }}
+          ${{ secrets.DOCKER_USERNAME }}/mosala-api:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy-staging:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+    - name: Deploy to staging
+      run: |
+        echo "Deploying to staging environment..."
+        # Ajoutez ici vos commandes de déploiement staging
+
+  deploy-production:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to production server
+      run: |
+        echo "Deploying to production server..."
+        
+        # Ajouter la clé SSH au known_hosts
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        
+        # Se connecter au serveur et déployer
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          echo "🔄 Mise à jour du code..."
+          cd /opt/mosala
+          git pull origin main
+          
+          echo "🐳 Pull des dernières images Docker..."
+          docker compose pull
+          
+          echo "🚀 Redémarrage des services..."
+          docker compose down
+          docker compose up -d
+          
+          echo "🧹 Nettoyage des images non utilisées..."
+          docker image prune -f
+          
+          echo "✅ Déploiement terminé!"
+          docker compose ps
+        EOF
+
+    - name: Health check
+      run: |
+        echo "🔍 Vérification de la santé des services..."
+        # Attendre que les services soient prêts
+        sleep 30
+        
+        # Vérifier que les services répondent
+        curl -f http://${{ secrets.SERVER_HOST }}:1199 || exit 1
+        curl -f http://${{ secrets.SERVER_HOST }}:4002/api || exit 1

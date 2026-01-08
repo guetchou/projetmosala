@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: galoycg/mosala-frontend:latest
+    container_name: mosala-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.final
+    ports:
+      - "1200:80"
+    depends_on:
+      - backend
+    networks:
+      - mosala-net
+    restart: unless-stopped
+    # 🚀 ALTERNATIVE : Volume pour les assets statiques
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html/public:ro
+      - ./frontend/public/topcenter-uploads:/usr/share/nginx/html/topcenter-uploads:ro
+      - ./frontend/public/images-mosala:/usr/share/nginx/html/images-mosala:ro
+
+  backend:
+    image: mosala-backend
+    container_name: mosala-backend
+    build:
+      context: ./mosala-api
+      dockerfile: Dockerfile
+    command: uvicorn app.main:app --host 0.0.0.0 --port 1188 --reload
+    ports:
+      - "1188:1188"
+    environment:
+      - DATABASE_URL=mysql+aiomysql://mosala:mosala@db:3306/mosala
+    depends_on:
+      - db
+    networks:
+      - mosala-net
+
+  strapi:
+    image: node:20
+    container_name: mosala-strapi
+    working_dir: /app
+    volumes:
+      - ./mosala-cms:/app
+      - ./mosala-cms/.tmp:/app/.tmp
+      - ./mosala-cms/public/uploads:/app/public/uploads
+    command: sh -c "npm install && npm run develop"
+    ports:
+      - "1337:1337"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - PORT=1337
+    depends_on:
+      - db
+    networks:
+      - mosala-net
+
+  db:
+    image: mysql:8.0
+    container_name: mosala-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: mosala
+      MYSQL_USER: mosala
+      MYSQL_PASSWORD: mosala
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3326:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - mosala-net
+
+  postgres:
+    image: postgres:15
+    container_name: mosala-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mosala
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - mosala-net
+
+volumes:
+  db_data:
+  pg_data:
+
+networks:
+  mosala-net:
+    driver: bridge

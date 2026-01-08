@@ -1,0 +1,66 @@
+identite:
+  intitule: "MOSALA – Amélioration des services locaux"
+  acronyme: "MOSALA"
+  zone: "Kinshasa, Kongo Central"
+  periode: "2025-2028"
+  bailleurs: ["AFD", "UE"]
+  partenaires: ["Mairie", "ONG locales", "Tech partner"]
+  contact: "coordination@mosala.org"
+  liens:
+    - "https://exemple.org/projet/mosala"
+contexte:
+  problematique: |
+    Insuffisance de la qualité des services locaux. Les citoyens font face à
+    des délais d'accès et un manque de transparence.
+  beneficiaires: ["Citoyens", "Agents municipaux"]
+  besoins_priorises:
+    - { priorite: 1, besoin: "Digitalisation des processus" }
+    - { priorite: 2, besoin: "Renforcement des compétences" }
+    - { priorite: 3, besoin: "Amélioration de l'information publique" }
+  risques_majeurs: ["Connexion instable", "Rotation du personnel"]
+objectifs:
+  global: |
+    Améliorer durablement la qualité des services municipaux et la satisfaction
+    des usagers via des outils numériques et des démarches participatives.
+  specifiques:
+    - "Réduire le délai moyen de traitement des demandes de 30%"
+    - "Publier 100% des informations clés en accès public"
+resultats:
+  - code: "R1"
+    intitulé: "Processus administratifs digitalisés"
+    indicateurs:
+      - { nom: "Délai moyen (jours)", definition: "Moyenne glissante 3 mois", unite: "jours", source: "SI municipal", frequence: "mensuelle" }
+  - code: "R2"
+    intitulé: "Transparence et redevabilité accrues"
+    indicateurs:
+      - { nom: "% docs publiés", definition: "Part des docs obligatoires publiés", unite: "%", source: "Audit", frequence: "trimestrielle" }
+activites:
+  - code: "A1"
+    intitule: "Cartographie et simplification des procédures"
+    livrables:
+      - { nom: "Cartographie As-Is", format: "PDF", responsable: "Coordination", echeance: "T1-2025" }
+  - code: "A2"
+    intitule: "Développement du portail citoyen"
+    livrables:
+      - { nom: "MVP portail", format: "Web", responsable: "Équipe tech", echeance: "T2-2025" }
+gouvernance:
+  raci:
+    - { responsable: "Coordination", appui: ["Tech"], consulte: ["Com", "Mairie"], informe: ["Bailleurs"] }
+  organes: ["COPIL", "COTECH", "Coordination"]
+bailleurs:
+  exigences: ["Logo sur site", "Rapports trimestriels", "Normes RGPD locales"]
+  reporting:
+    - { frequence: "trimestriel", format: "PDF + tableau KPI" }
+  kpi:
+    - { nom: "Satisfaction usagers", definition: "Score sur 5", calcul: "moyenne sondages" }
+contenus_site:
+  rubriques: ["Accueil", "Pages projet", "Blog", "Carte", "Stats"]
+  taxonomies: ["thèmes:services", "zones:Kinshasa", "ODD:16"]
+  medias:
+    - { type: "logo", chemin: "/assets/logos/mosala.png", droits: "CC-BY" }
+  seo:
+    mots_cles: ["services publics", "transparence", "numérique"]
+    meta_titres: ["Projet MOSALA"]
+    meta_descriptions: ["Amélioration des services locaux"]
+  langues: ["fr", "en"]
+

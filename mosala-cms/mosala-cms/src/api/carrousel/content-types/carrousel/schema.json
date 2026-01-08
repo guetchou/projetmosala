@@ -1,0 +1,17 @@
+{
+  "collectionName": "carrousels",
+  "info": {
+    "singularName": "carrousel",
+    "pluralName": "carrousels",
+    "displayName": "Carrousel"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titre": { "type": "string", "required": true },
+    "image": { "type": "media", "multiple": false },
+    "lien": { "type": "string" },
+    "ordre": { "type": "integer" }
+  }
+}

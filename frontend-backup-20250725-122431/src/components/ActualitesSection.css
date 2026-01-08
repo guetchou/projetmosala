@@ -1,0 +1,92 @@
+.mosala-swiper-yellow {
+  --swiper-navigation-color: #222;
+  --swiper-pagination-color: #6b7280;
+}
+.swiper-button-next, .swiper-button-prev {
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.swiper-button-next:hover, .swiper-button-prev:hover {
+  background: #6b7280;
+  box-shadow: 0 4px 16px rgba(107,114,128,0.15);
+}
+.swiper-button-next:after, .swiper-button-prev:after {
+  color: #222;
+  font-size: 1.5rem;
+}
+.swiper-button-next[aria-label], .swiper-button-prev[aria-label] {
+  outline: 2px solid #6b7280;
+}
+.swiper-slide {
+  outline: none;
+}
+.swiper-slide:focus-visible {
+  box-shadow: 0 0 0 3px #6b7280;
+}
+.swiper-slide-active .bg-white\/80 {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.5s, transform 0.5s;
+}
+.bg-white\/80 {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s, transform 0.5s;
+} 
+
+/* Styles pour la pagination personnalisée */
+.swiper-pagination-bullet-custom {
+  width: 12px;
+  height: 12px;
+  background: rgba(107, 114, 128, 0.3);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  margin: 0 4px;
+}
+
+.swiper-pagination-bullet-active-custom {
+  background: #6b7280;
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(107, 114, 128, 0.5);
+}
+
+/* Styles pour les cartes glassmorphism */
+.glass-card {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Animation pour les cartes au hover */
+.glass-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(107, 114, 128, 0.15);
+}
+
+/* Styles pour les boutons de navigation */
+.swiper-button-prev-custom,
+.swiper-button-next-custom {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Animation pour les images au hover */
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+/* Styles pour les badges */
+.badge-gradient {
+  background: linear-gradient(135deg, #BFFF00 0%, #FFD500 100%);
+}
+
+/* Animation pour les liens */
+.group\/link:hover .group-hover\/link\:translate-x-1 {
+  transform: translateX(4px);
+} 

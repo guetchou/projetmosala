@@ -3,12 +3,8 @@ import Hero from "@/components/ui/Hero";
 import ProjectIntro from "@/components/ProjectIntro";
 import TargetAudience from "@/components/TargetAudience";
 import PartnersSection from "@/components/PartnersSection";
-import ServicesSection from "@/components/ServicesSection";
 import CaravaneMosala from "@/components/CaravaneMosala";
-import Mission from "@/components/Mission";
-import ResultsSection from "@/components/ui/ResultsSection";
 import Testimonials from "@/components/Testimonials";
-import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
 import ActualitesSection from "@/components/ActualitesSection";
 import { useRef } from "react";
@@ -57,24 +53,11 @@ const Index = () => {
           {/* Section public cible */}
           <TargetAudience />
           
-          {/* Section caravane Mosala */}
+          {/* Section caravane Mosala (simplifiée) */}
           <CaravaneMosala />
-          
+
           {/* Section partenaires */}
           <PartnersSection />
-          
-          {/* Section mission */}
-          <section className="bg-white/95 backdrop-blur-md py-12 shadow-lg">
-            <Mission />
-          </section>
-          
-          {/* Section services */}
-          <ServicesSection />
-          
-          {/* Section résultats */}
-          <section className="bg-white/95 backdrop-blur-md py-12 shadow-lg">
-            <ResultsSection />
-          </section>
           
           {/* Section témoignages */}
           <section className="bg-white/95 backdrop-blur-md py-12 shadow-lg">
@@ -84,11 +67,6 @@ const Index = () => {
               </span>
               <Testimonials />
             </div>
-          </section>
-          
-          {/* Section newsletter */}
-          <section className="bg-white/95 backdrop-blur-md py-12 shadow-lg">
-            <Newsletter />
           </section>
           
           <Footer />

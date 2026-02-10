@@ -123,21 +123,6 @@ const Footer = () => {
                 <span className="text-gray-300 text-sm">+242 06 683 64 69</span>
               </div>
             </div>
-
-            {/* Newsletter */}
-            <div className="mt-6">
-              <h5 className="font-medium text-sm mb-3 text-gray-200">Newsletter</h5>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Votre email"
-                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-l-lg text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-green-400/20 focus:border-green-400"
-                />
-                <button className="px-4 py-2 bg-green-500 text-white font-medium rounded-r-lg hover:bg-green-600 transition-colors text-sm">
-                  S'abonner
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
+export enum UserRole {
+  CANDIDAT = 'candidat',
+  RECRUTEUR = 'recruteur',
+  ADMIN = 'admin',
+  ADMIN_CONTENT = 'admin_content',
+  SUPERADMIN = 'superadmin',
+}
 
 @Entity('users')
 export class User {
@@ -19,7 +27,21 @@ export class User {
   @Column()
   password: string;
 
-  @ApiProperty({ example: 'candidat', enum: ['candidat', 'recruteur', 'admin'] })
-  @Column({ default: 'candidat' })
-  role: string;
+  @ApiProperty({ 
+    example: 'candidat', 
+    enum: UserRole,
+    description: 'User role: candidat, recruteur, admin, admin_content, or superadmin'
+  })
+  @Column({ default: UserRole.CANDIDAT, type: 'enum', enum: UserRole })
+  role: UserRole;
+
+  @ApiProperty({ example: true, description: 'Whether the user account is active' })
+  @Column({ default: true })
+  isActive: boolean;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

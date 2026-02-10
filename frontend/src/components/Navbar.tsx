@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef, useReducer, useCallback, forwardRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, User, LogOut, Bell, Search, Sun, Moon, MoreVertical, MessageCircle } from "lucide-react";
+import { Menu, X, Search, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { isAuthenticated, logout, getUserRole } from "@/utils/auth";
-import { useUser } from "@/hooks/useUser";
 import { useNavbarShrink } from "@/hooks/useNavbarShrink";
 import { useNavbar } from "@/contexts/NavbarContext";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -67,12 +65,12 @@ const initialState: NavbarState = {
 
 const navLinks = [
   { to: "/", label: "Accueil" },
-  { to: "/services", label: "Services" },
   { to: "/formations", label: "Formations" },
+  { to: "/actualites", label: "Actualités" },
   { to: "/candidates", label: "Candidats" },
   { to: "/jobs", label: "Emplois" },
   { to: "/about", label: "À propos" },
-  { to: "/support", label: "Support" },
+  { to: "/contact", label: "Contact" },
 ];
 
 
@@ -84,8 +82,6 @@ interface NavbarProps {
 const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
   const [state, dispatch] = useReducer(navbarReducer, initialState);
   const lastScrollY = useRef(0);
-  const navigate = useNavigate();
-  const { user } = useUser();
   const { setNavbarHeight, isScrolled } = useNavbar();
   const prefersReducedMotion = useReducedMotion();
   const navbarRef = useRef<HTMLElement>(null);
@@ -195,13 +191,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
     }
   }, [state.menuOpen, state.secondaryMenuOpen, state.searchOpen]);
 
-  const handleLogout = useCallback(() => {
-    logout();
-    navigate("/login");
-  }, [navigate]);
-
   // Refs pour le focus return
-  const secondaryMenuButtonRef = useRef<HTMLButtonElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
 
   // Gestion clavier (Escape)
@@ -210,9 +200,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
       if (event.key === 'Escape') {
         dispatch({ type: 'CLOSE_ALL' });
         // Return focus au bouton approprié
-        if (state.secondaryMenuOpen && secondaryMenuButtonRef.current) {
-          secondaryMenuButtonRef.current.focus();
-        } else if (state.searchOpen && searchButtonRef.current) {
+        if (state.searchOpen && searchButtonRef.current) {
           searchButtonRef.current.focus();
         }
       }
@@ -226,7 +214,6 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
 
   // Actions optimisées
   const toggleMenu = useCallback(() => dispatch({ type: 'TOGGLE_MENU' }), []);
-  const toggleSecondaryMenu = useCallback(() => dispatch({ type: 'TOGGLE_SECONDARY_MENU' }), []);
   const toggleDarkMode = useCallback(() => dispatch({ type: 'TOGGLE_DARK_MODE' }), []);
   const setSearchOpen = useCallback((open: boolean) => dispatch({ type: 'SET_SEARCH_OPEN', payload: open }), []);
   const setSearchValue = useCallback((value: string) => dispatch({ type: 'SET_SEARCH_VALUE', payload: value }), []);
@@ -239,7 +226,7 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
         else if (ref) ref.current = el;
         navbarRef.current = el;
       }}
-      className={`fixed top-0 left-0 right-0 transition-all duration-300 ease-in-out bg-[var(--surface)] backdrop-blur-lg border-b border-white/20 dark:border-white/10 z-50 ${isScrolled ? 'py-1' : 'py-2'} ${state.showNavbar ? "translate-y-0" : "-translate-y-full"}`}
+      className={`fixed top-0 left-0 right-0 transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-white/10 z-50 ${isScrolled ? 'py-1' : 'py-2'}`}
       style={{
         transitionDuration: prefersReducedMotion ? '0.1s' : '0.3s'
       }}
@@ -293,17 +280,6 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
             <Search className="w-4 h-4" />
           </Button>
 
-          {/* Notifications */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-            className="p-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-full"
-            aria-label="Notifications"
-          >
-            <Bell className="w-4 h-4" />
-          </Button>
-
           {/* Mode sombre/clair */}
           <Button
             variant="ghost"
@@ -314,62 +290,6 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
           >
             {state.darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </Button>
-
-          {/* Connexion/Profil */}
-          {isAuthenticated() ? (
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleSecondaryMenu}
-                className="px-4 py-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-lg transition-colors duration-200"
-                aria-label="Menu utilisateur"
-                aria-expanded={state.secondaryMenuOpen}
-                aria-controls="navbar-secondary-menu"
-              >
-                <User className="w-4 h-4 mr-2" />
-                Mon profil
-              </Button>
-
-              {/* Menu secondaire déroulant */}
-              {state.secondaryMenuOpen && (
-                <div 
-                  id="navbar-secondary-menu"
-                  role="menu"
-                  className="absolute right-0 top-full mt-2 w-48 bg-[var(--surface-strong)] backdrop-blur-lg rounded-xl shadow-xl border border-[var(--border)] py-2 z-50"
-                >
-                  <Link
-                    role="menuitem"
-                    to="/profile"
-                    onClick={() => dispatch({ type: 'CLOSE_ALL' })}
-                    className="w-full px-4 py-2 text-left text-sm text-mosala-green dark:text-white/90 hover:bg-[var(--surface)] hover:backdrop-blur-sm flex items-center gap-2"
-                  >
-                    <User className="w-4 h-4" />
-                    Mon profil
-                  </Link>
-                  <button
-                    role="menuitem"
-                    onClick={() => {
-                      handleLogout();
-                      dispatch({ type: 'CLOSE_ALL' });
-                    }}
-                    className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50/80 dark:hover:bg-red-900/20 hover:backdrop-blur-sm flex items-center gap-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Se déconnecter
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className="px-4 py-2 text-mosala-green dark:text-white hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm rounded-lg transition-colors duration-200 font-medium"
-              aria-label="Se connecter"
-            >
-              Connexion
-            </Link>
-          )}
 
           {/* Menu mobile */}
           <Button

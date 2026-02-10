@@ -5,6 +5,7 @@ import PartnerSlider from "@/components/ui/PartnerSlider";
 import TrustSection from "@/components/ui/TrustSection";
 import FeaturesSection from "@/components/ui/FeaturesSection";
 import BlogSection from "@/components/ui/BlogSection";
+import NewsSection from "@/components/NewsSection";
 import { useRef, useEffect, useState } from "react";
 
 const Home = () => {
@@ -37,6 +38,9 @@ const Home = () => {
         {/* Section des fonctionnalités clés */}
         <FeaturesSection />
         
+        {/* Section des actualités */}
+        <NewsSection />
+        
         {/* Section blog et ressources */}
         <BlogSection />
         
@@ -48,4 +52,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home;export default Home;

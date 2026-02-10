@@ -9,6 +9,11 @@ import { AuthModule } from './auth/auth.module';
 import { JobsModule } from './jobs/jobs.module';
 import { FormationsModule } from './formations/formations.module';
 import { CandidaturesModule } from './candidatures/candidatures.module';
+import { AdminUsersModule } from './admin-users/admin-users.module';
+import { NewsModule } from './news/news.module';
+import { FormationsAdvancedModule } from './formations-advanced/formations-advanced.module';
+import { News } from './news/entities/news.entity';
+import { FormationAdvanced } from './formations-advanced/entities/formation-advanced.entity';
 
 @Module({
   imports: [
@@ -19,7 +24,7 @@ import { CandidaturesModule } from './candidatures/candidatures.module';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASS || 'postgres',
       database: process.env.DB_NAME || 'mosala',
-      entities: [User],
+      entities: [User, News, FormationAdvanced],
       synchronize: true, // à désactiver en production
       autoLoadEntities: true,
     }),
@@ -28,6 +33,9 @@ import { CandidaturesModule } from './candidatures/candidatures.module';
     JobsModule,
     FormationsModule,
     CandidaturesModule,
+    AdminUsersModule,
+    NewsModule,
+    FormationsAdvancedModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],

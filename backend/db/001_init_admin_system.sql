@@ -2,11 +2,15 @@
 -- Exécutez ce script dans la console SQL de Supabase
 
 -- Créer le type enum pour les rôles
-CREATE TYPE user_role AS ENUM (
-  'admin',
-  'admin_content',
-  'superadmin'
-);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+    CREATE TYPE user_role AS ENUM (
+      'admin_content',
+      'superadmin'
+    );
+  END IF;
+END$$;
 
 -- Table Users
 CREATE TABLE IF NOT EXISTS users (
@@ -38,17 +42,27 @@ CREATE TABLE IF NOT EXISTS news (
 );
 
 -- Table Formations Advanced
-CREATE TYPE formation_level AS ENUM (
-  'beginner',
-  'intermediate',
-  'advanced'
-);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'formation_level') THEN
+    CREATE TYPE formation_level AS ENUM (
+      'beginner',
+      'intermediate',
+      'advanced'
+    );
+  END IF;
+END$$;
 
-CREATE TYPE formation_status AS ENUM (
-  'draft',
-  'published',
-  'archived'
-);
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'formation_status') THEN
+    CREATE TYPE formation_status AS ENUM (
+      'draft',
+      'published',
+      'archived'
+    );
+  END IF;
+END$$;
 
 CREATE TABLE IF NOT EXISTS formations_advanced (
   id SERIAL PRIMARY KEY,
@@ -90,15 +104,64 @@ CREATE POLICY "Users can view active users" ON users
   FOR SELECT
   USING (is_active = true);
 
+-- Autoriser les superadmins à gérer la table users (CRUD complet)
+DROP POLICY IF EXISTS "Superadmin full access users" ON users;
+CREATE POLICY "Superadmin full access users" ON users
+  FOR ALL
+  TO authenticated
+  USING ((auth.jwt() ->> 'role') = 'superadmin')
+  WITH CHECK ((auth.jwt() ->> 'role') = 'superadmin');
+
 -- Politique pour les actualités : tous peuvent voir les actualités publiées
 CREATE POLICY "Users can view published news" ON news
   FOR SELECT
   USING (is_published = true);
 
+-- Autoriser les superadmins à créer/modifier/supprimer des actualités
+DROP POLICY IF EXISTS "Authenticated can insert news" ON news;
+CREATE POLICY "Authenticated can insert news" ON news
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Superadmin can update news" ON news;
+CREATE POLICY "Superadmin can update news" ON news
+  FOR UPDATE
+  TO authenticated
+  USING ((auth.jwt() ->> 'role') = 'superadmin')
+  WITH CHECK ((auth.jwt() ->> 'role') = 'superadmin');
+
+DROP POLICY IF EXISTS "Superadmin can delete news" ON news;
+CREATE POLICY "Superadmin can delete news" ON news
+  FOR DELETE
+  TO authenticated
+  USING ((auth.jwt() ->> 'role') = 'superadmin');
+
 -- Politique pour les formations : tous peuvent voir les formations publiées
 CREATE POLICY "Users can view published formations" ON formations_advanced
   FOR SELECT
   USING (status = 'published');
+
+-- Politique pour permettre l'insertion de formations par des utilisateurs authentifiés
+DROP POLICY IF EXISTS "Authenticated can insert formations" ON formations_advanced;
+CREATE POLICY "Authenticated can insert formations" ON formations_advanced
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+-- Autoriser les superadmins à modifier/supprimer les formations
+DROP POLICY IF EXISTS "Superadmin can update formations" ON formations_advanced;
+CREATE POLICY "Superadmin can update formations" ON formations_advanced
+  FOR UPDATE
+  TO authenticated
+  USING ((auth.jwt() ->> 'role') = 'superadmin')
+  WITH CHECK ((auth.jwt() ->> 'role') = 'superadmin');
+
+DROP POLICY IF EXISTS "Superadmin can delete formations" ON formations_advanced;
+CREATE POLICY "Superadmin can delete formations" ON formations_advanced
+  FOR DELETE
+  TO authenticated
+  USING ((auth.jwt() ->> 'role') = 'superadmin');
 
 -- Fonction pour mettre à jour updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()

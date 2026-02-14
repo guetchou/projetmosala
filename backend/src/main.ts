@@ -5,6 +5,19 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Configuration CORS
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173',
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization',
+  });
+
   // Préfixe global pour toutes les routes API
   app.setGlobalPrefix('mosala-api');
 
@@ -18,7 +31,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('mosala-api/docs', app, document);
 
-  // Port personnalisé (par défaut 4002)
-  await app.listen(process.env.PORT ?? 4002);
+  // Port personnalisé (par défaut 3000)
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

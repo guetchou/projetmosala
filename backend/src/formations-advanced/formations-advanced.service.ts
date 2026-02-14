@@ -66,14 +66,14 @@ export class FormationsAdvancedService {
   // Publier une formation
   async publish(id: number) {
     await this.findOne(id);
-    await this.formationRepository.update(id, { status: 'published' });
+    await this.formationRepository.update(id, { status: 'published' as any });
     return this.findOne(id);
   }
 
   // Archiver une formation
   async archive(id: number) {
     await this.findOne(id);
-    await this.formationRepository.update(id, { status: 'archived' });
+    await this.formationRepository.update(id, { status: 'archived' as any });
     return this.findOne(id);
   }
 

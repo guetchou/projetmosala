@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { API_BASE_URL } from '../config';
-
-interface News {
-  id?: number;
-  title: string;
-  description: string;
-  content: string;
-  imageUrl: string;
-  link?: string;
-  isPublished?: boolean;
-  isFeatured?: boolean;
-}
+import { actualitesAPI, Actualite } from '@/api/actualites';
 
 interface NewsFormProps {
-  onSuccess?: (news: News) => void;
-  editingNews?: News | null;
+  onSuccess?: (news: Actualite) => void;
+  editingNews?: Actualite | null;
   onCancel?: () => void;
 }
 
@@ -24,20 +13,26 @@ const NewsForm: React.FC<NewsFormProps> = ({ onSuccess, editingNews, onCancel })
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
-  const [formData, setFormData] = useState<News>({
-    title: '',
-    description: '',
-    content: '',
+  const [formData, setFormData] = useState<Partial<Actualite>>({
+    titre: '',
+    excerpt: '',
+    contenu: '',
     imageUrl: '',
-    link: '',
-    isPublished: false,
-    isFeatured: false,
+    lien: '',
+    aLaUne: false,
   });
 
   // Pré-remplir le formulaire en cas d'édition
   useEffect(() => {
     if (editingNews) {
-      setFormData(editingNews);
+      setFormData({
+        titre: editingNews.titre,
+        excerpt: editingNews.excerpt,
+        contenu: editingNews.contenu,
+        imageUrl: editingNews.imageUrl,
+        lien: editingNews.lien,
+        aLaUne: editingNews.aLaUne,
+      });
       if (editingNews.imageUrl) {
         setImagePreview(editingNews.imageUrl);
       }
@@ -73,40 +68,34 @@ const NewsForm: React.FC<NewsFormProps> = ({ onSuccess, editingNews, onCancel })
     setError(null);
 
     try {
-      const method = editingNews ? 'PATCH' : 'POST';
-      const url = editingNews
-        ? `${API_BASE_URL}/news/${editingNews.id}`
-        : `${API_BASE_URL}/news`;
+      let savedNews;
+      const data: Parameters<typeof actualitesAPI.create>[0] = {
+        titre: formData.titre || '',
+        excerpt: formData.excerpt || '',
+        contenu: formData.contenu || '',
+        imageUrl: formData.imageUrl,
+        lien: formData.lien,
+        aLaUne: formData.aLaUne || false,
+      };
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors de la sauvegarde');
+      if (editingNews?.id) {
+        savedNews = await actualitesAPI.update(editingNews.id, data);
+      } else {
+        savedNews = await actualitesAPI.create(data);
       }
 
-      const savedNews = await response.json();
-      
       // Réinitialiser le formulaire
       setFormData({
-        title: '',
-        description: '',
-        content: '',
+        titre: '',
+        excerpt: '',
+        contenu: '',
         imageUrl: '',
-        link: '',
-        isPublished: false,
-        isFeatured: false,
+        lien: '',
+        aLaUne: false,
       });
       setImagePreview('');
 
-      if (onSuccess) {
+      if (onSuccess && savedNews) {
         onSuccess(savedNews);
       }
     } catch (err) {
@@ -116,167 +105,143 @@ const NewsForm: React.FC<NewsFormProps> = ({ onSuccess, editingNews, onCancel })
     }
   };
 
+  const handleCancel = () => {
+    setFormData({
+      titre: '',
+      excerpt: '',
+      contenu: '',
+      imageUrl: '',
+      lien: '',
+      aLaUne: false,
+    });
+    setImagePreview('');
+    setError(null);
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        {editingNews ? 'Modifier l\'actualité' : 'Créer une nouvelle actualité'}
-      </h2>
+    <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
+      <h3 className="text-2xl font-bold text-mosala-orange-800 mb-6">
+        {editingNews ? 'Modifier l\'actualité' : 'Ajouter une nouvelle actualité'}
+      </h3>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Titre */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Titre *</label>
+          <input
+            type="text"
+            name="titre"
+            value={formData.titre}
+            onChange={handleChange}
+            required
+            placeholder="Ex: Nouvelle initiative de Mosala"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-mosala-orange-500 focus:border-transparent"
+          />
+        </div>
+
+        {/* Extrait */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Extrait *</label>
+          <textarea
+            name="excerpt"
+            value={formData.excerpt}
+            onChange={handleChange}
+            required
+            placeholder="Résumé court de l'actualité"
+            rows={2}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-mosala-orange-500 focus:border-transparent"
+          />
+        </div>
+
+        {/* Contenu détaillé */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Contenu détaillé *</label>
+          <textarea
+            name="contenu"
+            value={formData.contenu}
+            onChange={handleChange}
+            required
+            placeholder="Contenu complet de l'actualité"
+            rows={5}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-mosala-orange-500 focus:border-transparent"
+          />
+        </div>
+
         {/* Image */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Image
-          </label>
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Image de couverture</label>
           <div className="flex gap-4">
-            <div className="flex-1">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="flex-1 border border-gray-300 rounded-lg px-4 py-2"
+            />
             {imagePreview && (
-              <div className="w-24 h-24">
-                <img
-                  src={imagePreview}
-                  alt="Aperçu"
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
+              <img
+                src={imagePreview}
+                alt="Aperçu"
+                className="w-24 h-24 object-cover rounded-lg"
+              />
             )}
           </div>
         </div>
 
-        {/* Titre */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Titre *
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            placeholder="Titre de l'actualité"
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Description (courte) *
-          </label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            rows={2}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            placeholder="Description courte de l'actualité"
-          />
-        </div>
-
-        {/* Contenu */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Contenu *
-          </label>
-          <textarea
-            name="content"
-            value={formData.content}
-            onChange={handleChange}
-            required
-            rows={6}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            placeholder="Contenu complet de l'actualité"
-          />
-        </div>
-
-        {/* Lien vers l'article officiel */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Lien vers l'article officiel
-          </label>
+        {/* Lien */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Lien (optionnel)</label>
           <input
             type="url"
-            name="link"
-            value={formData.link || ''}
+            name="lien"
+            value={formData.lien || ''}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            placeholder="https://example.com/article"
+            placeholder="https://..."
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-mosala-orange-500 focus:border-transparent"
           />
         </div>
 
-        {/* Checkboxes */}
-        <div className="flex gap-6">
-          <div className="flex items-center">
+        {/* À la une */}
+        <div className="md:col-span-2">
+          <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
-              name="isPublished"
-              id="isPublished"
-              checked={formData.isPublished || false}
+              name="aLaUne"
+              checked={formData.aLaUne || false}
               onChange={handleChange}
-              className="w-4 h-4 text-green-600 rounded focus:ring-2 focus:ring-green-500"
+              className="w-4 h-4 rounded accent-mosala-orange-600"
             />
-            <label htmlFor="isPublished" className="ml-2 text-sm font-medium text-gray-700">
-              Publier maintenant
-            </label>
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="isFeatured"
-              id="isFeatured"
-              checked={formData.isFeatured || false}
-              onChange={handleChange}
-              className="w-4 h-4 text-orange-500 rounded focus:ring-2 focus:ring-orange-400"
-            />
-            <label htmlFor="isFeatured" className="ml-2 text-sm font-medium text-gray-700">
-              Mettre à la une (à la une)
-            </label>
-          </div>
+            <span className="text-sm font-medium text-gray-700">Mettre à la une</span>
+          </label>
         </div>
+      </div>
 
-        {formData.isFeatured && (
-          <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg text-orange-700 text-sm">
-            ⚠️ Une seule actualité peut être mise à la une. L'actualité précédente sera retirée.
-          </div>
-        )}
-
-        {/* Boutons */}
-        <div className="flex gap-4 pt-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
-          >
-            {loading ? 'En cours...' : editingNews ? 'Mettre à jour' : 'Créer'}
-          </button>
-
-          {editingNews && onCancel && (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex-1 bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-500 transition"
-            >
-              Annuler
-            </button>
-          )}
-        </div>
-      </form>
-    </div>
+      {/* Boutons */}
+      <div className="flex gap-4 justify-end">
+        <button
+          type="button"
+          onClick={handleCancel}
+          className="px-6 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-6 py-2 bg-gradient-to-r from-mosala-orange-500 to-mosala-orange-600 text-white rounded-lg font-medium hover:shadow-lg transition disabled:opacity-50"
+        >
+          {loading ? 'Enregistrement...' : (editingNews ? 'Mettre à jour' : 'Créer l\'actualité')}
+        </button>
+      </div>
+    </form>
   );
 };
 

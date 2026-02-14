@@ -1,350 +1,375 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, BookOpen, Clock, Users, Star, MapPin, Calendar, ArrowRight, GraduationCap, Briefcase, Globe, Award, ChevronRight, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Search, BookOpen, Image as ImageIcon, ChevronRight, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import MapComponent from "@/components/MapComponent";
-import { useFormations } from "@/hooks/useFormations";
+import { formationsAPI, type Formation } from "@/api/formations";
+import { categoriesAPI, type Category } from "@/api/categories";
+import { inscriptionsAPI } from "@/api/inscriptions";
 
-const images = [
-  // Images libres d'accès, jeunes africains, ambiance Mosala
-  "/topcenter-uploads/formation/wedeveloppement.jpg", // Jeune homme souriant
-  "https://images.pexels.com/photos/1181355/pexels-photo-1181355.jpeg?auto=compress&w=800&q=80", // Groupe de jeunes
-  "/topcenter-uploads/formation/entrepreneuriatdigital.png",  // Jeune femme avec ordi
-  "/topcenter-uploads/formation/marketing_digital.jpg",  // Équipe de travail
-  "/topcenter-uploads/formation/soft-skills.jpg",  // Réunion d'affaires
-  "/topcenter-uploads/formation/Gestionprojet1.png"   // Formation en groupe
-];
-
-const formations = [
-  {
-    id: "F001",
-    title: "Développement Web Avancé",
-    description: "Programme certifiant de 12 semaines couvrant les technologies modernes du web.",
-    category: "Technologie",
-    duration: "12 semaines",
-    level: "Avancé",
-    certification: true,
-    image: images[0],
-    badgeColor: "bg-[var(--color-mosala-green-100)] text-[var(--color-mosala-green-700)]",
-    modalite: "En ligne",
-    publicCible: "Développeurs",
-    prix: "Gratuit",
-    places: 25,
-    satisfaction: 4.8
-  },
-  {
-    id: "F002",
-    title: "Leadership & Management",
-    description: "Formation intensive pour managers et futurs leaders en entreprise.",
-    category: "Management",
-    duration: "8 semaines",
-    level: "Intermédiaire",
-    certification: true,
-    image: images[1],
-    badgeColor: "bg-[var(--color-mosala-yellow-100)] text-[var(--color-mosala-yellow-700)]",
-    modalite: "Présentiel",
-    publicCible: "Managers",
-    prix: "Gratuit",
-    places: 20,
-    satisfaction: 4.9
-  },
-  {
-    id: "F003",
-    title: "Entrepreneuriat Digital",
-    description: "Acquérez les compétences clés pour lancer et gérer une entreprise digitale.",
-    category: "Entrepreneuriat",
-    duration: "10 semaines",
-    level: "Débutant",
-    certification: true,
-    image: images[2],
-    badgeColor: "bg-[var(--color-mosala-orange-100)] text-[var(--color-mosala-orange-700)]",
-    modalite: "Hybride",
-    publicCible: "Entrepreneurs",
-    prix: "Gratuit",
-    places: 30,
-    satisfaction: 4.7
-  },
-  {
-    id: "F004",
-    title: "Marketing Digital",
-    description: "Maîtrisez les outils et stratégies du marketing digital pour booster votre business.",
-    category: "Marketing",
-    duration: "6 semaines",
-    level: "Tous niveaux",
-    certification: true,
-    image: images[3],
-    badgeColor: "bg-[var(--color-mosala-green-100)] text-[var(--color-mosala-green-700)]",
-    modalite: "En ligne",
-    publicCible: "Marketers",
-    prix: "Gratuit",
-    places: 35,
-    satisfaction: 4.6
-  },
-  {
-    id: "F005",
-    title: "Communication Professionnelle",
-    description: "Développez vos compétences en communication écrite et orale en milieu professionnel.",
-    category: "Soft Skills",
-    duration: "4 semaines",
-    level: "Tous niveaux",
-    certification: false,
-    image: images[4],
-    badgeColor: "bg-[var(--color-mosala-yellow-100)] text-[var(--color-mosala-yellow-700)]",
-    modalite: "Présentiel",
-    publicCible: "Tous publics",
-    prix: "Gratuit",
-    places: 40,
-    satisfaction: 4.5
-  },
-  {
-    id: "F006",
-    title: "Gestion de Projet",
-    description: "Apprenez à planifier, organiser et gérer efficacement vos projets professionnels.",
-    category: "Management",
-    duration: "8 semaines",
-    level: "Intermédiaire",
-    certification: true,
-    image: images[5],
-    badgeColor: "bg-[var(--color-mosala-orange-100)] text-[var(--color-mosala-orange-700)]",
-    modalite: "Hybride",
-    publicCible: "Chefs de projet",
-    prix: "Gratuit",
-    places: 25,
-    satisfaction: 4.8
-  }
-];
-
-const categories = ["Toutes", "Technologie", "Management", "Entrepreneuriat", "Marketing", "Soft Skills"];
-const modalites = ["Toutes", "En ligne", "Présentiel", "Hybride"];
-const niveaux = ["Tous niveaux", "Débutant", "Intermédiaire", "Avancé"];
+interface Inscription {
+  id: string;
+  nom: string;
+  prenom: string;
+  email?: string | null;
+  tel: string;
+  ville: string;
+  quartier?: string | null;
+  sexe: string;
+  document_url?: string | null;
+  date_inscription: string;
+  formation_id?: string | null;
+  // optional joined relation from api: either `formation` or `formations`
+  formation?: { id: string; titre: string } | null;
+}
 
 const Formations = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Toutes");
-  const [selectedModalite, setSelectedModalite] = useState("Toutes");
-  const [selectedNiveau, setSelectedNiveau] = useState("Tous niveaux");
-  const { data: formationsData, isLoading } = useFormations();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [formations, setFormations] = useState<Formation[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [inscriptions, setInscriptions] = useState<Inscription[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const searchBarRef = useRef<HTMLDivElement | null>(null);
+  const [searchBarHeight, setSearchBarHeight] = useState(0);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [inscriptionsPage, setInscriptionsPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<'formations' | 'inscriptions'>('formations');
+  const itemsPerPage = 10;
+  const navigate = useNavigate();
 
-  const mediaUrl = (url?: string) => {
-    if (!url) return "/topcenter-uploads/formation/wedeveloppement.jpg";
-    if (url.startsWith("http")) return url;
-    const base = import.meta.env.VITE_STRAPI_URL || "http://localhost:1337";
-    return `${base}${url}`;
-  };
+  async function fetchFormations() {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await formationsAPI.getAll();
+      setFormations(data as Formation[]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur lors du chargement des formations');
+      setFormations([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
-  const fetchedFormations = (formationsData || []).map((entity) => {
-    const att: any = (entity as any).attributes;
-    const image = att?.image?.data?.attributes?.url as string | undefined;
-    return {
-      id: String(entity.id),
-      title: att?.titre || "",
-      description: att?.description || "",
-      category: "",
-      duration: "",
-      level: "Tous niveaux",
-      certification: false,
-      image: mediaUrl(image),
-      badgeColor: "bg-[var(--color-mosala-green-100)] text-[var(--color-mosala-green-700)]",
-      modalite: "",
-      publicCible: "",
-      prix: att?.prix != null ? String(att.prix) : "",
-      places: 0,
-      satisfaction: 0,
+  async function fetchCategories() {
+    try {
+      const data = await categoriesAPI.getAll();
+      setCategories(data);
+    } catch (err) {
+      console.error('Erreur lors du chargement des catégories:', err);
+      setCategories([]);
+    }
+  }
+
+  async function fetchInscriptions() {
+    try {
+      const { data, error: fetchError } = await inscriptionsAPI.getAll();
+      if (fetchError) {
+        console.error('Error fetching inscriptions:', fetchError);
+        setInscriptions([]);
+      } else {
+        setInscriptions(data || []);
+      }
+    } catch (err) {
+      console.error('Erreur lors du chargement des inscriptions:', err);
+      setInscriptions([]);
+    }
+  }
+
+  useEffect(() => {
+    Promise.all([fetchFormations(), fetchCategories(), fetchInscriptions()]);
+  }, []);
+
+  // Measure sticky search bar height to avoid content being hidden behind it
+  useEffect(() => {
+    const update = () => {
+      if (searchBarRef.current) setSearchBarHeight(searchBarRef.current.offsetHeight);
     };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [filtersOpen]);
+
+  const filteredFormations = formations.filter(formation => {
+    const matchesSearch = formation.titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      formation.contenu.toLowerCase().includes(searchTerm.toLowerCase());
+    const formationCategory = (formation as any).category_id || (formation as any).categoryId || null;
+    const matchesCategory = selectedCategory === null ? true : (formationCategory === selectedCategory);
+    return matchesSearch && matchesCategory;
   });
 
-  const displayFormations = fetchedFormations.length > 0 ? fetchedFormations : formations;
+  // Pagination for formations
+  const totalPages = Math.max(1, Math.ceil(filteredFormations.length / itemsPerPage));
+  const paginatedFormations = filteredFormations.slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage);
 
-  const filteredFormations = displayFormations.filter(formation => {
-    const matchesSearch = formation.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         formation.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "Toutes" || formation.category === selectedCategory;
-    const matchesModalite = selectedModalite === "Toutes" || formation.modalite === selectedModalite;
-    const matchesNiveau = selectedNiveau === "Tous niveaux" || formation.level === selectedNiveau;
-    
-    return matchesSearch && matchesCategory && matchesModalite && matchesNiveau;
-  });
-
-  const handleInscription = (formationId) => {
-    // TODO: Implémenter la logique d'inscription
-    console.log(`Inscription à la formation ${formationId}`);
-    // Ici on pourrait ouvrir un modal ou rediriger vers un formulaire
+  const handleInscription = (formation: Formation) => {
+    navigate(`/inscription/${formation.id}`);
   };
+
+  const handleViewMore = (formation: Formation) => {
+    setSelectedFormation(formation);
+    setShowDetailsModal(true);
+  };
+
+  const getFormationTitle = (inscription: Inscription) => {
+    // Prefer the joined relation `formation` if present
+    if (inscription.formation && inscription.formation.titre) return inscription.formation.titre;
+    // Otherwise fallback to matching by formation_id in local state
+    if (inscription.formation_id) {
+      const f = formations.find(frm => frm.id === inscription.formation_id || (frm as any).id);
+      if (f) return (f as any).titre || (f as any).titre || 'N/A';
+    }
+    return 'N/A';
+  };
+
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f6f9fc] relative">
+    <div className="min-h-screen flex flex-col bg-background pt-0">
       <Navbar />
-      {/* Hero/Header section Argon Material UI */}
-      <section className="relative w-full flex flex-col md:flex-row items-center justify-between min-h-[340px] md:min-h-[420px] py-12 mb-8 overflow-hidden bg-[#6476f3]/10">
-        {/* Fond animé glassmorphism */}
-        <style>{`
-          @keyframes heroWind {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(24px); }
-          }
-        `}</style>
-        <motion.img
-          src="/topcenter-uploads/carrousel/mosala-jeunes1.png"
-          alt="Formations Mosala"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          style={{ filter: 'blur(10px) brightness(0.7)', opacity: 87, animation: 'heroWind 18s ease-in-out infinite alternate' }}
-        />
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-md z-10" />
-        {/* Contenu éditorial */}
-        <div className="relative z-20 flex-1 flex flex-col items-center md:items-start text-center md:text-left px-4 mt-20">
-          <span className="inline-block px-4 py-2 rounded-full bg-[#6476f3]/20 text-[#6476f3] font-bold uppercase tracking-widest mb-4">Formations</span>
-          <h1 className="text-4xl md:text-5xl font-black text-[#22304a] drop-shadow mb-4">Nos Formations</h1>
-          <p className="text-lg md:text-xl text-[#22304a]/80 max-w-2xl leading-relaxed mb-6">
-            Découvrez toutes les formations proposées par Mosala pour booster vos compétences et votre employabilité.
-          </p>
-          <button className="bg-white/70 backdrop-blur-md border border-[#6476f3]/30 text-[#6476f3] font-bold px-8 py-3 rounded-xl shadow-lg hover:bg-[#6476f3]/10 hover:text-[#22304a] transition-all text-lg glassmorphism-cta">
-            Voir le catalogue complet
-          </button>
-        </div>
-        
-      </section>
-
-      {/* Barre de recherche et filtres Argon Material UI */}
-      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-[#2fdab8]/20 py-4 px-4 shadow-sm">
-        <div className="container mx-auto max-w-6xl">
-          <div className="flex flex-col md:flex-row items-center gap-4">
-            {/* Barre de recherche */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#6476f3]" size={20} />
-              <input
-                type="text"
-                placeholder="Rechercher une formation..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-full border border-[#6476f3]/30 focus:border-[#6476f3] focus:ring-2 focus:ring-[#6476f3]/20 outline-none text-[#22304a] bg-white/90 shadow"
-              />
+      
+      {/* Modal détails de formation */}
+      {showDetailsModal && selectedFormation && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
+          <div className="bg-card rounded-2xl shadow-lg max-w-lg w-full p-6 border border-border max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between mb-4">
+              <h2 className="text-2xl font-bold text-card-foreground pr-4">{selectedFormation.titre}</h2>
+              <button onClick={() => setShowDetailsModal(false)} className="text-muted-foreground hover:text-foreground text-2xl">×</button>
             </div>
-            {/* Filtres */}
-            <div className="flex gap-2 flex-wrap">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 rounded-full border border-[#2fdab8]/30 bg-white text-[#22304a] focus:border-[#2fdab8] outline-none shadow"
+            <p className="text-muted-foreground mb-6">{selectedFormation.contenu}</p>
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={() => {
+                  setShowDetailsModal(false);
+                  handleInscription(selectedFormation);
+                }}
+                className="w-full px-4 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition"
               >
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-              <select
-                value={selectedModalite}
-                onChange={(e) => setSelectedModalite(e.target.value)}
-                className="px-4 py-2 rounded-full border border-[#2fdab8]/30 bg-white text-[#22304a] focus:border-[#2fdab8] outline-none shadow"
+                S'inscrire
+              </button>
+              <button 
+                className="w-full px-4 py-3 rounded-lg bg-muted text-muted-foreground font-semibold hover:bg-muted/80 transition" 
+                onClick={() => setShowDetailsModal(false)}
               >
-                {modalites.map(mod => (
-                  <option key={mod} value={mod}>{mod}</option>
-                ))}
-              </select>
-              <select
-                value={selectedNiveau}
-                onChange={(e) => setSelectedNiveau(e.target.value)}
-                className="px-4 py-2 rounded-full border border-[#2fdab8]/30 bg-white text-[#22304a] focus:border-[#2fdab8] outline-none shadow"
-              >
-                {niveaux.map(niv => (
-                  <option key={niv} value={niv}>{niv}</option>
-                ))}
-              </select>
+                Fermer
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
+      
+      {/* Barre de recherche sticky (collée au header) */}
+      <div ref={searchBarRef} className="sticky z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 py-4 px-4 shadow-sm" style={{ top: 'var(--nav-h)' }}>
+        <div className="container mx-auto max-w-6xl flex items-center gap-4">
+          {/* Barre de recherche */}
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary" size={18} />
+            <input
+              type="text"
+              placeholder="Rechercher une formation..."
+              value={searchTerm}
+              onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
+              className="w-full pl-12 pr-32 py-3 rounded-full border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground bg-white shadow-sm hover:shadow-md transition"
+            />
+          </div>
 
-      {/* Grille des formations Argon Material UI */}
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
-        {filteredFormations.length === 0 ? (
-          <div className="text-center py-20">
-            <BookOpen className="mx-auto h-16 w-16 text-[#6476f3] mb-4" />
-            <h2 className="text-2xl font-bold text-[#22304a] mb-2">Aucune formation trouvée</h2>
-            <p className="text-[#6476f3]/70 mb-6">Essayez de modifier vos critères de recherche.</p>
-            <button 
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedCategory("Toutes");
-                setSelectedModalite("Toutes");
-                setSelectedNiveau("Tous niveaux");
-              }}
-              className="bg-[#2fdab8] text-white px-6 py-2 rounded-full font-medium hover:bg-[#1cc7d0] transition"
-            >
-              Réinitialiser les filtres
+          {/* Bouton filtres */}
+          <div className="relative">
+            <button onClick={() => setFiltersOpen(v => !v)} className="px-4 py-2 rounded-full bg-slate-100 text-foreground hover:bg-slate-200 transition flex items-center gap-2">
+              Filtres
             </button>
+            {filtersOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-slate-100 p-3">
+                <div className="text-sm font-semibold mb-2">Catégories</div>
+                <div className="flex flex-col gap-2">
+                  <button 
+                    onClick={() => { setSelectedCategory(null); setFiltersOpen(false); setPage(1); }} 
+                    className={`text-left px-3 py-2 rounded-md ${selectedCategory === null ? 'bg-primary text-primary-foreground' : 'hover:bg-slate-50'}`}
+                  >
+                    Toutes les catégories
+                  </button>
+                  {categories.map(cat => (
+                    <button 
+                      key={cat.id} 
+                      onClick={() => { setSelectedCategory(cat.id); setFiltersOpen(false); setPage(1); }} 
+                      className={`text-left px-3 py-2 rounded-md ${selectedCategory === cat.id ? 'bg-primary text-primary-foreground' : 'hover:bg-slate-50'}`}
+                    >
+                      {cat.nom}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      {/* Spacer to ensure main content is not hidden behind the sticky search bar */}
+      <div aria-hidden style={{ height: searchBarHeight }} />
+      {/* Grille des formations */}
+      <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+        {/* Onglets */}
+       
+
+        {/* Contenu des onglets */}
+        {activeTab === 'formations' ? (
+          <>
+        {isLoading && (
+          <div className="col-span-full text-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground font-medium">Chargement des formations...</p>
+          </div>
+        )}
+        {error && (
+          <div className="text-center py-20">
+            <div className="bg-destructive/10 border border-destructive/30 text-destructive px-6 py-4 rounded-lg max-w-md mx-auto mb-4">
+              <p className="font-semibold mb-2">Erreur</p>
+              <p>{error}</p>
+            </div>
+            <button 
+              onClick={fetchFormations}
+              className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition shadow-md"
+            >
+              Réessayer
+            </button>
+          </div>
+        )}
+        {!isLoading && !error && formations.length === 0 ? (
+          <div className="text-center py-20">
+            <BookOpen className="mx-auto h-16 w-16 text-primary/40 mb-4" />
+            <h2 className="text-2xl font-bold text-foreground mb-2">Aucune formation disponible</h2>
+            <p className="text-muted-foreground">Les formations seront disponibles bientôt.</p>
           </div>
         ) : (
           <>
             <div className="mb-6">
-              <p className="text-[#22304a]/80">
+              <p className="text-muted-foreground font-medium">
                 {filteredFormations.length} formation{filteredFormations.length > 1 ? 's' : ''} trouvée{filteredFormations.length > 1 ? 's' : ''}
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredFormations.map((formation, index) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paginatedFormations.map((formation, index) => (
                 <motion.div
                   key={formation.id}
-                  className="bg-white rounded-2xl shadow-lg border border-[#2fdab8]/20 overflow-hidden flex flex-col hover:scale-105 transition-transform duration-300 group backdrop-blur-md"
-                  initial={{ opacity: 0, y: 40 }}
+                  className="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden flex flex-col hover:shadow-xl transition-shadow duration-300"
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + index * 0.1, duration: 0.6, type: "spring" }}
-                  whileHover={{ scale: 1.05 }}
-                  tabIndex={0}
-                  aria-label={formation.title}
+                  transition={{ delay: index * 0.05, duration: 0.4 }}
                 >
-                  <div className="relative">
-                    <img src={formation.image} alt="Jeune en formation" className="w-full h-44 object-cover object-center" />
-                    <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/90 rounded-full px-2 py-1">
-                      <Star className="w-4 h-4 text-[#fa496e] fill-current" />
-                      <span className="text-xs font-semibold text-[#22304a]">{formation.satisfaction}</span>
-                    </div>
-                    {formation.certification && (
-                      <div className="absolute top-3 left-3 bg-[#2fdab8] text-white px-2 py-1 rounded-full text-xs font-semibold">
-                        Certifiante
+                  <div className="relative overflow-hidden h-48 bg-slate-100">
+                    {(formation as any).image_url || (formation as any).imageUrl ? (
+                      <img 
+                        src={(formation as any).image_url || (formation as any).imageUrl} 
+                        alt={formation.titre} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/10 to-slate-100 flex items-center justify-center">
+                        <ImageIcon className="w-12 h-12 text-primary/30" />
                       </div>
                     )}
                   </div>
-                  <div className="p-6 flex-1 flex flex-col">
-                    <span className="inline-block bg-[#6476f3]/10 text-[#6476f3] rounded-full px-3 py-1 text-xs font-semibold mb-2">{formation.category}</span>
-                    <h3 className="text-xl font-bold text-[#22304a] mb-2">{formation.title}</h3>
-                    <p className="text-[#6476f3]/80 mb-4 flex-1">{formation.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="bg-[#2fdab8]/10 text-[#2fdab8] text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {formation.duration}
-                      </span>
-                      <span className="bg-[#ff7844]/10 text-[#ff7844] text-xs px-2 py-1 rounded-full">
-                        {formation.level}
-                      </span>
-                      <span className="bg-[#fa496e]/10 text-[#fa496e] text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {formation.modalite}
-                      </span>
+                    <div className="p-5 flex-1 flex flex-col">
+                    <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">{formation.titre}</h3>
+                    <p className="text-muted-foreground text-sm mb-4 flex-1 line-clamp-3">{formation.contenu}</p>
+                    <div className="flex gap-2 mt-auto">
+                      <button
+                        onClick={() => handleInscription(formation)}
+                        className="flex-1 px-4 py-2.5 rounded-lg bg-[#8B5CF6] text-white font-semibold hover:bg-[#7a45e6] transition"
+                      >
+                        S'inscrire
+                      </button>
+                      <button
+                        onClick={() => setExpandedId(expandedId === formation.id ? null : formation.id)}
+                        className="px-4 py-2.5 rounded-lg bg-slate-100 text-foreground font-semibold hover:bg-slate-200 transition flex items-center gap-1"
+                        aria-expanded={expandedId === formation.id}
+                        aria-controls={`formation-${formation.id}-details`}
+                      >
+                        <ChevronRight size={18} />
+                      </button>
                     </div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm text-[#22304a]/70">
-                        {formation.places} places disponibles
-                      </span>
-                      <span className="text-lg font-bold text-[#2fdab8]">
-                        {formation.prix}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleInscription(formation.id)}
-                      className="mt-auto inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow hover:scale-105 transition glassmorphism-cta"
-                      style={{
-                        background: 'rgba(100, 118, 243, 0.7)',
-                        backdropFilter: 'blur(6px)',
-                        WebkitBackdropFilter: 'blur(6px)',
-                        border: '1px solid rgba(255,255,255,0.3)',
-                        color: '#22304a'
-                      }}
-                    >
-                      S'inscrire <ArrowRight className="w-5 h-5 ml-1" />
-                    </button>
+                    {expandedId === formation.id && (
+                      <div id={`formation-${formation.id}-details`} className="mt-4 bg-slate-50 p-4 rounded-md border border-slate-100">
+                        <p className="text-sm text-gray-700">{formation.contenu}</p>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}
             </div>
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3 mt-8">
+                <button onClick={() => setPage(p => Math.max(1, p-1))} className="px-3 py-2 rounded-md bg-slate-100 hover:bg-slate-200">Préc</button>
+                <div className="text-sm">Page {page} / {totalPages}</div>
+                <button onClick={() => setPage(p => Math.min(totalPages, p+1))} className="px-3 py-2 rounded-md bg-slate-100 hover:bg-slate-200">Suiv</button>
+              </div>
+            )}
           </>
+        )}
+          </>
+        ) : (
+          // Onglet Inscriptions
+          <div>
+            {inscriptions.length === 0 ? (
+              <div className="text-center py-20">
+                <Users className="mx-auto h-16 w-16 text-primary/40 mb-4" />
+                <h2 className="text-2xl font-bold text-foreground mb-2">Aucune inscription</h2>
+                <p className="text-muted-foreground">Aucune inscription n'a été enregistrée pour le moment.</p>
+              </div>
+            ) : (
+              <>
+                <div className="mb-6">
+                  <p className="text-muted-foreground font-medium">
+                    {inscriptions.length} inscription{inscriptions.length > 1 ? 's' : ''} au total
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg shadow border border-slate-100 overflow-x-auto">
+                  <table className="w-full divide-y divide-slate-200">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">Nom & Prénom</th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">Email</th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">Téléphone</th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">Formation</th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">Ville</th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-slate-700">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                      {paginatedInscriptions.map((inscription) => (
+                        <tr key={inscription.id} className="hover:bg-slate-50 transition">
+                          <td className="px-6 py-4 text-sm text-foreground font-medium">
+                            {inscription.prenom} {inscription.nom}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-muted-foreground">{inscription.email}</td>
+                          <td className="px-6 py-4 text-sm text-muted-foreground">{inscription.tel}</td>
+                          <td className="px-6 py-4 text-sm text-muted-foreground">{getFormationTitle(inscription)}</td>
+                          <td className="px-6 py-4 text-sm text-muted-foreground">{inscription.ville}</td>
+                          <td className="px-6 py-4 text-sm text-muted-foreground">
+                            {new Date(inscription.date_inscription).toLocaleDateString('fr-FR')}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* Pagination Controls for Inscriptions */}
+                {totalInscriptionsPages > 1 && (
+                  <div className="flex items-center justify-center gap-3 mt-8">
+                    <button onClick={() => setInscriptionsPage(p => Math.max(1, p-1))} className="px-3 py-2 rounded-md bg-slate-100 hover:bg-slate-200">Préc</button>
+                    <div className="text-sm">Page {inscriptionsPage} / {totalInscriptionsPages}</div>
+                    <button onClick={() => setInscriptionsPage(p => Math.min(totalInscriptionsPages, p+1))} className="px-3 py-2 rounded-md bg-slate-100 hover:bg-slate-200">Suiv</button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         )}
       </main>
       <Footer />

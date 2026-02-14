@@ -19,14 +19,15 @@ import { FormationAdvanced } from './formations-advanced/entities/formation-adva
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || '172.18.0.2',
+      host: process.env.DB_HOST || 'localhost',
       port: parseInt(process.env.DB_PORT || '5432', 10),
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASS || 'postgres',
-      database: process.env.DB_NAME || 'mosala',
+      database: process.env.DB_NAME || 'postgres',
       entities: [User, News, FormationAdvanced],
-      synchronize: true, // à désactiver en production
+      synchronize: true,
       autoLoadEntities: true,
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
     }),
     UsersModule,
     AuthModule,

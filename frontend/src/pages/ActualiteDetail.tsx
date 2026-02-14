@@ -1,29 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '../config';
-
-interface NewsItem {
-  id: number;
-  title: string;
-  description: string;
-  content: string;
-  imageUrl: string;
-  link?: string;
-  isPublished: boolean;
-  isFeatured: boolean;
-  createdAt: string;
-  author?: {
-    id: number;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-  };
-}
+import { actualitesAPI, type Actualite } from '../api/actualites';
 
 const ActualiteDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [news, setNews] = useState<NewsItem | null>(null);
+  const [news, setNews] = useState<Actualite | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,13 +16,13 @@ const ActualiteDetail: React.FC = () => {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/news/${id}`);
-      
-      if (!response.ok) {
+      if (!id) {
+        throw new Error('ID non fourni');
+      }
+      const data = await actualitesAPI.getOne(parseInt(id));
+      if (!data) {
         throw new Error('Actualité non trouvée');
       }
-
-      const data = await response.json();
       setNews(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
@@ -94,45 +76,50 @@ const ActualiteDetail: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <article className="bg-white rounded-lg shadow-md overflow-hidden">
           {/* Image en-tête */}
-          {news.imageUrl && (
-            <div className="h-96 overflow-hidden bg-gray-200">
-              <img
-                src={news.imageUrl}
-                alt={news.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+          <div className="h-96 overflow-hidden bg-gray-200">
+            <img
+              src={news.imageUrl || "https://images.unsplash.com/photo-1557804506-669714131143?w=800&h=400&fit=crop"}
+              alt={news.titre}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1557804506-669714131143?w=800&h=400&fit=crop";
+              }}
+            />
+          </div>
 
           {/* Contenu */}
           <div className="p-8">
             {/* Méta-informations */}
             <div className="mb-6 pb-6 border-b border-gray-200">
-              <p className="text-gray-600 mb-2">
-                {new Date(news.createdAt).toLocaleDateString('fr-FR', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </p>
-              {news.author && (
-                <p className="text-sm text-gray-500">
-                  Par <strong>{news.author.firstName} {news.author.lastName || news.author.email}</strong>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-gray-600">
+                  {news.date ? new Date(news.date).toLocaleDateString('fr-FR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }) : 'Date non disponible'}
                 </p>
-              )}
+                {news.aLaUne && (
+                  <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    À la une
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Titre */}
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">{news.title}</h1>
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">{news.titre}</h1>
 
-            {/* Description */}
-            <p className="text-xl text-gray-600 mb-8 italic">{news.description}</p>
+            {/* Excerpt */}
+            {news.excerpt && (
+              <p className="text-xl text-gray-600 mb-8 italic border-l-4 border-green-600 pl-4">
+                {news.excerpt}
+              </p>
+            )}
 
             {/* Contenu */}
             <div className="prose prose-lg max-w-none text-gray-700 mb-8">
-              {news.content.split('\n').map((paragraph, index) => (
+              {news.contenu.split('\n').map((paragraph, index) => (
                 <p key={index} className="mb-4">
                   {paragraph}
                 </p>
@@ -140,16 +127,16 @@ const ActualiteDetail: React.FC = () => {
             </div>
 
             {/* Lien vers l'article officiel */}
-            {news.link && (
-              <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-blue-900 mb-3 font-semibold">
-                  📄 Consulter l'article officiel
+            {news.lien && (
+              <div className="mt-8 p-6 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-900 mb-3 font-semibold">
+                  📄 Consulter l'article complet
                 </p>
                 <a
-                  href={news.link}
+                  href={news.lien}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition"
+                  className="inline-block bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition"
                 >
                   Lire l'article → 
                 </a>

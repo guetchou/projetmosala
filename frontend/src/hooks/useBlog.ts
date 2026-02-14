@@ -139,11 +139,13 @@ export function useBlog() {
     queryKey: ["blog"],
     queryFn: async () => {
       try {
+        // NOTE: blog-posts est DEPRECATED - utiliser Supabase actualites à la place
         const res = await fetchCms<{ data: any[] }>("/api/blog-posts?populate=*&sort[0]=date:desc");
         return res.data.map((entity) => {
           const att = entity.attributes;
           const url = att?.image?.data?.attributes?.url as string | undefined;
-          const base = import.meta.env.VITE_STRAPI_URL || "http://localhost:1337";
+          // Strapi/localhost usage deprecated — prefer Supabase actualites. Use VITE_STRAPI_URL only if explicitly set.
+          const base = import.meta.env.VITE_STRAPI_URL || "";
           const image = url ? (url.startsWith("http") ? url : `${base}${url}`) : "/topcenter-uploads/default-news.jpg";
           return {
             id: String(entity.id),
@@ -173,11 +175,13 @@ export function useFeaturedPosts() {
     queryKey: ["blog", "featured"],
     queryFn: async () => {
       try {
+        // NOTE: blog-posts est DEPRECATED - utiliser Supabase actualites à la place
         const res = await fetchCms<{ data: any[] }>("/api/blog-posts?populate=*&sort[0]=date:desc");
         const mapped = res.data.map((entity) => {
           const att = entity.attributes;
           const url = att?.image?.data?.attributes?.url as string | undefined;
-          const base = import.meta.env.VITE_STRAPI_URL || "http://localhost:1337";
+          // Strapi/localhost usage deprecated — prefer Supabase actualites. Use VITE_STRAPI_URL only if explicitly set.
+          const base = import.meta.env.VITE_STRAPI_URL || "";
           const image = url ? (url.startsWith("http") ? url : `${base}${url}`) : "/topcenter-uploads/default-news.jpg";
           return {
             id: String(entity.id),

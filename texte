@@ -52,16 +52,19 @@ Fait maintenant des test pour verifier si le backend fonctionne (les inscription
 
 
 
-dans la page d'accueil, supprime les section suivantes : 
-
-- les formations les plus demandé
-- recommandations pour l'avenir
-- Notre mission
-- Nos services
-- resultat de la recherche
-- Restez informé
 
 
+apres connexion, le super administrateur est redire dans son compte super admin.
+
+Il aura  un sidebar a gauche avec les boutons suivants :
+
+- Gerer les formation (ce bouton ouvrira a droite : Un formulaire pour ajouter les actualitées, voir les actualitées, modifier, supprimer)
+
+- gerer les actualitées  (ce bouton ouvrira a droite : Un formulaire pour ajouter les actualitées, voir les actualitées, modifier, supprimer)
+
+- Gerer les administrateur  (ce bouton ouvrira a droite : Un formulaire pour ajouter les utilisateur, voir les utilisateur inscrit, supprimer  )
+
+NB: Le formulaire pour les actualités aura les memes champs que les cartes actualité qui sont dans la page d'accueil. On pourra mettre une actualité a la une.
 
 
 
@@ -69,6 +72,39 @@ dans la page d'accueil, supprime les section suivantes :
 
 
 
+
+
+1. Espace Super Administrateur
+
+C'est le niveau d'accès le plus élevé (rôle superadmin).
+
+Inscription : http://localhost:5173/superadmin/register
+
+Connexion : http://localhost:5173/superadmin/login
+
+Tableau de bord : http://localhost:5173/superadmin/dashboard
+
+2. Espace Administrateur de Contenu
+
+Pour la gestion du site, du blog et des contenus (rôle admin_content).
+
+Inscription : http://localhost:5173/admin-content/register
+
+Connexion : http://localhost:5173/admin-content/login
+
+Tableau de bord : http://localhost:5173/admin-content/dashboard
+
+3. Espace Administrateur Standard
+
+Pour la gestion classique des utilisateurs et des jobs (rôle admin).
+
+Connexion (Générale) : http://localhost:5173/login
+
+Tableau de bord : http://localhost:5173/admin-dashboard
+
+Gestion Utilisateurs : http://localhost:5173/admin/users
+
+Gestion Jobs : http://localhost:5173/admin/jobs
 
 
 

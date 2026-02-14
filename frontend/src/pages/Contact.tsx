@@ -70,12 +70,7 @@ export default function Contact() {
           </motion.div>
           {/* Right: Content */}
           <div className="md:w-1/2 w-full flex flex-col justify-center items-center bg-gray-50 py-16 px-6 md:px-12">
-            {/* Avatar conseiller LinkedIn-style */}
-            <div className="flex flex-col items-center mb-8">
-              <img src="/topcenter-uploads/pexel/avatar-conseille.jpg" alt="Marie, Conseillère Mosala" className="h-28 w-28 rounded-full border-4 border-[#7ED9A7] shadow-lg mb-2 object-cover" />
-              <div className="font-bold text-lg text-gray-700">Marie</div>
-              <div className="text-sm text-gray-600">Conseillère Mosala</div>
-            </div>
+          
             <motion.h1
               className="text-4xl md:text-5xl font-extrabold text-left mb-6 bg-gradient-to-r from-[#7ED9A7] to-[#00824B] text-transparent bg-clip-text"
               initial={{ opacity: 0, y: 30 }}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function SuperAdminLogin() {
   const [formData, setFormData] = useState({
@@ -8,7 +9,9 @@ export default function SuperAdminLogin() {
     password: '',
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -23,14 +26,30 @@ export default function SuperAdminLogin() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
+    console.log('[SuperAdminLogin] handleSubmit started, email:', formData.email);
 
     try {
-      await login(formData.email, formData.password, 'superadmin/login');
-      navigate('/superadmin/dashboard');
+      console.log('[SuperAdminLogin] Before login...');
+      console.log('[SuperAdminLogin] Calling login with params:', { endpoint: 'superadmin/login', expectedRole: 'superadmin' });
+      const loggedInUser = await login(formData.email, formData.password, 'superadmin/login', 'superadmin', navigate);
+      console.log('[SuperAdminLogin] Login promise resolved, loggedInUser:', loggedInUser);
+      
+      if (loggedInUser && loggedInUser.role === 'superadmin') {
+        console.log('[SuperAdminLogin] ✅ User role is superadmin - SUCCESS');
+        setSuccess('Connexion réussie! Redirection...');
+        // Navigate immediately - AuthContext.login handles navigation via pendingNavigate
+        navigate('/superadmin/dashboard');
+      } else {
+        console.error('[SuperAdminLogin] ❌ User role is NOT superadmin. loggedInUser:', loggedInUser);
+        setError('Rôle utilisateur incorrect. Veuillez vous connecter avec un compte superadmin.');
+      }
     } catch (err) {
+      console.error('[SuperAdminLogin] ❌ Login error:', err);
       setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de la connexion');
     } finally {
+      console.log('[SuperAdminLogin] handleSubmit finally - setting loading to false');
       setLoading(false);
     }
   };
@@ -51,6 +70,12 @@ export default function SuperAdminLogin() {
           {error && (
             <div className="bg-mosala-red-50 border border-mosala-red-200 rounded-lg p-4 text-mosala-red-700 text-sm">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="bg-mosala-green-50 border border-mosala-green-200 rounded-lg p-4 text-mosala-green-700 text-sm">
+              {success}
             </div>
           )}
 
@@ -77,16 +102,25 @@ export default function SuperAdminLogin() {
               <label htmlFor="password" className="block text-sm font-semibold text-mosala-green-900 mb-2">
                 Mot de passe
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-mosala-green-200 focus:border-mosala-green-500 focus:ring-2 focus:ring-mosala-green-200 outline-none transition"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-mosala-green-200 focus:border-mosala-green-500 focus:ring-2 focus:ring-mosala-green-200 outline-none transition"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-mosala-green-600 hover:text-mosala-green-700"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             {/* Submit Button */}

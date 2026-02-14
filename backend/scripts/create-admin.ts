@@ -25,7 +25,7 @@ async function createAdmin() {
     process.exit(0);
   }
   const hashed = await bcrypt.hash(password, 10);
-  const admin = repo.create({ name, email, password: hashed, role: 'admin' });
+  const admin = repo.create({ name, email, password: hashed, role: 'admin' as any });
   await repo.save(admin);
   console.log('Administrateur créé avec succès:', email);
   process.exit(0);

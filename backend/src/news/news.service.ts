@@ -76,7 +76,7 @@ export class NewsService {
     // Si cette actualité est mise à la une, dépublier l'ancienne
     if (updateNewsDto.isFeatured) {
       await this.newsRepository.update(
-        { isFeatured: true, id: () => `id != ${id}` },
+        { isFeatured: true } as any,
         { isFeatured: false }
       );
     }

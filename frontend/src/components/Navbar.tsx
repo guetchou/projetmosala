@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useReducer, useCallback, forwardRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { Menu, X, Search, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavbarShrink } from "@/hooks/useNavbarShrink";
@@ -67,8 +68,6 @@ const navLinks = [
   { to: "/", label: "Accueil" },
   { to: "/formations", label: "Formations" },
   { to: "/actualites", label: "Actualités" },
-  { to: "/candidates", label: "Candidats" },
-  { to: "/jobs", label: "Emplois" },
   { to: "/about", label: "À propos" },
   { to: "/contact", label: "Contact" },
 ];
@@ -109,8 +108,6 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
   const suggestions = [
     { label: "Services Mosala", to: "/services" },
     { label: "Formations", to: "/formations" },
-    { label: "Candidats", to: "/candidates" },
-    { label: "Emplois", to: "/jobs" },
     { label: "Mon profil", to: "/profile" },
   ].filter(s => s.label.toLowerCase().includes(state.searchValue.toLowerCase()));
 
@@ -226,14 +223,12 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
         else if (ref) ref.current = el;
         navbarRef.current = el;
       }}
-      className={`fixed top-0 left-0 right-0 transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-white/10 z-50 ${isScrolled ? 'py-1' : 'py-2'}`}
-      style={{
-        transitionDuration: prefersReducedMotion ? '0.1s' : '0.3s'
-      }}
+      className="fixed top-0 left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-white/10 z-50 py-2"
+      style={{ transitionDuration: prefersReducedMotion ? '0.1s' : '0.3s' }}
     >
       <nav
         data-navbar
-        className={`pointer-events-auto w-full max-w-7xl mx-auto flex items-center justify-between px-4 transition-all duration-500 min-h-[40px] ${isScrolled ? 'max-w-6xl' : 'max-w-7xl'}`}
+        className="pointer-events-auto w-full max-w-7xl mx-auto flex items-center justify-between px-4 transition-all duration-500 min-h-[56px]"
         role="navigation"
         aria-label="Navigation principale Mosala"
       >
@@ -254,13 +249,17 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
         {/* Navigation principale - visible sur desktop */}
         <div className="navbar-main-nav hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.to}
               to={link.to}
-              className="text-mosala-green dark:text-white/90 font-medium hover:text-mosala-yellow dark:hover:text-mosala-yellow transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mosala-green dark:focus-visible:ring-mosala-yellow focus-visible:ring-offset-2 rounded-md px-2 py-1 hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm"
+              className={({ isActive }) =>
+                `text-mosala-green dark:text-white/90 font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mosala-green dark:focus-visible:ring-mosala-yellow focus-visible:ring-offset-2 rounded-md px-2 py-1 hover:bg-[var(--surface-strong)] hover:backdrop-blur-sm ${
+                  isActive ? 'text-mosala-yellow font-semibold' : ''
+                }`
+              }
             >
               {link.label}
-            </Link>
+            </NavLink>
           ))}
         </div>
 

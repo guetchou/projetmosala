@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function SuperAdminRegister() {
   const [formData, setFormData] = useState({
@@ -10,7 +11,10 @@ export default function SuperAdminRegister() {
     confirmPassword: '',
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const { register } = useAuth();
 
@@ -25,7 +29,15 @@ export default function SuperAdminRegister() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
+
+    // Validation
+    if (!formData.name.trim()) {
+      setError('Le nom est requis');
+      setLoading(false);
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Les mots de passe ne correspondent pas');
@@ -40,17 +52,20 @@ export default function SuperAdminRegister() {
     }
 
     try {
+      console.log('[SuperAdminRegister] Registering superadmin:', formData.email);
       await register(
         {
           name: formData.name,
           email: formData.email,
           password: formData.password,
         },
-        'superadmin/register'
+        'superadmin/register',
+        'superadmin'
       );
-      navigate('/superadmin/dashboard');
+      setSuccess('Compte créé avec succès! Redirection...');
+      setTimeout(() => navigate('/superadmin/login'), 1500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de l\'inscription');
     } finally {
       setLoading(false);
     }
@@ -72,6 +87,12 @@ export default function SuperAdminRegister() {
           {error && (
             <div className="bg-mosala-red-50 border border-mosala-red-200 rounded-lg p-4 text-mosala-red-700 text-sm">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="bg-mosala-green-50 border border-mosala-green-200 rounded-lg p-4 text-mosala-green-700 text-sm">
+              {success}
             </div>
           )}
 
@@ -115,16 +136,25 @@ export default function SuperAdminRegister() {
               <label htmlFor="password" className="block text-sm font-semibold text-mosala-green-900 mb-2">
                 Mot de passe
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-mosala-green-200 focus:border-mosala-green-500 focus:ring-2 focus:ring-mosala-green-200 outline-none transition"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-mosala-green-200 focus:border-mosala-green-500 focus:ring-2 focus:ring-mosala-green-200 outline-none transition"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-mosala-green-600 hover:text-mosala-green-700"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
               <p className="text-xs text-mosala-green-600 mt-1">Minimum 8 caractères</p>
             </div>
 
@@ -133,16 +163,25 @@ export default function SuperAdminRegister() {
               <label htmlFor="confirmPassword" className="block text-sm font-semibold text-mosala-green-900 mb-2">
                 Confirmer le mot de passe
               </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-mosala-green-200 focus:border-mosala-green-500 focus:ring-2 focus:ring-mosala-green-200 outline-none transition"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-mosala-green-200 focus:border-mosala-green-500 focus:ring-2 focus:ring-mosala-green-200 outline-none transition"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-3 text-mosala-green-600 hover:text-mosala-green-700"
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             {/* Submit Button */}

@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import NewsForm from '@/components/NewsForm';
+import { actualitesAPI, Actualite } from '@/api/actualites';
+import CategoriesSection from './components/CategoriesSection';
+import InscriptionsSection from './components/InscriptionsSection';
+import FormationsSection from './components/FormationsSection';
 
 interface MenuItem {
   id: string;
@@ -10,49 +14,33 @@ interface MenuItem {
   path: string;
 }
 
-interface NewsItem {
-  id: number;
-  title: string;
-  description: string;
-  content: string;
-  imageUrl: string;
-  link?: string;
-  isPublished: boolean;
-  isFeatured: boolean;
-  createdAt: string;
-}
-
 export default function AdminContentDashboard() {
-  const { user, token, isAuthenticated } = useAuth();
+  const { user, token, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [news, setNews] = useState<NewsItem[]>([]);
+  const [news, setNews] = useState<Actualite[]>([]);
   const [loading, setLoading] = useState(false);
-  const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
+  const [editingNews, setEditingNews] = useState<Actualite | null>(null);
 
-  // Vérifier l'authentification
+  // Since ProtectedRoute now uses AuthContext, this is just a safety net
+  // ProtectedRoute has already verified auth and role before reaching this component
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'admin_content') {
-      navigate('/admin-content/login');
-    }
-  }, [isAuthenticated, user, navigate]);
+    console.log('[AdminContentDashboard] Component mounted - isLoading:', isLoading, 'isAuthenticated:', isAuthenticated, 'user.role:', user?.role);
+  }, [isLoading, isAuthenticated, user]);
 
-  // Charger les actualités
+  // Charger les actualités - only if user is defined
   useEffect(() => {
-    if (activeTab === 'news') {
+    if (activeTab === 'news' && user) {
       fetchNews();
     }
-  }, [activeTab]);
+  }, [activeTab, user]);
 
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/news`);
-      if (response.ok) {
-        const data = await response.json();
-        setNews(Array.isArray(data) ? data : []);
-      }
+      const data = await actualitesAPI.getAll();
+      setNews(data);
     } catch (error) {
       console.error('Erreur lors du chargement des actualités:', error);
     } finally {
@@ -69,14 +57,8 @@ export default function AdminContentDashboard() {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?')) return;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/news/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
+      const success = await actualitesAPI.delete(id);
+      if (success) {
         fetchNews();
       }
     } catch (error) {
@@ -88,6 +70,8 @@ export default function AdminContentDashboard() {
     { id: 'dashboard', label: 'Tableau de bord', icon: '📊', path: '#' },
     { id: 'news', label: 'Gérer les actualités', icon: '📰', path: '#' },
     { id: 'formations', label: 'Gérer les formations', icon: '📚', path: '#' },
+    { id: 'categories', label: 'Gérer les catégories', icon: '🏷️', path: '#' },
+    { id: 'inscriptions', label: 'Gestion des inscriptions', icon: '📝', path: '#' },
     { id: 'temoignages', label: 'Gérer les témoignages', icon: '💬', path: '#' },
   ];
 
@@ -103,15 +87,20 @@ export default function AdminContentDashboard() {
         return <NewsView 
           news={news} 
           loading={loading}
-          onEditNews={(n: NewsItem) => {
+          onEditNews={(n: Actualite) => {
             setEditingNews(n);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           onDeleteNews={handleDeleteNews}
+          onSuccess={handleNewsSuccess}
           token={token}
         />;
       case 'formations':
-        return <FormationsView />;
+        return <FormationsSection />;
+      case 'categories':
+        return <CategoriesSection />;
+      case 'inscriptions':
+        return <InscriptionsSection />;
       default:
         return <DashboardView />;
     }
@@ -119,54 +108,63 @@ export default function AdminContentDashboard() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
+      {/* Sidebar - Fixed on the left */}
       <div
         className={`${
           isOpen ? 'w-64' : 'w-20'
-        } bg-mosala-orange-800 text-white transition-all duration-300 flex flex-col shadow-2xl`}
+        } bg-mosala-orange-800 text-white transition-all duration-300 flex flex-col shadow-2xl fixed left-0 top-0 h-screen z-40 ${
+          !isOpen ? 'hidden md:flex' : 'w-full md:w-64'
+        }`}
       >
         {/* Logo Section */}
-        <div className="p-6 border-b border-mosala-orange-700">
+        <div className="p-4 md:p-6 border-b border-mosala-orange-700">
           <div className="flex items-center justify-between">
             {isOpen && (
-              <div>
-                <h1 className="text-xl font-bold text-mosala-orange-100">MOSALA</h1>
+              <div className="min-w-0">
+                <h1 className="text-lg md:text-xl font-bold text-mosala-orange-100">MOSALA</h1>
                 <p className="text-xs text-mosala-orange-300">Admin Contenu</p>
               </div>
             )}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 hover:bg-mosala-orange-700 rounded-lg transition"
+              className="p-2 hover:bg-mosala-orange-700 rounded-lg transition flex-shrink-0"
+              aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             >
-              {isOpen ? '◀' : '▶'}
+              {isOpen ? '✕' : '☰'}
             </button>
           </div>
         </div>
 
         {/* Menu Items */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 px-3 md:px-4 py-4 md:py-6 space-y-1 md:space-y-2 overflow-y-auto">
           {menuItems.map(item => (
             <button
               key={item.id}
-              onClick={() => handleMenuClick(item.id)}
-              className={`w-full flex items-center space-x-4 px-4 py-3 rounded-lg transition ${
+              onClick={() => {
+                handleMenuClick(item.id);
+                // Close sidebar on mobile after selection
+                if (isOpen && window.innerWidth < 768) {
+                  setIsOpen(false);
+                }
+              }}
+              className={`w-full flex items-center space-x-3 md:space-x-4 px-3 md:px-4 py-2 md:py-3 rounded-lg transition text-sm md:text-base ${
                 activeTab === item.id
                   ? 'bg-mosala-orange-600 text-white'
                   : 'hover:bg-mosala-orange-700 text-mosala-orange-100'
               }`}
             >
-              <span className="text-xl">{item.icon}</span>
-              {isOpen && <span className="font-medium text-sm">{item.label}</span>}
+              <span className="text-lg md:text-xl flex-shrink-0">{item.icon}</span>
+              {isOpen && <span className="font-medium">{item.label}</span>}
             </button>
           ))}
         </nav>
 
         {/* User Section */}
-        <div className="border-t border-mosala-orange-700 p-4">
+        <div className="border-t border-mosala-orange-700 p-3 md:p-4">
           {isOpen && (
-            <div className="mb-4 pb-4 border-b border-mosala-orange-700">
+            <div className="mb-3 md:mb-4 pb-3 md:pb-4 border-b border-mosala-orange-700">
               <p className="text-xs text-mosala-orange-300 uppercase">Connecté</p>
-              <p className="text-sm font-semibold text-mosala-orange-100 truncate">{user?.name}</p>
+              <p className="text-xs md:text-sm font-semibold text-mosala-orange-100 truncate">{user?.name}</p>
               <p className="text-xs text-mosala-orange-400 truncate">{user?.email}</p>
             </div>
           )}
@@ -176,7 +174,7 @@ export default function AdminContentDashboard() {
               localStorage.removeItem('auth_user');
               navigate('/admin-content/login');
             }}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-mosala-red-600 hover:bg-mosala-red-700 rounded-lg transition font-medium text-sm"
+            className="w-full flex items-center justify-center space-x-2 px-3 md:px-4 py-2 bg-mosala-red-600 hover:bg-mosala-red-700 rounded-lg transition font-medium text-xs md:text-sm"
           >
             <span>🚪</span>
             {isOpen && <span>Déconnexion</span>}
@@ -185,21 +183,21 @@ export default function AdminContentDashboard() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden md:ml-64 h-screen">
         {/* Top Bar */}
-        <div className="bg-white shadow-sm border-b border-gray-200 px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-mosala-orange-800">
+        <div className="bg-white shadow-sm border-b border-gray-200 px-4 md:px-8 py-3 md:py-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
+            <div className="min-w-0">
+              <h2 className="text-xl md:text-2xl font-bold text-mosala-orange-800 truncate">
                 {menuItems.find(m => m.id === activeTab)?.label}
               </h2>
-              <p className="text-gray-600 text-sm">Gestion des contenus Mosala</p>
+              <p className="text-gray-600 text-xs md:text-sm">Gestion des contenus Mosala</p>
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-xs md:text-sm text-gray-600 whitespace-nowrap">
               {new Date().toLocaleDateString('fr-FR', {
-                weekday: 'long',
+                weekday: 'short',
                 year: 'numeric',
-                month: 'long',
+                month: 'short',
                 day: 'numeric',
               })}
             </div>
@@ -207,8 +205,8 @@ export default function AdminContentDashboard() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto p-8">
-          <div className="max-w-6xl mx-auto">{renderContent()}</div>
+        <div className="flex-1 overflow-auto p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">{renderContent()}</div>
         </div>
       </div>
     </div>
@@ -217,51 +215,51 @@ export default function AdminContentDashboard() {
 
 function DashboardView() {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="space-y-4 md:space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         <StatCard title="Actualités" value="24" icon="📰" color="orange" />
         <StatCard title="Formations" value="12" icon="📚" color="yellow" />
         <StatCard title="Dernière mise à jour" value="2h" icon="⏱️" color="green" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-bold text-mosala-orange-800 mb-4">Actualités récentes</h3>
-          <div className="space-y-3 text-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-bold text-mosala-orange-800 mb-3 md:mb-4">Actualités récentes</h3>
+          <div className="space-y-2 md:space-y-3 text-xs md:text-sm">
             <div className="flex justify-between py-2 border-b">
               <span className="text-gray-600">Nouvelle actualité publiée</span>
-              <span className="text-mosala-orange-600">Il y a 2h</span>
+              <span className="text-mosala-orange-600 whitespace-nowrap ml-2">Il y a 2h</span>
             </div>
             <div className="flex justify-between py-2 border-b">
               <span className="text-gray-600">Actualité modifiée</span>
-              <span className="text-mosala-orange-600">Il y a 5h</span>
+              <span className="text-mosala-orange-600 whitespace-nowrap ml-2">Il y a 5h</span>
             </div>
             <div className="flex justify-between py-2">
               <span className="text-gray-600">Formation mise à jour</span>
-              <span className="text-mosala-orange-600">Il y a 1j</span>
+              <span className="text-mosala-orange-600 whitespace-nowrap ml-2">Il y a 1j</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-bold text-mosala-orange-800 mb-4">Statistiques de contenu</h3>
-          <div className="space-y-4">
+        <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-bold text-mosala-orange-800 mb-3 md:mb-4">Statistiques de contenu</h3>
+          <div className="space-y-3 md:space-y-4">
             <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium text-gray-600">Contenu publié</span>
-                <span className="text-sm font-bold text-mosala-orange-600">72%</span>
+              <div className="flex justify-between mb-2 text-xs md:text-sm">
+                <span className="font-medium text-gray-600">Contenu publié</span>
+                <span className="font-bold text-mosala-orange-600">72%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-gradient-to-r from-mosala-orange-500 to-mosala-orange-600 h-2 rounded-full" style={{ width: '72%' }}></div>
+              <div className="w-full bg-gray-200 rounded-full h-1.5 md:h-2">
+                <div className="bg-gradient-to-r from-mosala-orange-500 to-mosala-orange-600 h-1.5 md:h-2 rounded-full" style={{ width: '72%' }}></div>
               </div>
             </div>
             <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium text-gray-600">Formations actives</span>
-                <span className="text-sm font-bold text-mosala-yellow-600">100%</span>
+              <div className="flex justify-between mb-2 text-xs md:text-sm">
+                <span className="font-medium text-gray-600">Formations actives</span>
+                <span className="font-bold text-mosala-yellow-600">100%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-gradient-to-r from-mosala-yellow-500 to-mosala-orange-500 h-2 rounded-full" style={{ width: '100%' }}></div>
+              <div className="w-full bg-gray-200 rounded-full h-1.5 md:h-2">
+                <div className="bg-gradient-to-r from-mosala-yellow-500 to-mosala-orange-500 h-1.5 md:h-2 rounded-full" style={{ width: '100%' }}></div>
               </div>
             </div>
           </div>
@@ -280,90 +278,99 @@ function StatCard({ title, value, icon, color }: any) {
   };
 
   return (
-    <div className={`bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses]} rounded-xl shadow-lg p-6 text-white`}>
-      <div className="flex justify-between items-start">
-        <div>
-          <p className="text-white text-opacity-80 text-sm font-medium">{title}</p>
-          <p className="text-3xl font-bold mt-2">{value}</p>
+    <div className={`bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses]} rounded-lg md:rounded-xl shadow-lg p-4 md:p-6 text-white`}>
+      <div className="flex justify-between items-start gap-2">
+        <div className="min-w-0">
+          <p className="text-white text-opacity-80 text-xs md:text-sm font-medium">{title}</p>
+          <p className="text-2xl md:text-3xl font-bold mt-1 md:mt-2 truncate">{value}</p>
         </div>
-        <span className="text-3xl">{icon}</span>
+        <span className="text-2xl md:text-3xl flex-shrink-0">{icon}</span>
       </div>
     </div>
   );
 }
 
-function NewsView({ news, loading, onEditNews, onDeleteNews, token }: any) {
-  const handlePublish = async (id: number) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/news/${id}/publish`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+function NewsView({ news, loading, onEditNews, onDeleteNews, onSuccess, token }: any) {
+  const [showForm, setShowForm] = useState(false);
+  const [editingNews, setEditingNews] = useState<Actualite | null>(null);
 
-      if (response.ok) {
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Erreur lors de la publication:', error);
-    }
+  const handleSuccess = () => {
+    setShowForm(false);
+    setEditingNews(null);
+    onSuccess();
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setEditingNews(null);
   };
 
   return (
-    <div className="space-y-8">
-      {/* Formulaire pour ajouter une actualité */}
-      <NewsForm 
-        onSuccess={onEditNews}
-        editingNews={null}
-      />
+    <div className="space-y-4 md:space-y-8">
+      {/* Formulaire pour ajouter/modifier une actualité */}
+      {showForm && (
+        <div className="mb-4 md:mb-8">
+          <NewsForm 
+            onSuccess={handleSuccess}
+            editingNews={editingNews}
+            onCancel={handleCancel}
+          />
+        </div>
+      )}
+
+      {!showForm && (
+        <button 
+          onClick={() => {
+            setEditingNews(null);
+            setShowForm(true);
+          }}
+          className="inline-flex items-center gap-2 px-4 md:px-6 py-2 bg-gradient-to-r from-mosala-orange-600 to-mosala-orange-700 text-white rounded-lg font-semibold hover:shadow-lg transition text-sm md:text-base"
+        >
+          + Ajouter une actualité
+        </button>
+      )}
 
       {/* Liste des actualités */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-lg font-bold text-mosala-orange-800 mb-6">Actualités existantes</h3>
+      <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-bold text-mosala-orange-800 mb-4 md:mb-6">Actualités existantes</h3>
         
         {loading ? (
-          <div className="text-center py-8 text-gray-500">Chargement...</div>
+          <div className="text-center py-8 text-gray-500 text-sm md:text-base">Chargement...</div>
         ) : news.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">Aucune actualité créée</div>
+          <div className="text-center py-8 text-gray-500 text-sm md:text-base">Aucune actualité créée</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {news.map((item: NewsItem) => (
-              <div key={item.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            {news.map((item: Actualite) => (
+              <div key={item.id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition flex flex-col">
                 {item.imageUrl && (
-                  <div className="h-40 bg-gray-200 overflow-hidden">
-                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                  <div className="h-32 md:h-40 bg-gray-200 overflow-hidden flex-shrink-0">
+                    <img src={item.imageUrl} alt={item.titre} className="w-full h-full object-cover" />
                   </div>
                 )}
-                <div className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-bold text-mosala-orange-800 line-clamp-2">{item.title}</h4>
-                    {item.isFeatured && (
-                      <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full ml-2 flex-shrink-0">À la une</span>
+                <div className="p-3 md:p-4 flex-1 flex flex-col">
+                  <div className="flex items-start justify-between mb-2 gap-2">
+                    <h4 className="font-bold text-mosala-orange-800 line-clamp-2 text-sm md:text-base">{item.titre}</h4>
+                    {item.aLaUne && (
+                      <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full flex-shrink-0">À la une</span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.description}</p>
-                  <p className="text-xs text-gray-500 mb-3">
-                    {new Date(item.createdAt).toLocaleDateString('fr-FR')}
+                  <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2 flex-1">{item.excerpt}</p>
+                  <p className="text-xs text-gray-500 mb-2 md:mb-3">
+                    {new Date(item.date || item.created_at || '').toLocaleDateString('fr-FR')}
                   </p>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mt-auto flex-col sm:flex-row">
                     <button 
-                      onClick={() => onEditNews(item)}
-                      className="flex-1 text-mosala-orange-600 hover:text-mosala-orange-800 font-medium text-sm"
+                      onClick={() => {
+                        setEditingNews(item);
+                        setShowForm(true);
+                      }}
+                      className="flex-1 text-mosala-orange-600 hover:text-mosala-orange-800 font-medium text-xs md:text-sm px-2 md:px-4 py-1 md:py-2 rounded hover:bg-orange-50 transition"
                     >
                       ✏️ Modifier
                     </button>
-                    {!item.isPublished && (
-                      <button 
-                        onClick={() => handlePublish(item.id)}
-                        className="flex-1 text-blue-600 hover:text-blue-800 font-medium text-sm"
-                      >
-                        📤 Publier
-                      </button>
-                    )}
                     <button 
                       onClick={() => onDeleteNews(item.id)}
-                      className="flex-1 text-mosala-red-600 hover:text-mosala-red-800 font-medium text-sm"
+                      className="flex-1 text-mosala-red-600 hover:text-mosala-red-800 font-medium text-xs md:text-sm px-2 md:px-4 py-1 md:py-2 rounded hover:bg-red-50 transition"
                     >
                       🗑️ Supprimer
                     </button>
@@ -373,155 +380,6 @@ function NewsView({ news, loading, onEditNews, onDeleteNews, token }: any) {
             ))}
           </div>
         )}
-      </div>
-    </div>
-  );
-}
-
-function FormationsView() {
-  const [showForm, setShowForm] = useState(false);
-  const [formations, setFormations] = useState<any[]>([]);
-  const [form, setForm] = useState<any>({
-    id: '',
-    title: '',
-    description: '',
-    category: '',
-    duration: '',
-    level: 'Tous niveaux',
-    certification: false,
-    image: '',
-    modalite: '',
-    publicCible: '',
-    prix: '',
-    places: 0,
-    satisfaction: 0
-  });
-
-  const handleChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev: any) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    const newItem = { ...form, id: form.id || `F${Date.now()}` };
-    setFormations(prev => [newItem, ...prev]);
-    setForm({
-      id: '', title: '', description: '', category: '', duration: '', level: 'Tous niveaux', certification: false, image: '', modalite: '', publicCible: '', prix: '', places: 0, satisfaction: 0
-    });
-    setShowForm(false);
-  };
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <button onClick={() => setShowForm(!showForm)} className="px-6 py-2 bg-gradient-to-r from-mosala-orange-600 to-mosala-orange-700 text-white rounded-lg font-semibold hover:shadow-lg transition">
-          {showForm ? 'Annuler' : '+ Ajouter une formation'}
-        </button>
-      </div>
-
-      {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Titre</label>
-              <input name="title" value={form.title} onChange={handleChange} required className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Catégorie</label>
-              <input name="category" value={form.category} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Description</label>
-              <textarea name="description" value={form.description} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" rows={4} />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Durée</label>
-              <input name="duration" value={form.duration} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Niveau</label>
-              <select name="level" value={form.level} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2">
-                <option>Tous niveaux</option>
-                <option>Débutant</option>
-                <option>Intermédiaire</option>
-                <option>Avancé</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Modalité</label>
-              <input name="modalite" value={form.modalite} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Public cible</label>
-              <input name="publicCible" value={form.publicCible} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Prix</label>
-              <input name="prix" value={form.prix} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Places</label>
-              <input name="places" type="number" value={form.places} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Satisfaction (0-5)</label>
-              <input name="satisfaction" type="number" min="0" max="5" step="0.1" value={form.satisfaction} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-            <div className="flex items-center gap-3">
-              <input name="certification" type="checkbox" checked={form.certification} onChange={handleChange} />
-              <label className="text-sm">Certifiante</label>
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Image (URL)</label>
-              <input name="image" value={form.image} onChange={handleChange} className="mt-1 block w-full border rounded px-3 py-2" />
-            </div>
-          </div>
-
-          <div className="mt-4 flex justify-end">
-            <button type="submit" className="px-6 py-2 bg-mosala-orange-600 text-white rounded-lg">Enregistrer</button>
-          </div>
-        </form>
-      )}
-
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-mosala-orange-50 border-b border-mosala-orange-200">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-mosala-orange-800">Formation</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-mosala-orange-800">Niveau</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-mosala-orange-800">Durée</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-mosala-orange-800">Places</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-mosala-orange-800">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {formations.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">Aucune formation créée</td>
-              </tr>
-            ) : (
-              formations.map((f, idx) => (
-                <tr key={f.id || idx} className="border-t border-gray-100 hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-800">{f.title}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{f.level}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{f.duration}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-mosala-orange-600">{f.places}</td>
-                  <td className="px-6 py-4 text-sm space-x-2">
-                    <button className="text-mosala-orange-600 hover:text-mosala-orange-800 font-medium">Modifier</button>
-                    <button onClick={() => setFormations(prev => prev.filter(x => x.id !== f.id))} className="text-mosala-red-600 hover:text-mosala-red-800 font-medium">Supprimer</button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
       </div>
     </div>
   );

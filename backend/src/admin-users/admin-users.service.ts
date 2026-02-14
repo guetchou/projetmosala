@@ -74,6 +74,10 @@ export class AdminUsersService {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
+    if (user.role === UserRole.SUPERADMIN) {
+      throw new ForbiddenException('Vous ne pouvez pas désactiver un superadministrateur');
+    }
+
     user.isActive = false;
     await this.userRepository.save(user);
 

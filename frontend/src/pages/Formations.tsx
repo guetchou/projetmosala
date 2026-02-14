@@ -256,41 +256,51 @@ const Formations = () => {
               {paginatedFormations.map((formation, index) => (
                 <motion.div
                   key={formation.id}
-                  className="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden flex flex-col hover:shadow-xl transition-shadow duration-300"
+                  className="bg-white rounded-xl border border-slate-100 shadow-md overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-300 group"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.4 }}
                 >
-                  <div className="relative overflow-hidden h-48 bg-slate-100">
+                  {/* Image */}
+                  <div className="relative overflow-hidden h-56 bg-slate-100">
                     {(formation as any).image_url || (formation as any).imageUrl ? (
                       <img 
                         src={(formation as any).image_url || (formation as any).imageUrl} 
                         alt={formation.titre} 
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-primary/10 to-slate-100 flex items-center justify-center">
-                        <ImageIcon className="w-12 h-12 text-primary/30" />
+                      <div className="w-full h-full bg-gradient-to-br from-mosala-green-100 to-slate-100 flex items-center justify-center">
+                        <ImageIcon className="w-16 h-16 text-mosala-green-300/60" />
                       </div>
                     )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                    <div className="p-5 flex-1 flex flex-col">
-                    <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">{formation.titre}</h3>
-                    <p className="text-muted-foreground text-sm mb-4 flex-1 line-clamp-3">{formation.contenu}</p>
+                  
+                  {/* Content */}
+                  <div className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-lg font-bold text-foreground mb-3 line-clamp-2 group-hover:text-mosala-green-600 transition-colors">
+                      {formation.titre}
+                    </h3>
+                    <p className="text-muted-foreground text-sm mb-6 flex-1 line-clamp-3">
+                      {formation.contenu}
+                    </p>
+                    
+                    {/* Actions */}
                     <div className="flex gap-2 mt-auto">
                       <button
                         onClick={() => handleInscription(formation)}
-                        className="flex-1 px-4 py-2.5 rounded-lg bg-[#8B5CF6] text-white font-semibold hover:bg-[#7a45e6] transition"
+                        className="flex-1 px-4 py-2.5 rounded-lg bg-gradient-to-r from-mosala-green-600 to-mosala-green-700 hover:from-mosala-green-700 hover:to-mosala-green-800 text-white font-semibold transition transform hover:scale-105 shadow-md"
                       >
                         S'inscrire
                       </button>
                       <button
                         onClick={() => setExpandedId(expandedId === formation.id ? null : formation.id)}
-                        className="px-4 py-2.5 rounded-lg bg-slate-100 text-foreground font-semibold hover:bg-slate-200 transition flex items-center gap-1"
+                        className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-slate-100 to-slate-50 hover:from-slate-200 hover:to-slate-100 text-foreground font-semibold transition flex items-center gap-1 shadow-sm"
                         aria-expanded={expandedId === formation.id}
-                        aria-controls={`formation-${formation.id}-details`}
+                        title="Plus d'informations"
                       >
-                        <ChevronRight size={18} />
+                        <ChevronRight className={`w-4 h-4 transition-transform ${expandedId === formation.id ? 'rotate-90' : ''}`} />
                       </button>
                     </div>
                     {expandedId === formation.id && (

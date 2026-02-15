@@ -216,45 +216,137 @@ const Hero = () => {
                       </span>
                     </motion.div>
 
-                    {/* Titre avec transition automatique - FIXE et RÉDUIT */}
-                    <motion.div variants={itemVariants} className="mb-6">
+                    {/* Titre avec transition automatique */}
+                    <motion.div variants={itemVariants} className="mb-4">
                       {index === 0 ? (
-                        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white drop-shadow-xl max-w-4xl mx-auto leading-tight">
-                          Mosala est un projet d'insertion professionnelle financé par l'AFD et l'Union Européenne, dédié à la jeunesse congolaise
+                        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white drop-shadow-xl max-w-4xl mx-auto leading-tight">
+                          {slide.title}
                         </h1>
                       ) : (
                         <div
                           role="heading"
                           aria-level={1}
-                          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white drop-shadow-xl max-w-4xl mx-auto leading-tight"
+                          className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white drop-shadow-xl max-w-4xl mx-auto leading-tight"
                         >
-                          Mosala est un projet d'insertion professionnelle financé par l'AFD et l'Union Européenne, dédié à la jeunesse congolaise
+                          {slide.title}
                         </div>
                       )}
                     </motion.div>
 
+                    {/* Sous-titre avec transition automatique */}
+                    {slide.subtitle && (
+                      <motion.div variants={itemVariants} className="mb-6">
+                        <p className={`text-white/95 max-w-3xl mx-auto font-medium leading-relaxed ${
+                          index === 0 
+                            ? "text-sm sm:text-base md:text-lg lg:text-xl" 
+                            : "text-sm sm:text-base md:text-lg lg:text-xl"
+                        }`}>
+                          {slide.subtitle}
+                        </p>
+                      </motion.div>
+                    )}
 
-
-                    {/* CTA UNIQUE - Consulter nos formations */}
-                    <motion.div
-                      variants={itemVariants}
-                      className="flex justify-center"
-                    >
+                    {/* KPIs uniquement sur le 1er slide avec transitions automatiques */}
+                    {index === 0 && (
                       <motion.div
                         variants={itemVariants}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 max-w-4xl mx-auto"
+                        aria-live="polite"
                       >
-                        <Link
-                          to="/formations"
-                          className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 bg-green-600 text-white hover:bg-green-700 focus:ring-green-400"
-                          aria-label="Consulter nos formations"
+                        {/* Candidats */}
+                        <motion.div 
+                          variants={itemVariants}
+                          className="flex flex-col items-center text-white/90 scale-transition"
                         >
-                          Consulter nos formations
-                          <ArrowRight className="w-4 h-4" />
-                        </Link>
+                          <div className="glassmorphism dark:glassmorphism-dark p-1.5 rounded-lg mb-1">
+                            <Users className="w-4 h-4 text-green-400" />
+                          </div>
+                          {kpisLoading ? (
+                            <div className="h-4 w-12 rounded bg-white/30 animate-pulse mb-1" />
+                          ) : (
+                            <AnimatedCounter
+                              value={c}
+                              className="text-lg font-bold text-white"
+                              suffix="+"
+                              aria-label={`${c.toLocaleString("fr-FR")} candidats accompagnés`}
+                            />
+                          )}
+                          <span className="text-sm font-medium">Candidats accompagnés</span>
+                        </motion.div>
+
+                        {/* Emplois */}
+                        <motion.div 
+                          variants={itemVariants}
+                          className="flex flex-col items-center text-white/90 scale-transition"
+                        >
+                          <div className="glassmorphism dark:glassmorphism-dark p-1.5 rounded-lg mb-1">
+                            <Briefcase className="w-4 h-4 text-green-400" />
+                          </div>
+                          {kpisLoading ? (
+                            <div className="h-4 w-12 rounded bg-white/30 animate-pulse mb-1" />
+                          ) : (
+                            <AnimatedCounter
+                              value={j}
+                              className="text-lg font-bold text-white"
+                              suffix="+"
+                              aria-label={`${j.toLocaleString("fr-FR")} emplois disponibles`}
+                            />
+                          )}
+                          <span className="text-sm font-medium">Emplois disponibles</span>
+                        </motion.div>
+
+                        {/* Partenaires */}
+                        <motion.div 
+                          variants={itemVariants}
+                          className="flex flex-col items-center text-white/90 scale-transition"
+                        >
+                          <div className="glassmorphism dark:glassmorphism-dark p-1.5 rounded-lg mb-1">
+                            <BookOpen className="w-4 h-4 text-green-400" />
+                          </div>
+                          {kpisLoading ? (
+                            <div className="h-4 w-12 rounded bg-white/30 animate-pulse mb-1" />
+                          ) : (
+                            <AnimatedCounter
+                              value={p}
+                              className="text-lg font-bold text-white"
+                              suffix="+"
+                              aria-label={`${p.toLocaleString("fr-FR")} entreprises partenaires`}
+                            />
+                          )}
+                          <span className="text-sm font-medium">Entreprises partenaires</span>
+                        </motion.div>
                       </motion.div>
-                    </motion.div>
+                    )}
+
+                    {/* CTA avec glassmorphism et transitions automatiques */}
+                    {slide.ctas && slide.ctas.length > 0 && (
+                      <motion.div
+                        variants={itemVariants}
+                        className="flex flex-col sm:flex-row gap-4 justify-center"
+                      >
+                        {slide.ctas.map((cta, ctaIndex) => (
+                          <motion.div
+                            key={ctaIndex}
+                            variants={itemVariants}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <Link
+                              to={cta.to}
+                              className={`inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 scale-transition ${
+                                cta.variant === "primary"
+                                  ? "bg-green-600 text-white hover:bg-green-700 focus:ring-green-400"
+                                  : "glassmorphism-content dark:glassmorphism-content-dark text-white hover:bg-white/30 focus:ring-orange-400"
+                              }`}
+                              aria-label={cta.label}
+                            >
+                              {cta.label}
+                              <ArrowRight className="w-4 h-4" />
+                            </Link>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    )}
                   </motion.div>
                 </AnimatePresence>
               </div>

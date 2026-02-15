@@ -117,7 +117,65 @@ const CaravaneMosala: React.FC = () => {
           </div>
         </div>
 
-        {/* Sections "Formations les plus demandées" et "Recommandations" retirées pour la page d'accueil */}
+        {/* Formations demandées */}
+        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 mb-16">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Formations les plus demandées</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {caravaneData.requestedFormations.map((formation, idx) => (
+              <div key={idx} className="text-center">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                     style={{ backgroundColor: idx === 0 ? '#10B981' : idx === 1 ? '#3B82F6' : idx === 2 ? '#8B5CF6' : '#F59E0B' }}>
+                  {formation.percentage}%
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">{formation.name}</h4>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="h-2 rounded-full transition-all duration-1000 ease-out" 
+                    style={{ 
+                      width: `${formation.percentage}%`, 
+                      backgroundColor: idx === 0 ? '#10B981' : idx === 1 ? '#3B82F6' : idx === 2 ? '#8B5CF6' : '#F59E0B'
+                    }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Recommandations */}
+        <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl p-8 border border-blue-200">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">Recommandations pour l'avenir</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Renforcer les interactions avec les entreprises</span>
+              </div>
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Accentuer la communication orientée genre</span>
+              </div>
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Démarrer rapidement les formations qualifiantes</span>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Reproduire ce type d'initiatives</span>
+              </div>
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Renforcer les synergies public-privé</span>
+              </div>
+              <div className="flex items-start">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-2"></div>
+                <span className="text-gray-700">Accompagnement socio-professionnel adéquat</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

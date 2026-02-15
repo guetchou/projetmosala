@@ -1,9 +1,123 @@
-import React from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { 
+  Target, 
+  Briefcase, 
+  TrendingUp, 
+  Award,
+  FileText,
+  Calendar,
+  MessageSquare,
+  Star,
+  CheckCircle,
+  Clock
+} from "lucide-react";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import StatsGrid from "@/components/dashboard/StatsGrid";
+import ChartCard from "@/components/dashboard/ChartCard";
+import ActivityFeed from "@/components/dashboard/ActivityFeed";
+import MetricCard from "@/components/dashboard/MetricCard";
 
-// Candidate dashboard removed — admin-only site.
-export default function CandidateDashboard() {
-  return null;
-}
+// Mock data pour le candidat
+const mockCandidateStats = {
+  totalApplications: 12,
+  totalJobs: 45,
+  completedTrainings: 3,
+  averageRating: 4.2,
+  pendingApplications: 4,
+  completedApplications: 8,
+  profileCompletion: 85,
+  daysActive: 23,
+};
+
+const mockCandidateActivities = [
+  {
+    id: "1",
+    type: "application" as const,
+    title: "Candidature envoyée",
+    description: "Poste de Développeur Frontend chez TechCorp",
+    time: "Il y a 2 heures",
+    icon: FileText,
+    color: "green",
+  },
+  {
+    id: "2",
+    type: "training" as const,
+    title: "Formation terminée",
+    description: "Module 'React Avancé' - Certificat obtenu",
+    time: "Hier",
+    icon: Award,
+    color: "yellow",
+  },
+  {
+    id: "3",
+    type: "message" as const,
+    title: "Message reçu",
+    description: "TechCorp souhaite un entretien",
+    time: "Il y a 1 jour",
+    icon: MessageSquare,
+    color: "blue",
+  },
+  {
+    id: "4",
+    type: "achievement" as const,
+    title: "Objectif atteint",
+    description: "5 candidatures envoyées ce mois",
+    time: "Il y a 2 jours",
+    icon: Target,
+    color: "purple",
+  },
+  {
+    id: "5",
+    type: "job" as const,
+    title: "Nouvelle offre consultée",
+    description: "Développeur Full Stack - StartupXYZ",
+    time: "Il y a 3 jours",
+    icon: Briefcase,
+    color: "orange",
+  },
+];
+
+const CandidateDashboard = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <DashboardLayout
+      title="Mon Dashboard"
+      subtitle="Suivez votre progression professionnelle"
+      role="candidate"
+    >
+      <div className="space-y-8">
+        {/* Welcome Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] rounded-2xl p-6 text-white"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+              <Target className="w-8 h-8" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold">Bonjour, Marie !</h2>
+              <p className="text-white/90">
+                Continuez votre progression vers votre prochain emploi
+              </p>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Stats Grid */}
+        <section>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

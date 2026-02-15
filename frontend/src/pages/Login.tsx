@@ -1,19 +1,15 @@
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Mail, Lock, Phone, ArrowRight, Loader2, User } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, Phone, ArrowRight, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-const Register = () => {
-  const [prenom, setPrenom] = useState("");
-  const [nom, setNom] = useState("");
+const Login = () => {
   const [identifier, setIdentifier] = useState(""); // email ou téléphone
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [acceptCGU, setAcceptCGU] = useState(false);
+  const [stayConnected, setStayConnected] = useState(false);
   const navigate = useNavigate();
 
   const isEmail = (val: string) => /.+@.+\..+/.test(val);
@@ -25,11 +21,9 @@ const Register = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      if (!prenom || !nom || !identifier || !password || !confirmPassword) setError("Veuillez remplir tous les champs.");
+      if (!identifier || !password) setError("Veuillez remplir tous les champs.");
       else if (!isEmail(identifier) && !isPhone(identifier)) setError("Veuillez entrer un email ou un téléphone valide.");
-      else if (password.length < 6) setError("Le mot de passe doit contenir au moins 6 caractères.");
-      else if (password !== confirmPassword) setError("Les mots de passe ne correspondent pas.");
-      else if (!acceptCGU) setError("Vous devez accepter les conditions d'utilisation.");
+      else if (identifier !== "demo@mosala.org" && identifier !== "+242061234567" || password !== "demo123") setError("Identifiants invalides.");
       else navigate("/profile-creation");
     }, 1200);
   };
@@ -45,7 +39,7 @@ const Register = () => {
       `}</style>
       <motion.img
         src="/topcenter-uploads/carrousel/mosala-jeunes1.png"
-        alt="Register Mosala"
+        alt="Login Mosala"
         className="absolute inset-0 w-full h-full object-cover z-0"
         style={{ filter: 'blur(12px) brightness(0.7)', opacity: 0.7, animation: 'heroWind 18s ease-in-out infinite alternate' }}
       />
@@ -59,7 +53,7 @@ const Register = () => {
           <span className="text-[#2fdab8] font-bold text-lg tracking-wide animate-fade-in-up">Projet d'emploi & d'accompagnement</span>
         </div>
       </div>
-      {/* Card d'inscription Argon Material UI */}
+      {/* Card de login Argon Material UI */}
       <main className="flex-1 flex items-center justify-center z-30 relative">
         <motion.form
           onSubmit={handleSubmit}
@@ -68,10 +62,10 @@ const Register = () => {
           transition={{ duration: 0.8 }}
           className="bg-white/90 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-md flex flex-col gap-6 backdrop-blur-md border border-[#6476f3]/20 z-50"
         >
-          <h2 className="text-2xl md:text-3xl font-black text-[#22304a] text-center mb-2">Créer un compte</h2>
-          <p className="text-[#6476f3]/80 text-center mb-4">Rejoignez la communauté Mosala</p>
+          <h2 className="text-2xl md:text-3xl font-black text-[#22304a] text-center mb-2">Connexion</h2>
+          <p className="text-[#6476f3]/80 text-center mb-4">Accédez à votre espace Mosala</p>
           {error && <div className="bg-[#fa496e]/10 text-[#fa496e] rounded p-2 text-center text-sm font-semibold">{error}</div>}
-          {/* Inscription sociale */}
+          {/* Connexion sociale */}
           <div className="flex flex-col gap-3 mb-2">
             <button type="button" className="w-full flex items-center justify-center gap-2 border border-[#2fdab8]/30 bg-white/80 hover:bg-[#2fdab8]/10 text-[#22304a] font-semibold rounded-full py-2 shadow transition" disabled={loading}>
               <img src="/icons/icons8-google-48.svg" className="w-5 h-5" alt="Google" /> Continuer avec Google
@@ -86,34 +80,6 @@ const Register = () => {
             <div className="flex-1 h-px bg-[#2fdab8]/20" />
           </div>
           <div className="flex flex-col gap-4">
-            <label className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6476f3]">
-                <User className="w-5 h-5" />
-              </span>
-              <input
-                type="text"
-                placeholder="Prénom"
-                value={prenom}
-                onChange={e => setPrenom(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-full border border-[#6476f3]/30 focus:border-[#6476f3] focus:ring-2 focus:ring-[#6476f3]/20 outline-none text-[#22304a] bg-white/90 shadow"
-                required
-                autoComplete="given-name"
-              />
-            </label>
-            <label className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6476f3]">
-                <User className="w-5 h-5" />
-              </span>
-              <input
-                type="text"
-                placeholder="Nom"
-                value={nom}
-                onChange={e => setNom(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-full border border-[#6476f3]/30 focus:border-[#6476f3] focus:ring-2 focus:ring-[#6476f3]/20 outline-none text-[#22304a] bg-white/90 shadow"
-                required
-                autoComplete="family-name"
-              />
-            </label>
             <label className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6476f3]">
                 {isEmail(identifier) ? <Mail className="w-5 h-5" /> : <Phone className="w-5 h-5" />}
@@ -139,40 +105,22 @@ const Register = () => {
                 onChange={e => setPassword(e.target.value)}
                 className="w-full pl-10 pr-10 py-3 rounded-full border border-[#6476f3]/30 focus:border-[#6476f3] focus:ring-2 focus:ring-[#6476f3]/20 outline-none text-[#22304a] bg-white/90 shadow"
                 required
-                autoComplete="new-password"
+                autoComplete="current-password"
               />
               <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6476f3] focus:outline-none">
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </label>
-            <label className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6476f3]">
-                <Lock className="w-5 h-5" />
-              </span>
-              <input
-                type={showConfirm ? "text" : "password"}
-                placeholder="Confirmer le mot de passe"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-3 rounded-full border border-[#6476f3]/30 focus:border-[#6476f3] focus:ring-2 focus:ring-[#6476f3]/20 outline-none text-[#22304a] bg-white/90 shadow"
-                required
-                autoComplete="new-password"
-              />
-              <button type="button" onClick={() => setShowConfirm(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6476f3] focus:outline-none">
-                {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </label>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <input
-              id="acceptCGU"
+              id="stayConnected"
               type="checkbox"
-              checked={acceptCGU}
-              onChange={e => setAcceptCGU(e.target.checked)}
+              checked={stayConnected}
+              onChange={e => setStayConnected(e.target.checked)}
               className="accent-[#2fdab8] h-4 w-4 rounded border-[#2fdab8]/30 focus:ring-[#2fdab8]/40"
-              required
             />
-            <label htmlFor="acceptCGU" className="text-sm text-[#22304a]/70 cursor-pointer">J’accepte les <a href="/legal" className="underline text-[#6476f3]">conditions d’utilisation</a></label>
+            <label htmlFor="stayConnected" className="text-sm text-[#22304a]/70 cursor-pointer">Rester connecté</label>
           </div>
           <button
             type="submit"
@@ -180,10 +128,11 @@ const Register = () => {
             disabled={loading}
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
-            Créer un compte
+            Se connecter
           </button>
           <div className="flex flex-col md:flex-row justify-between items-center gap-2 mt-2">
-            <Link to="/login" className="text-[#2fdab8] hover:underline text-sm font-semibold">Déjà inscrit ? Se connecter</Link>
+            <Link to="/forgot-password" className="text-[#2fdab8] hover:underline text-sm font-semibold">Mot de passe oublié ?</Link>
+            <Link to="/register" className="text-[#fa496e] hover:underline text-sm font-semibold">Créer un compte</Link>
           </div>
         </motion.form>
       </main>
@@ -191,4 +140,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login; 

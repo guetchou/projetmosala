@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, ExternalLink, Users, BookOpen, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, ExternalLink, Users, BookOpen, Briefcase, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Footer = () => {
@@ -24,40 +24,45 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed mb-6">
-              Placé sous l'égide du Ministère de la jeunesse et des sports, Mosala accompagne les jeunes congolais dans leur insertion professionnelle. Le projet se décline en trois composantes : DGFQE (structuration et pilotage), FONEA (formation adaptée aux besoins du marché), ACPE (accompagnement vers l'emploi).
+              Projet financé par l'AFD et l'Union Européenne pour renforcer l'employabilité des jeunes 
+              et réduire les inégalités d'accès à l'emploi en République du Congo.
             </p>
             
-            {/* Statistiques rapides - SUPPRIMÉES */}
+            {/* Statistiques rapides */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="text-center p-3 bg-white/5 rounded-lg">
+                <div className="text-2xl font-bold text-green-400">2,449</div>
+                <div className="text-xs text-gray-400">Jeunes enrôlés</div>
+              </div>
+              <div className="text-center p-3 bg-white/5 rounded-lg">
+                <div className="text-2xl font-bold text-blue-400">6,600</div>
+                <div className="text-xs text-gray-400">Visiteurs</div>
+              </div>
+            </div>
           </div>
 
-          {/* Composantes institutionnelles */}
+          {/* Navigation rapide */}
           <div>
             <h4 className="font-semibold text-lg mb-6 flex items-center">
-              <Globe className="w-5 h-5 mr-2 text-green-400" />
-              Composantes
+              <Briefcase className="w-5 h-5 mr-2 text-green-400" />
+              Services
             </h4>
             <div className="space-y-3">
-              <div className="flex items-start">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
-                <div>
-                  <p className="font-medium text-gray-200 text-sm">DGFQE</p>
-                  <p className="text-gray-400 text-xs">Direction générale de la formation</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
-                <div>
-                  <p className="font-medium text-gray-200 text-sm">FONEA</p>
-                  <p className="text-gray-400 text-xs">Fonds national d'employabilité</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
-                <div>
-                  <p className="font-medium text-gray-200 text-sm">ACPE</p>
-                  <p className="text-gray-400 text-xs">Agence pour l'emploi</p>
-                </div>
-              </div>
+              <a href="/jobs" className="block text-gray-300 hover:text-green-400 transition-colors text-sm">
+                Offres d'emploi
+              </a>
+              <a href="/formations" className="block text-gray-300 hover:text-green-400 transition-colors text-sm">
+                Formations qualifiantes
+              </a>
+              <a href="/caravane" className="block text-gray-300 hover:text-green-400 transition-colors text-sm">
+                Caravane itinérante
+              </a>
+              <a href="/support" className="block text-gray-300 hover:text-green-400 transition-colors text-sm">
+                Accompagnement
+              </a>
+              <a href="/blog" className="block text-gray-300 hover:text-green-400 transition-colors text-sm">
+                Actualités
+              </a>
             </div>
           </div>
 
@@ -116,6 +121,21 @@ const Footer = () => {
               <div className="flex items-center">
                 <Phone className="w-4 h-4 text-green-400 mr-3 flex-shrink-0" />
                 <span className="text-gray-300 text-sm">+242 06 683 64 69</span>
+              </div>
+            </div>
+
+            {/* Newsletter */}
+            <div className="mt-6">
+              <h5 className="font-medium text-sm mb-3 text-gray-200">Newsletter</h5>
+              <div className="flex">
+                <input
+                  type="email"
+                  placeholder="Votre email"
+                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-l-lg text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-green-400/20 focus:border-green-400"
+                />
+                <button className="px-4 py-2 bg-green-500 text-white font-medium rounded-r-lg hover:bg-green-600 transition-colors text-sm">
+                  S'abonner
+                </button>
               </div>
             </div>
           </div>

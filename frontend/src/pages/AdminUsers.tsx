@@ -5,12 +5,14 @@ import { Pencil, Trash2, UserPlus, CheckCircle, XCircle } from "lucide-react";
 
 // Utilisateurs mockés (à remplacer par API plus tard)
 const initialUsers = [
-  { id: 1, name: "Jean Mavoungou", email: "jean.mavoungou@email.com", role: "admin" }
+  { id: 1, name: "Jean Mavoungou", email: "jean.mavoungou@email.com", role: "admin" },
+  { id: 2, name: "Aline Samba", email: "aline.samba@email.com", role: "recruteur" },
+  { id: 3, name: "Pierre Nkouka", email: "pierre.nkouka@email.com", role: "candidat" },
 ];
 
 const AdminUsers = () => {
   const [users, setUsers] = useState(initialUsers);
-  const [form, setForm] = useState({ name: "", email: "", role: "admin" });
+  const [form, setForm] = useState({ name: "", email: "", role: "candidat" });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ id: number; name: string } | null>(null);
@@ -91,13 +93,13 @@ const AdminUsers = () => {
               onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
             >
               <option value="admin">Admin</option>
-              <option value="admin_content">Admin contenu</option>
-              <option value="superadmin">Superadmin</option>
+              <option value="recruteur">Recruteur</option>
+              <option value="candidat">Candidat</option>
             </select>
           </div>
           <div className="flex gap-4 justify-end">
             {editingId && (
-              <button type="button" className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300" onClick={() => { setForm({ name: "", email: "", role: "admin" }); setEditingId(null); }}>Annuler</button>
+              <button type="button" className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300" onClick={() => { setForm({ name: "", email: "", role: "candidat" }); setEditingId(null); }}>Annuler</button>
             )}
             <button type="submit" className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#6E45E2] to-[#00FFFF] text-white font-bold shadow hover:from-[#5a36b8] hover:to-[#00cccc] transition-all">
               {editingId ? "Modifier" : "Ajouter"}

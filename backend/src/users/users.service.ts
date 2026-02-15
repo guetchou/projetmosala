@@ -15,9 +15,8 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     // Hash du mot de passe avant sauvegarde
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    const user = this.userRepository.create({ ...createUserDto, password: hashedPassword } as any);
-    const saved = await this.userRepository.save(user);
-    return Array.isArray(saved) ? saved[0] : saved;
+    const user = this.userRepository.create({ ...createUserDto, password: hashedPassword });
+    return this.userRepository.save(user);
   }
 
   async findAll(): Promise<User[]> {
@@ -29,7 +28,7 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: Partial<CreateUserDto>): Promise<User | null> {
-    await this.userRepository.update(id, updateUserDto as any);
+    await this.userRepository.update(id, updateUserDto);
     return this.findOne(id);
   }
 

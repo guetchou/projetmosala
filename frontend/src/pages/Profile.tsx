@@ -6,7 +6,7 @@ import { User, Settings, Mail, Briefcase } from "lucide-react";
 const user = {
   name: "Jean Mosala",
   email: "jean.mosala@mosala.org",
-  role: "Administrateur",
+  role: "Candidat",
   avatar: "https://randomuser.me/api/portraits/men/32.jpg"
 };
 

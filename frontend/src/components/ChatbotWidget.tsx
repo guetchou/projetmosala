@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import ChatbotAvatar from "./ChatbotAvatar";
 import faqMosala from "../faq-mosala.json";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,17 +13,6 @@ const initialMessages = [
 ];
 
 const ChatbotWidget = () => {
-  const location = useLocation();
-  
-  // Hide chatbot on admin pages
-  const isAdminPage = location.pathname.startsWith('/superadmin') || 
-                      location.pathname.startsWith('/admin-content') ||
-                      location.pathname.startsWith('/admin');
-  
-  if (isAdminPage) {
-    return null;
-  }
-
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");

@@ -54,18 +54,7 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				mosala: {
-					green: {
-						50: '#e8f5e9',
-						100: '#c8e6c9',
-						200: '#a5d6a7',
-						300: '#81c784',
-						400: '#66bb6a',
-						500: '#00A651',
-						600: '#00873E',
-						700: '#00672F',
-						800: '#004D23',
-						900: '#003318',
-					},
+					green: '#00A651',
 					yellow: '#FFD700',
 					orange: '#FFA500',
 					red: '#ED1C24',

@@ -1,9 +1,123 @@
-import React from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { 
+  FileText, 
+  Search, 
+  Filter, 
+  Edit, 
+  Trash2, 
+  Eye,
+  Download,
+  User,
+  Calendar,
+  Star,
+  MessageSquare,
+  CheckCircle,
+  Clock,
+  XCircle
+} from "lucide-react";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Recruiter dashboard removed — admin-only site.
-export default function RecruiterApplications() {
-  return null;
-}
+// Mock data - à remplacer par API réelle
+const mockApplications = [
+  {
+    id: 1,
+    candidate: {
+      name: "Jean Mavoungou",
+      email: "jean.mavoungou@email.com",
+      avatar: "/avatars/jean.jpg"
+    },
+    job: {
+      title: "Développeur React",
+      company: "TechCongo"
+    },
+    status: "pending",
+    appliedAt: "2024-03-20",
+    experience: "3 ans",
+    skills: ["React", "Node.js", "TypeScript"],
+    rating: 4.5,
+    notes: "Profil intéressant, bon niveau technique"
+  },
+  {
+    id: 2,
+    candidate: {
+      name: "Aline Samba",
+      email: "aline.samba@email.com",
+      avatar: "/avatars/aline.jpg"
+    },
+    job: {
+      title: "Designer UX/UI",
+      company: "StartupXYZ"
+    },
+    status: "accepted",
+    appliedAt: "2024-03-18",
+    experience: "5 ans",
+    skills: ["Figma", "Adobe XD", "Prototyping"],
+    rating: 4.8,
+    notes: "Excellente créativité, portfolio impressionnant"
+  },
+  {
+    id: 3,
+    candidate: {
+      name: "Pierre Nkouka",
+      email: "pierre.nkouka@email.com",
+      avatar: "/avatars/pierre.jpg"
+    },
+    job: {
+      title: "Chef de projet digital",
+      company: "InnovTech"
+    },
+    status: "rejected",
+    appliedAt: "2024-03-15",
+    experience: "2 ans",
+    skills: ["Gestion de projet", "Agile", "Scrum"],
+    rating: 3.2,
+    notes: "Expérience insuffisante pour le poste"
+  },
+  {
+    id: 4,
+    candidate: {
+      name: "Celestine Elenga",
+      email: "celestine.elenga@email.com",
+      avatar: "/avatars/celestine.jpg"
+    },
+    job: {
+      title: "Data Analyst",
+      company: "Banque Centrale"
+    },
+    status: "interview",
+    appliedAt: "2024-03-19",
+    experience: "4 ans",
+    skills: ["Python", "SQL", "Tableau"],
+    rating: 4.2,
+    notes: "Bon profil, à convoquer pour entretien"
+  },
+  {
+    id: 5,
+    candidate: {
+      name: "Marie Dubois",
+      email: "marie.dubois@email.com",
+      avatar: "/avatars/marie.jpg"
+    },
+    job: {
+      title: "Chargé de communication",
+      company: "ONG Espoir"
+    },
+    status: "pending",
+    appliedAt: "2024-03-21",
+    experience: "1 an",
+    skills: ["Communication", "Réseaux sociaux", "Rédaction"],
+    rating: 3.8,
+    notes: "Jeune diplômée motivée"
+  }
+];
+
+const RecruiterApplications = () => {
   const [applications, setApplications] = useState(mockApplications);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");

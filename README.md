@@ -50,7 +50,7 @@ mosala/
 
 ```bash
 # Cloner le repository
-git clone https://github.com/guetchou/mosala.git
+git clone https://github.com/guetchou/projetmosala.git
 cd mosala
 
 # Lancer avec Docker Compose
@@ -69,7 +69,7 @@ docker-compose up -d
 
 ```bash
 # Cloner le repository
-git clone https://github.com/guetchou/mosala.git
+git clone https://github.com/guetchou/projetmosala.git
 cd mosala
 
 # Installer les dépendances
@@ -227,4 +227,4 @@ Pour toute question ou problème :
 
 ---
 
-**Développé avec ❤️ par l'équipe Mosala**
+**Développé avec par l'équipe Top Center**

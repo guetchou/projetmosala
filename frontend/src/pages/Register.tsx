@@ -71,14 +71,9 @@ const Register = () => {
           <h2 className="text-2xl md:text-3xl font-black text-[#22304a] text-center mb-2">Créer un compte</h2>
           <p className="text-[#6476f3]/80 text-center mb-4">Rejoignez la communauté Mosala</p>
           {error && <div className="bg-[#fa496e]/10 text-[#fa496e] rounded p-2 text-center text-sm font-semibold">{error}</div>}
-          {/* Inscription sociale */}
+          {/* Inscription sociale (désactivée) */}
           <div className="flex flex-col gap-3 mb-2">
-            <button type="button" className="w-full flex items-center justify-center gap-2 border border-[#2fdab8]/30 bg-white/80 hover:bg-[#2fdab8]/10 text-[#22304a] font-semibold rounded-full py-2 shadow transition" disabled={loading}>
-              <img src="/icons/icons8-google-48.svg" className="w-5 h-5" alt="Google" /> Continuer avec Google
-            </button>
-            <button type="button" className="w-full flex items-center justify-center gap-2 border border-[#6476f3]/30 bg-white/80 hover:bg-[#6476f3]/10 text-[#22304a] font-semibold rounded-full py-2 shadow transition" disabled={loading}>
-              <svg className="w-5 h-5" fill="#0077B5" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.78 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/></svg> Continuer avec LinkedIn
-            </button>
+            <p className="text-center text-sm text-[#6476f3]/60">Les inscriptions via Google et LinkedIn ont été désactivées. Utilisez les pages d'administration.</p>
           </div>
           <div className="flex items-center gap-2 my-2">
             <div className="flex-1 h-px bg-[#2fdab8]/20" />
@@ -183,7 +178,11 @@ const Register = () => {
             Créer un compte
           </button>
           <div className="flex flex-col md:flex-row justify-between items-center gap-2 mt-2">
-            <Link to="/login" className="text-[#2fdab8] hover:underline text-sm font-semibold">Déjà inscrit ? Se connecter</Link>
+            <div className="flex gap-2 w-full justify-center">
+              <Link to="/superadmin/register" className="text-[#fa496e] hover:underline text-sm font-semibold">S'inscrire Superadmin</Link>
+              <span className="text-sm text-[#6476f3]/60">|</span>
+              <Link to="/admin-content/register" className="text-[#fa496e] hover:underline text-sm font-semibold">S'inscrire Admin contenu</Link>
+            </div>
           </div>
         </motion.form>
       </main>

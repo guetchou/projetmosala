@@ -18,79 +18,52 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import adminsAPI, { Admin } from '@/api/admins';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Mock data - à remplacer par API réelle
-const mockUsers = [
-  {
-    id: 1,
-    name: "Jean Likibi",
-    email: "jean@mosala.org",
-    role: "candidat",
-    status: "active",
-    createdAt: "2024-01-15",
-    lastLogin: "2024-03-20",
-    applications: 12,
-    profileCompletion: 85
-  },
-  {
-    id: 2,
-    name: "Aïssa M'Bemba",
-    email: "aissa@mosala.org",
-    role: "recruteur",
-    status: "active",
-    createdAt: "2024-02-01",
-    lastLogin: "2024-03-19",
-    jobsPosted: 8,
-    company: "TechCongo"
-  },
-  {
-    id: 3,
-    name: "Pauline Ondzaba",
-    email: "pauline@mosala.org",
-    role: "admin",
-    status: "active",
-    createdAt: "2024-01-10",
-    lastLogin: "2024-03-20",
-    actionsPerformed: 156
-  },
-  {
-    id: 4,
-    name: "Marie Dubois",
-    email: "marie@example.com",
-    role: "candidat",
-    status: "pending",
-    createdAt: "2024-03-18",
-    lastLogin: "2024-03-18",
-    applications: 3,
-    profileCompletion: 45
-  },
-  {
-    id: 5,
-    name: "Pierre Nkouka",
-    email: "pierre@techcorp.cg",
-    role: "recruteur",
-    status: "active",
-    createdAt: "2024-02-15",
-    lastLogin: "2024-03-17",
-    jobsPosted: 15,
-    company: "TechCorp"
-  }
-];
-
 const AdminUsers = () => {
-  const [users, setUsers] = useState(mockUsers);
+  const [users, setUsers] = useState<Admin[]>([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(false);
 
+  const { user: currentUser } = useAuth();
+
+  const fetchAdmins = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').in('role', ['admin', 'admin_content']);
+      if (error) {
+        console.error('Error fetching profiles:', error.message, error.hint);
+        setUsers([]);
+      } else {
+        console.log('Liste des profils (admin + admin_content) récupérée:', data);
+        // exclude current superadmin if present
+        const list = (data || []).filter((p: any) => String(p.id) !== String(currentUser?.id));
+        setUsers(list as Admin[]);
+      }
+    } catch (err) {
+      console.error('Failed to load admins', err);
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAdmins();
+  }, [currentUser]);
+
   const filteredUsers = users.filter(user => {
-    const matchSearch = user.name.toLowerCase().includes(search.toLowerCase()) || 
-                       user.email.toLowerCase().includes(search.toLowerCase());
+    const name = (user.full_name || '').toLowerCase();
+    const matchSearch = name.includes(search.toLowerCase()) || (user.email || '').toLowerCase().includes(search.toLowerCase());
     const matchRole = roleFilter === "all" || user.role === roleFilter;
-    const matchStatus = statusFilter === "all" || user.status === statusFilter;
+    const status = user.is_active ? 'active' : 'pending';
+    const matchStatus = statusFilter === "all" || status === statusFilter;
     return matchSearch && matchRole && matchStatus;
   });
 
@@ -103,13 +76,26 @@ const AdminUsers = () => {
     return <Badge className={colors[role as keyof typeof colors] || "bg-gray-500"}>{role}</Badge>;
   };
 
-  const getStatusBadge = (status: string) => {
-    const colors = {
-      active: "bg-green-100 text-green-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      inactive: "bg-red-100 text-red-800"
-    };
-    return <Badge className={colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800"}>{status}</Badge>;
+  const getStatusBadge = (isActive?: boolean) => {
+    if (isActive) {
+      return <Badge className="bg-green-100 text-green-800">Actif</Badge>;
+    }
+    return <Badge className="bg-orange-100 text-orange-800">En attente de validation</Badge>;
+  };
+
+  const toggleActive = async (id: string, activate?: boolean) => {
+    try {
+      const newState = activate === undefined ? true : activate;
+      const { data, error } = await supabase.from('profiles').update({ is_active: newState }).eq('id', id).select('*').single();
+      if (error) {
+        console.error('Failed to update is_active:', error.message, error.hint);
+        return;
+      }
+      // update local state
+      setUsers(prev => prev.map(u => (String(u.id) === String(id) ? (data as Admin) : u)));
+    } catch (err) {
+      console.error('Failed to toggle active state', err);
+    }
   };
 
   const handleDeleteUser = (userId: number) => {
@@ -217,10 +203,10 @@ const AdminUsers = () => {
                         <Users className="w-5 h-5 text-[var(--color-mosala-green-600)]" />
                       </div>
                       <div>
-                        <div className="font-semibold text-[var(--color-mosala-dark-700)]">{user.name}</div>
+                        <div className="font-semibold text-[var(--color-mosala-dark-700)]">{user.full_name}</div>
                         <div className="text-sm text-[var(--color-mosala-dark-400)]">{user.email}</div>
-                        {user.role === "recruteur" && user.company && (
-                          <div className="text-xs text-[var(--color-mosala-dark-300)]">{user.company}</div>
+                        {user.role === "recruteur" && (user as any).company && (
+                          <div className="text-xs text-[var(--color-mosala-dark-300)]">{(user as any).company}</div>
                         )}
                       </div>
                     </div>
@@ -229,35 +215,34 @@ const AdminUsers = () => {
                     {getRoleBadge(user.role)}
                   </TableCell>
                   <TableCell>
-                    {getStatusBadge(user.status)}
+                    {getStatusBadge(user.is_active)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1 text-sm text-[var(--color-mosala-dark-400)]">
                       <Calendar className="w-4 h-4" />
-                      {new Date(user.createdAt).toLocaleDateString('fr-FR')}
+                      {new Date(user.created_at || user.createdAt).toLocaleDateString('fr-FR')}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1 text-sm text-[var(--color-mosala-dark-400)]">
                       <Calendar className="w-4 h-4" />
-                      {new Date(user.lastLogin).toLocaleDateString('fr-FR')}
+                      {new Date((user as any).updated_at || new Date().toISOString()).toLocaleDateString('fr-FR')}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <Button size="sm" variant="ghost">
+                      <Button size="sm" variant="ghost" onClick={() => {/* view */}}>
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button size="sm" variant="ghost">
+                      <Button size="sm" variant="ghost" onClick={() => {/* edit */}}>
                         <Edit className="w-4 h-4" />
                       </Button>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="text-red-600 hover:text-red-700"
+                      <Button
+                        size="sm"
+                        variant={user.is_active ? 'destructive' : 'secondary'}
+                        onClick={() => toggleActive(String(user.id))}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        {user.is_active ? 'Désactiver' : 'Activer'}
                       </Button>
                     </div>
                   </TableCell>

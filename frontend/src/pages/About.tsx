@@ -27,9 +27,7 @@ const values = [
   { icon: <Heart className="h-6 w-6 text-[#fa496e]" />, title: "Inclusion", desc: "Favoriser l'accès à l'emploi pour tous, sans discrimination." },
   { icon: <Award className="h-6 w-6 text-[#2fdab8]" />, title: "Excellence", desc: "Former et accompagner avec exigence et bienveillance." },
   { icon: <Shield className="h-6 w-6 text-[#6476f3]" />, title: "Sécurité & RGPD", desc: "Respect total de la vie privée, conformité RGPD, sécurité des données." },
-  { icon: <Globe className="h-6 w-6 text-[#ff7844]" />, title: "Ouverture", desc: "S'inspirer des meilleures pratiques européennes et africaines." },
-  { icon: <CheckCircle className="h-6 w-6 text-[#BFFF00]" />, title: "Transparence", desc: "Information claire, traçabilité, éthique dans toutes nos actions." },
-];
+ ];
 
 // Composant pour injecter les données structurées JSON-LD
 const StructuredData = () => {
@@ -119,7 +117,7 @@ const About = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--color-mosala-green-50)] via-[var(--color-mosala-yellow-50)] to-[var(--color-mosala-dark-50)]">
+    <div className="min-h-screen flex flex-col bg-white">
       <StructuredData />
       <Navbar />
       <main className="flex-1 container mx-auto px-4 pt-24 md:pt-32 max-w-6xl">
@@ -129,9 +127,7 @@ const About = () => {
           className="text-center mb-16"
         >
           <div className="flex justify-center mb-8">
-            <div className="bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] p-6 rounded-2xl shadow-lg">
-              <Users className="h-10 w-10 text-[var(--color-mosala-white)]" />
-            </div>
+           
           </div>
           <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-[var(--color-mosala-green-500)] to-[var(--color-mosala-yellow-500)] text-transparent bg-clip-text leading-tight">
             À propos de Mosala
@@ -151,22 +147,35 @@ const About = () => {
             <Briefcase className="h-8 w-8 text-[#2fdab8]" />
             Notre mission
           </h2>
-          <p className="text-lg text-[var(--color-mosala-dark-700)] mb-6 leading-relaxed">
-            Offrir à chaque jeune du Congo les moyens de réussir professionnellement, grâce à des formations innovantes, un accompagnement personnalisé, et une mise en relation directe avec les employeurs.
+          <p className="text-base text-[var(--color-mosala-dark-700)] mb-6 leading-relaxed">
+            Alors que les 15-29 ans représentent environ un tiers de la population totale, la situation des jeunes congolais sur le marché du travail s'est fortement détériorée depuis quelques années. En 2022, seulement 19 % d'entre eux ont un emploi et 37 % ne sont ni en éducation, ni en emploi, ni en formation (NEET). Les femmes sont significativement et négativement discriminées dans leur parcours de formation et d'insertion : elles occupent des emplois de moins bonne qualité et le plus souvent dans le secteur informel ou domestique. De manière complémentaire, le niveau de pauvreté, le lieu de résidence, l'appartenance à une communauté autochtone ou encore le fait de présenter une forme de handicap impactent très significativement l'accès à une formation et à un emploi décent.
           </p>
-          <ul className="list-none space-y-3">
-            {[
-              "Caravane itinérante dans 6 villes",
-              "Formations certifiantes et coaching",
-              "Plateforme digitale accessible et sécurisée",
-              "Accompagnement à l'entrepreneuriat"
-            ].map((item, index) => (
-              <li key={index} className="flex items-center gap-3 text-[var(--color-mosala-dark-600)]">
-                <div className="w-2 h-2 bg-[#2fdab8] rounded-full flex-shrink-0"></div>
-                <span className="text-lg">{item}</span>
+          <p className="text-base text-[var(--color-mosala-dark-700)] mb-6 leading-relaxed">
+            L'analyse des barrières à l'emploi des jeunes montre que le manque de formation constitue une entrave importante à leur insertion. Beaucoup de jeunes pâtissent également de la pénurie d'emplois qui caractérise le marché du travail congolais et du déficit d'expérience professionnelle.
+          </p>
+          <p className="text-base text-[var(--color-mosala-dark-700)] mb-6 leading-relaxed">
+            Les résultats de l'Enquête sur la transition à la vie active (ETVA), réalisée en 2022, montrent enfin l'insuffisance et l'inadaptation de l'accompagnement vers l'emploi et la préparation à l'insertion des jeunes.
+          </p>
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-6 my-8 rounded">
+            <h3 className="text-xl font-bold text-[var(--color-mosala-dark-900)] mb-4">Descriptif</h3>
+            <p className="text-base text-[var(--color-mosala-dark-700)] mb-4 leading-relaxed">
+              Placé sous l'égide du Ministère de la jeunesse et des sports, de l'éducation civique, de la formation qualifiante et de l'emploi (MJSECFQE), le projet « Mosala » vise à accompagner les jeunes congolais et congolaises dans leur parcours d'insertion professionnelle et à couvrir les besoins des employeurs en ressources humaines qualifiées notamment dans les filières clés de la diversification économique du pays en réduisant les inégalités femmes/hommes en matière d'accès à un emploi de qualité. Ce projet se décline en trois composantes, qui visent, respectivement, à :
+            </p>
+            <ul className="list-none space-y-3 ml-4">
+              <li className="flex items-start gap-3 text-[var(--color-mosala-dark-600)]">
+                <span className="font-bold text-blue-500 mt-1">•</span>
+                <span className="text-sm leading-relaxed">appuyer la structuration et le pilotage du dispositif de la formation qualifiante et de l'emploi (politique nationale de l'emploi et de la formation, système d'information sur le marché du travail et la formation au travers d'un observatoire de l'emploi et de la formation qualifiante incluant spécifiquement la question du genre) au sein de la Direction générale de la formation qualifiante et de l'emploi (DGFQE).</span>
               </li>
-            ))}
-          </ul>
+              <li className="flex items-start gap-3 text-[var(--color-mosala-dark-600)]">
+                <span className="font-bold text-blue-500 mt-1">•</span>
+                <span className="text-sm leading-relaxed">appuyer le Fonds national pour l'employabilité et l'apprentissage (FONEA) dans ses activités de mise en œuvre des actions de formation qualifiante adaptée aux besoins du marché de l'emploi (renforcement des compétences des jeunes et de la qualité de l'offre de formations dans les secteurs porteurs (notamment l'agriculture, le tourisme durable et l'industrie), promotion de l'apprentissage et de l'insertion des jeunes).</span>
+              </li>
+              <li className="flex items-start gap-3 text-[var(--color-mosala-dark-600)]">
+                <span className="font-bold text-blue-500 mt-1">•</span>
+                <span className="text-sm leading-relaxed">appuyer la mise en œuvre des dispositifs d'accompagnement vers l'emploi de l'Agence congolaise pour l'emploi (ACPE) (insertion professionnelle des jeunes demandeurs d'emploi en ciblant particulièrement les femmes et les NEET et information et d'orientation sur le marché du travail).</span>
+              </li>
+            </ul>
+          </div>
         </motion.section>
 
         {/* Valeurs */}
@@ -197,38 +206,7 @@ const About = () => {
           </div>
         </motion.section>
 
-        {/* Équipe */}
-        <motion.section
-          {...animationConfig}
-          transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.3 }}
-          className="mb-16"
-        >
-          <h2 className="text-3xl font-bold mb-12 text-[var(--color-mosala-dark-900)] flex items-center gap-3 justify-center">
-            <Users className="h-8 w-8 text-[#6476f3]" />
-            L'équipe Mosala
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
-            {team.map((m, i) => (
-              <motion.div 
-                key={i} 
-                {...animationConfig}
-                transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.3 + i * 0.1 }}
-                className="bg-[var(--color-mosala-white)]/90 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-[var(--color-mosala-green-100)] hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-              >
-                <OptimizedImage 
-                  src={m.avatar} 
-                  alt={`Photo de ${m.name}`} 
-                  className="w-24 h-24 rounded-full mb-4 border-4 border-white shadow-lg mx-auto"
-                  fallback="/topcenter-uploads/avatars/default-avatar.svg"
-                  width={96}
-                  height={96}
-                />
-                <h3 className="font-bold text-lg text-[var(--color-mosala-dark-900)] mb-2 text-center">{m.name}</h3>
-                <div className="text-sm text-[var(--color-mosala-dark-600)] text-center">{m.role}</div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
+       
 
         {/* Partenaires */}
         <motion.section
@@ -267,30 +245,7 @@ const About = () => {
         </motion.section>
 
         {/* Engagements */}
-        <motion.section
-          {...animationConfig}
-          transition={{ ...animationConfig.transition, delay: shouldReduceMotion ? 0 : 0.5 }}
-          className="mb-16 bg-[var(--color-mosala-white)]/95 backdrop-blur-xl rounded-3xl p-10 shadow-xl border border-[var(--color-mosala-green-100)]"
-        >
-          <h2 className="text-3xl font-bold mb-6 text-[var(--color-mosala-dark-900)] flex items-center gap-3">
-            <Shield className="h-8 w-8 text-[#6476f3]" />
-            Nos engagements
-          </h2>
-          <ul className="list-none space-y-4">
-            {[
-              "Accessibilité numérique (WCAG 2.1 AA)",
-              "Protection des données (conformité RGPD)",
-              "Égalité des chances et lutte contre les discriminations",
-              "Transparence sur l'utilisation des données",
-              "Accompagnement humain et digital"
-            ].map((item, index) => (
-              <li key={index} className="flex items-center gap-3 text-[var(--color-mosala-dark-600)]">
-                <div className="w-2 h-2 bg-[#6476f3] rounded-full flex-shrink-0"></div>
-                <span className="text-lg">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </motion.section>
+      
       </main>
       <Footer />
     </div>

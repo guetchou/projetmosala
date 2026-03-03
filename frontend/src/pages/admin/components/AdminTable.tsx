@@ -12,11 +12,11 @@ export default function AdminTable({ admins, onDelete, onEdit, onToggleActive }:
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case 'superadmin':
-        return 'bg-red-100 text-red-800';
+        return 'bg-[#FFE8E8] text-[#ED1C24]';
       case 'admin_content':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-[#e8f5e9] text-[#00A651]';
       case 'admin':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-[#FFE8CC] text-[#FFA500]';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -69,7 +69,7 @@ export default function AdminTable({ admins, onDelete, onEdit, onToggleActive }:
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${a.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${a.is_active ? 'bg-[#e8f5e9] text-[#00A651]' : 'bg-red-100 text-red-800'}`}>
                     {a.is_active ? 'Actif' : 'Inactif'}
                   </span>
                 </td>
@@ -81,7 +81,7 @@ export default function AdminTable({ admins, onDelete, onEdit, onToggleActive }:
                     {onEdit && (
                       <button
                         onClick={() => onEdit(a)}
-                        className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition"
+                        className="flex items-center gap-1 text-[#00A651] hover:text-[#00672F] font-medium transition"
                       >
                         <Edit size={16} /> Modifier
                       </button>
@@ -90,7 +90,7 @@ export default function AdminTable({ admins, onDelete, onEdit, onToggleActive }:
                       <button
                         onClick={() => onToggleActive(a)}
                         className={`flex items-center gap-1 font-medium transition ${
-                          a.is_active ? 'text-orange-600 hover:text-orange-800' : 'text-green-600 hover:text-green-800'
+                          a.is_active ? 'text-[#FFA500] hover:text-[#FF8C00]' : 'text-[#00A651] hover:text-[#00672F]'
                         }`}
                       >
                         {a.is_active ? (

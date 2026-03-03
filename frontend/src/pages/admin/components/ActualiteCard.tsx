@@ -36,7 +36,7 @@ export default function ActualiteCard({
   onEdit,
 }: ActualiteCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden border-l-4 border-orange-500 hover:shadow-lg transition">
+    <div className="bg-white rounded-lg shadow overflow-hidden border-l-4 border-[#FFA500] hover:shadow-lg transition">
       {actualite.imageUrl && (
         <div className="w-full h-40 bg-gray-200 overflow-hidden">
           <img
@@ -50,7 +50,7 @@ export default function ActualiteCard({
         <div className="flex justify-between items-start mb-2">
           <h4 className="font-bold text-gray-900">{actualite.titre}</h4>
           {actualite.aLaUne && (
-            <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
+            <span className="bg-[#FFA500] text-white text-xs px-2 py-1 rounded">
               À la une
             </span>
           )}
@@ -62,7 +62,7 @@ export default function ActualiteCard({
         <div className="flex gap-2 text-sm flex-wrap">
           <button
             onClick={() => onToggleALaUne(actualite.id)}
-            className="text-orange-600 hover:text-orange-800 font-medium"
+            className="text-[#FFA500] hover:text-[#FF8C00] font-medium"
           >
             ★ À la une
           </button>
@@ -71,7 +71,7 @@ export default function ActualiteCard({
               href={actualite.lien}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-green-600 hover:text-green-800 font-medium"
+              className="flex items-center gap-1 text-[#00A651] hover:text-[#00672F] font-medium"
             >
               <ExternalLink size={16} /> Lien
             </a>
@@ -79,7 +79,7 @@ export default function ActualiteCard({
           {onEdit && (
             <button
               onClick={() => onEdit(actualite)}
-              className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium"
+              className="flex items-center gap-1 text-[#00A651] hover:text-[#00672F] font-medium"
             >
               <Edit size={16} /> Modifier
             </button>

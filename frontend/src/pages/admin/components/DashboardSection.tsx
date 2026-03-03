@@ -66,7 +66,7 @@ export default function DashboardSection() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#00A651] mb-4"></div>
           <p className="text-gray-600">Chargement des statistiques...</p>
         </div>
       </div>
@@ -81,23 +81,21 @@ export default function DashboardSection() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
         <StatCard
           title="Formations"
           value={stats.formations}
-          color="from-blue-500 to-blue-600"
+          icon="📚"
           icon="📚"
         />
         <StatCard
           title="Actualités"
           value={stats.actualites}
-          color="from-orange-500 to-orange-600"
           icon="📰"
         />
         <StatCard
           title="Administrateurs"
           value={stats.administrateurs}
-          color="from-green-500 to-green-600"
           icon="👥"
         />
       </div>
@@ -105,7 +103,7 @@ export default function DashboardSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-bold mb-4 text-gray-900">Actualités en avant</h3>
-          <div className="text-4xl font-bold text-orange-600">{stats.actualitesEnUne}</div>
+          <div className="text-4xl font-bold text-[#FFA500]">{stats.actualitesEnUne}</div>
           <p className="text-sm text-gray-600 mt-2">
             sur {stats.actualites} actualités
           </p>
@@ -120,7 +118,7 @@ export default function DashboardSection() {
               Object.entries(stats.formationsParDomaine).map(([domain, count]) => (
                 <div key={domain} className="flex justify-between items-center">
                   <span className="text-sm text-gray-700">{domain || 'Sans domaine'}</span>
-                  <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-semibold">
+                  <span className="bg-[#e8f5e9] text-[#00A651] text-xs px-2 py-1 rounded-full font-semibold">
                     {count}
                   </span>
                 </div>
@@ -130,7 +128,7 @@ export default function DashboardSection() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
+      <div className="bg-gradient-to-br from-[#e8f5e9] to-[#c8e6c9] rounded-lg p-6 border border-[#00A651]/20">
         <h3 className="text-lg font-bold mb-3 text-gray-900">ℹ️ Informations utiles</h3>
         <ul className="space-y-2 text-sm text-gray-700">
           <li>✅ Les données se synchronisent automatiquement toutes les 30 secondes</li>

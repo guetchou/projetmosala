@@ -137,7 +137,7 @@ export default function ActualitesSection() {
       )}
 
       {successMessage && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex justify-between items-center">
+        <div className="bg-[#e8f5e9] border border-[#00A651] text-[#00672F] px-4 py-3 rounded-lg flex justify-between items-center">
           <span>{successMessage}</span>
           <button onClick={() => setSuccessMessage(null)}>
             <X size={20} />
@@ -150,7 +150,7 @@ export default function ActualitesSection() {
           setEditingActualite(null);
           setFormOpen(!formOpen);
         }}
-        className="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-[#FFA500] text-white rounded-lg font-semibold hover:bg-[#FF8C00] transition"
       >
         <Plus size={20} /> {editingActualite ? 'Modifier' : 'Ajouter'} une actualité
       </button>
@@ -189,14 +189,14 @@ export default function ActualitesSection() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleEdit(a)}
-                        className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        className="inline-flex items-center gap-2 px-3 py-1 bg-[#00A651] text-white rounded hover:bg-[#00672F]"
                         aria-label={`Modifier ${a.titre}`}
                       >
                         <Edit size={14} /> Modifier
                       </button>
                       <button
                         onClick={() => handleToggleALaUne(a.id)}
-                        className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+                        className="inline-flex items-center gap-2 px-3 py-1 bg-[#FFA500] text-white rounded hover:bg-[#FF8C00]"
                         aria-label={`Basculer la une ${a.titre}`}
                       >
                         À la une

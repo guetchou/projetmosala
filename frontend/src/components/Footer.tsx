@@ -41,21 +41,21 @@ const Footer = () => {
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
                 <div>
                   <p className="font-medium text-gray-200 text-sm">DGFQE</p>
-                  <p className="text-gray-400 text-xs">Direction générale de la formation</p>
+                  <p className="text-gray-400 text-xs">DIRECTION GÉNÉRALE DE LA FORMATION QUALIFIANTE ET DE L’EMPLOI</p>
                 </div>
               </div>
               <div className="flex items-start">
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
                 <div>
                   <p className="font-medium text-gray-200 text-sm">FONEA</p>
-                  <p className="text-gray-400 text-xs">Fonds national d'employabilité</p>
+                  <p className="text-gray-400 text-xs">FONDS NATIONAL POUR L'EMPLOYABILITÉ ET L'APPRENTISSAGE</p>
                 </div>
               </div>
               <div className="flex items-start">
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
                 <div>
                   <p className="font-medium text-gray-200 text-sm">ACPE</p>
-                  <p className="text-gray-400 text-xs">Agence pour l'emploi</p>
+                  <p className="text-gray-400 text-xs">AGENCE CONGOLAISE POUR L’EMPLOI</p>
                 </div>
               </div>
             </div>

@@ -207,7 +207,7 @@ export default function SuperAdminRegister() {
 
         {/* Footer */}
         <p className="text-center text-xs text-mosala-green-600 mt-6">
-          © 2024 MOSALA. Tous droits réservés.
+          © 2026 MOSALA. Tous droits réservés.
         </p>
       </div>
     </div>

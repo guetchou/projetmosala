@@ -216,10 +216,10 @@ export default function AdminContentDashboard() {
 function DashboardView() {
   return (
     <div className="space-y-4 md:space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-        <StatCard title="Actualités" value="24" icon="📰" color="orange" />
-        <StatCard title="Formations" value="12" icon="📚" color="yellow" />
-        <StatCard title="Dernière mise à jour" value="2h" icon="⏱️" color="green" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-stretch">
+        <StatCard title="Actualités" value="24" icon="📰" />
+        <StatCard title="Formations" value="12" icon="📚" />
+        <StatCard title="Dernière mise à jour" value="2h" icon="⏱️" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
@@ -269,22 +269,15 @@ function DashboardView() {
   );
 }
 
-function StatCard({ title, value, icon, color }: any) {
-  const colorClasses = {
-    green: 'from-mosala-green-500 to-mosala-green-600',
-    yellow: 'from-mosala-yellow-500 to-mosala-orange-500',
-    orange: 'from-mosala-orange-500 to-mosala-orange-600',
-    red: 'from-mosala-red-500 to-mosala-red-600',
-  };
-
+function StatCard({ title, value, icon }: any) {
   return (
-    <div className={`bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses]} rounded-lg md:rounded-xl shadow-lg p-4 md:p-6 text-white`}>
+    <div className="bg-white rounded-lg md:rounded-xl shadow-lg p-4 md:p-6 border-l-4 border-[#00A651] h-full">
       <div className="flex justify-between items-start gap-2">
         <div className="min-w-0">
-          <p className="text-white text-opacity-80 text-xs md:text-sm font-medium">{title}</p>
-          <p className="text-2xl md:text-3xl font-bold mt-1 md:mt-2 truncate">{value}</p>
+          <p className="text-sm text-gray-600 font-medium">{title}</p>
+          <p className="text-2xl md:text-3xl font-bold mt-1 md:mt-2 truncate text-gray-900">{value}</p>
         </div>
-        <span className="text-2xl md:text-3xl flex-shrink-0">{icon}</span>
+        <span className="text-2xl md:text-3xl flex-shrink-0 text-[#00A651]">{icon}</span>
       </div>
     </div>
   );
@@ -324,7 +317,7 @@ function NewsView({ news, loading, onEditNews, onDeleteNews, onSuccess, token }:
             setEditingNews(null);
             setShowForm(true);
           }}
-          className="inline-flex items-center gap-2 px-4 md:px-6 py-2 bg-gradient-to-r from-mosala-orange-600 to-mosala-orange-700 text-white rounded-lg font-semibold hover:shadow-lg transition text-sm md:text-base"
+          className="inline-flex items-center gap-2 px-4 md:px-6 py-2 bg-[#00A651] text-white rounded-lg font-semibold hover:bg-[#00672F] transition text-sm md:text-base"
         >
           + Ajouter une actualité
         </button>

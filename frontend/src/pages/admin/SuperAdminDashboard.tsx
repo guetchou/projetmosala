@@ -51,7 +51,7 @@ export default function SuperAdminDashboard() {
   const menuItems = allMenuItems.filter(item => item.roles.includes(user?.role || ''));
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-slate-50 flex">
       <AdminSidebar
         menuItems={menuItems}
         activeSection={activeSection}

@@ -182,7 +182,7 @@ export default function AdministrateursSection() {
       )}
 
       {successMessage && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex justify-between items-center">
+        <div className="bg-[#e8f5e9] border border-[#00A651] text-[#00672F] px-4 py-3 rounded-lg flex justify-between items-center">
           <span>{successMessage}</span>
           <button onClick={() => setSuccessMessage(null)}>
             <X size={20} />
@@ -196,7 +196,7 @@ export default function AdministrateursSection() {
             setEditingAdmin(null);
             setFormOpen(!formOpen);
           }}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#00A651] text-white rounded-lg font-semibold hover:bg-[#00672F] transition"
         >
           <Plus size={20} /> Ajouter un administrateur
         </button>
@@ -206,7 +206,7 @@ export default function AdministrateursSection() {
             onClick={() => setShowPendingOnly(!showPendingOnly)}
             className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition ${
               showPendingOnly
-                ? 'bg-orange-100 text-orange-800 hover:bg-orange-200'
+                ? 'bg-[#c8e6c9] text-[#00672F] hover:bg-[#a5d6a7]'
                 : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
             }`}
           >
@@ -243,11 +243,11 @@ export default function AdministrateursSection() {
                 <h3 className="font-semibold text-gray-900">{admin.full_name}</h3>
                 <p className="text-sm text-gray-600">{admin.email}</p>
                 <div className="mt-2 flex gap-2">
-                  <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+                  <span className="inline-block px-3 py-1 bg-[#e8f5e9] text-[#00A651] rounded-full text-xs font-semibold">
                     {admin.role}
                   </span>
                   {!admin.is_active && (
-                    <span className="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-semibold">
+                    <span className="inline-block px-3 py-1 bg-[#FFE8CC] text-[#FFA500] rounded-full text-xs font-semibold">
                       En attente de validation
                     </span>
                   )}
@@ -257,14 +257,14 @@ export default function AdministrateursSection() {
                 {!admin.is_active && (
                   <button
                     onClick={() => handleApprove(admin.id)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#00A651] text-white rounded-lg font-semibold hover:bg-[#00672F] transition"
                   >
                     <CheckCircle size={16} /> Approuver
                   </button>
                 )}
                 <button
                   onClick={() => handleEdit(admin)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
+                  className="px-4 py-2 bg-[#00A651] text-white rounded-lg font-semibold hover:bg-[#00672F] transition"
                 >
                   Modifier
                 </button>

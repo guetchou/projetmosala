@@ -26,7 +26,7 @@ export default function AdminSidebar({
 
   return (
     <aside
-      className={`fixed lg:relative top-0 left-0 h-screen bg-gradient-to-b from-[#2fdab8] to-[#1fa890] text-white transition-all duration-300 z-50 ${
+      className={`fixed lg:relative top-0 left-0 h-screen bg-[#00A651] text-white transition-all duration-300 z-50 ${
         sidebarOpen ? 'w-64' : 'w-20'
       }`}
     >

@@ -27,7 +27,7 @@ export default function FormationCard({
   onEdit,
 }: FormationCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden border-l-4 border-blue-500 hover:shadow-lg transition">
+    <div className="bg-white rounded-lg shadow overflow-hidden border-l-4 border-[#00A651] hover:shadow-lg transition">
       {formation.imageUrl && (
         <div className="w-full h-40 bg-gray-200 overflow-hidden">
           <img
@@ -49,7 +49,7 @@ export default function FormationCard({
           {onEdit && (
             <button
               onClick={() => onEdit(formation)}
-              className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium"
+              className="flex items-center gap-1 text-[#00A651] hover:text-[#00672F] font-medium"
             >
               <Edit size={16} /> Modifier
             </button>

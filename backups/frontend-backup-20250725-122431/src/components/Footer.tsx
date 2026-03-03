@@ -93,7 +93,7 @@ const Footer = () => {
       <div className="border-t border-[#2fdab8]/10 mt-6 bg-[#22304a]/95">
         <div className="container mx-auto px-4 py-2 flex flex-col md:flex-row justify-between items-center gap-2">
           <div className="flex items-center gap-2">
-            <p className="text-[#f6f9fc]/60 text-xs">© 2024 MOSALA. Tous droits réservés.</p>
+            <p className="text-[#f6f9fc]/60 text-xs">© 2026 MOSALA. Tous droits réservés.</p>
             <span className="text-[#2fdab8]/20">•</span>
             <p className="text-[#f6f9fc]/60 text-xs">Développé par Top Center</p>
           </div>

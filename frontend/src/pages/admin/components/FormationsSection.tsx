@@ -128,7 +128,7 @@ export default function FormationsSection() {
       )}
 
       {successMessage && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-3 md:px-4 py-2 md:py-3 rounded-lg flex justify-between items-center text-sm md:text-base">
+        <div className="bg-[#e8f5e9] border border-[#00A651] text-[#00672F] px-3 md:px-4 py-2 md:py-3 rounded-lg flex justify-between items-center text-sm md:text-base">
           <span className="min-w-0 pr-2">{successMessage}</span>
           <button onClick={() => setSuccessMessage(null)} className="flex-shrink-0">
             <X size={20} />
@@ -141,7 +141,7 @@ export default function FormationsSection() {
           setEditingFormation(null);
           setFormOpen(!formOpen);
         }}
-        className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition text-sm md:text-base whitespace-nowrap"
+        className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-[#00A651] text-white rounded-lg font-semibold hover:bg-[#00672F] transition text-sm md:text-base whitespace-nowrap"
       >
         <Plus size={18} /> {editingFormation ? 'Modifier' : 'Ajouter'} une formation
       </button>
@@ -179,7 +179,7 @@ export default function FormationsSection() {
                     <div className="flex items-center gap-1 md:gap-2 flex-wrap">
                       <button
                         onClick={() => handleEdit(f)}
-                        className="inline-flex items-center gap-1 px-2 md:px-3 py-1 md:py-1.5 bg-blue-600 text-white text-xs md:text-sm rounded hover:bg-blue-700"
+                        className="inline-flex items-center gap-1 px-2 md:px-3 py-1 md:py-1.5 bg-[#00A651] text-white text-xs md:text-sm rounded hover:bg-[#00672F]"
                         aria-label={`Modifier ${f.titre}`}
                       >
                         <Edit size={14} /> <span className="hidden sm:inline">Modifier</span>

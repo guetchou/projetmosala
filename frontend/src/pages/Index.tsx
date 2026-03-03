@@ -208,9 +208,9 @@ const Index = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
                   {
-                    title: "DGFE",
-                    description: "Direction Générale de la Formation et de l'Emploi",
-                    details: "Structuration et pilotage des politiques d'emploi",
+                    title: "DGFQE",
+                    description: "Direction générale de la formation qualifiante et de l’emploi",
+                    details: "Structuration et le pilotage du dispositif de la formation qualifiante et de l’emploi",
                     icon: Award,
                     color: "#16A34A",
                     lightBg: "emerald-50",
@@ -227,8 +227,8 @@ const Index = () => {
                   },
                   {
                     title: "ACPE",
-                    description: "Agence de Crédit et de Promotion Économique",
-                    details: "Accompagnement vers l'emploi et l'entrepreneuriat",
+                    description: "Agence congolaise pour l’emploi",
+                    details: "Insertion professionnelle des jeunes demandeurs d’emploi",
                     icon: Briefcase,
                     color: "#3B82F6",
                     lightBg: "blue-50",

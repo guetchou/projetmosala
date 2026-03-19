@@ -27,7 +27,6 @@ const transformActualite = (raw: any): Actualite => ({
 });
 
 export const actualitesAPI = {
-  // Récupérer toutes les actualités
   getAll: async (): Promise<Actualite[]> => {
     try {
       const { data, error } = await supabase
@@ -47,7 +46,6 @@ export const actualitesAPI = {
     }
   },
 
-  // Récupérer une actualité par ID
   getOne: async (id: number): Promise<Actualite | null> => {
     try {
       const { data, error } = await supabase
@@ -68,7 +66,6 @@ export const actualitesAPI = {
     }
   },
 
-  // Créer une actualité
   create: async (actualite: {
     titre: string;
     excerpt: string;
@@ -78,20 +75,29 @@ export const actualitesAPI = {
     aLaUne: boolean;
   }): Promise<Actualite | null> => {
     try {
-      // Récupérer l'ID de l'auteur
-      let author_id: number | null = null;
+      let authorId: number | null = null;
+
       try {
         const stored = localStorage.getItem('auth_user');
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (parsed?.id) author_id = typeof parsed.id === 'string' ? parseInt(parsed.id) : parsed.id;
+          if (parsed?.id) {
+            authorId = typeof parsed.id === 'string' ? parseInt(parsed.id, 10) : parsed.id;
+          }
         }
-      } catch {}
-      if (!author_id && supabase.auth && typeof supabase.auth.getUser === 'function') {
+      } catch (storageError) {
+        console.warn('Unable to read auth_user from localStorage:', storageError);
+      }
+
+      if (!authorId && supabase.auth && typeof supabase.auth.getUser === 'function') {
         try {
           const { data: userData } = await supabase.auth.getUser();
-          if (userData?.user?.id) author_id = typeof userData.user.id === 'string' ? parseInt(userData.user.id) : userData.user.id;
-        } catch {}
+          if (userData?.user?.id) {
+            authorId = typeof userData.user.id === 'string' ? parseInt(userData.user.id, 10) : userData.user.id;
+          }
+        } catch (authError) {
+          console.warn('Unable to resolve Supabase user for article author:', authError);
+        }
       }
 
       const { data, error } = await supabase
@@ -105,6 +111,7 @@ export const actualitesAPI = {
             link: actualite.lien || null,
             is_featured: actualite.aLaUne || false,
             published_date: new Date().toISOString(),
+            author_id: authorId,
           },
         ])
         .select('id, titre, excerpt, contenu, image_url, link, is_featured, published_date, created_at, updated_at')
@@ -122,10 +129,9 @@ export const actualitesAPI = {
     }
   },
 
-  // Mettre à jour une actualité
   update: async (id: number, actualite: Partial<Actualite>): Promise<Actualite | null> => {
     try {
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       if (actualite.titre) updateData.titre = actualite.titre;
       if (actualite.excerpt !== undefined) updateData.excerpt = actualite.excerpt;
       if (actualite.contenu) updateData.contenu = actualite.contenu;
@@ -152,13 +158,9 @@ export const actualitesAPI = {
     }
   },
 
-  // Supprimer une actualité
   delete: async (id: number): Promise<boolean> => {
     try {
-      const { error } = await supabase
-        .from('news')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('news').delete().eq('id', id);
 
       if (error) {
         console.error('Error deleting actualite:', error);

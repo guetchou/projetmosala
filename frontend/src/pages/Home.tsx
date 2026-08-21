@@ -53,7 +53,7 @@ const Home = () => {
               {/* Colonne gauche: Texte */}
               <motion.div {...animationConfig} className="flex flex-col justify-center">
                 <p className="text-lg text-foreground/80 mb-6 leading-relaxed">
-                  Le Congo fait face à une crise de l'emploi des jeunes. En 2022, 37% des 15-29 ans étaient en situation de NEET (ni en emploi, ni en études, ni en formation), le marché du travail s'est considérablement détériorisé ces dernières années.
+                  La situation des jeunes Congolais sur le marché du travail s'est considérablement détériorée. En 2022, 37% des 15-29 ans étaient en situation de NEET (ni en emploi, ni en études, ni en formation). le marché du travail s'est considérablement détériorisé ces dernières années.
                 </p>
                 <p className="text-lg text-foreground/80 mb-6 leading-relaxed">
                   Les femmes et les minorités sont particulièrement touchées. Le manque de formation professionnelle qualifiante reste la barrière principale à l'insertion durable des jeunes.

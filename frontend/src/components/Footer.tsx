@@ -48,7 +48,7 @@ const Footer = () => {
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
                 <div>
                   <p className="font-medium text-gray-200 text-sm">FONEA</p>
-                  <p className="text-gray-400 text-xs">FONDS NATIONAL POUR L'EMPLOYABILITÉ ET L'APPRENTISSAGE</p>
+                  <p className="text-gray-400 text-xs">FONDS NATIONAL D'APPUI À L'EMPLOYABILITÉ ET À L'APPRENTISSAGE</p>
                 </div>
               </div>
               <div className="flex items-start">

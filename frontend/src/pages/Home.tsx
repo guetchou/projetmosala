@@ -53,7 +53,7 @@ const Home = () => {
               {/* Colonne gauche: Texte */}
               <motion.div {...animationConfig} className="flex flex-col justify-center">
                 <p className="text-lg text-foreground/80 mb-6 leading-relaxed">
-                  Le Congo fait face à une crise de l'emploi des jeunes. Avec 37% de jeunes en situation de NEET (ni emploi, ni études, ni formation), le marché du travail s'est considérablement détériorisé ces dernières années.
+                  Le Congo fait face à une crise de l'emploi des jeunes. En 2022, 37% des 15-29 ans étaient en situation de NEET (ni en emploi, ni en études, ni en formation), le marché du travail s'est considérablement détériorisé ces dernières années.
                 </p>
                 <p className="text-lg text-foreground/80 mb-6 leading-relaxed">
                   Les femmes et les minorités sont particulièrement touchées. Le manque de formation professionnelle qualifiante reste la barrière principale à l'insertion durable des jeunes.
@@ -74,13 +74,13 @@ const Home = () => {
                   <div className="border-l-4 border-primary pl-6">
                     <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Chômage des jeunes</p>
                     <p className="text-5xl font-bold text-primary mt-2">37%</p>
-                    <p className="text-sm text-foreground/70 mt-1">jeunes en situation de NEET</p>
+                    <p className="text-sm text-foreground/70 mt-1">des 15-29 ans en situation de NEET en 2022</p>
                   </div>
                   
                   <div className="border-l-4 border-primary pl-6">
-                    <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Taux d'emploi</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Taux d'emploi des jeunes</p>
                     <p className="text-5xl font-bold text-primary mt-2">19%</p>
-                    <p className="text-sm text-foreground/70 mt-1">seulement dans l'emploi formel</p>
+                    <p className="text-sm text-foreground/70 mt-1">des 15-29 ans avaient un emploi en 2022</p>
                   </div>
                   
                   <div className="border-l-4 border-primary pl-6">
@@ -166,10 +166,10 @@ const Home = () => {
               >
                 <div className="flex items-center gap-3 mb-6">
                   <Globe className="w-8 h-8 text-primary" />
-                  <h3 className="text-2xl font-bold text-foreground">DGFE</h3>
+                  <h3 className="text-2xl font-bold text-foreground">DGFQE</h3>
                 </div>
                 <p className="text-foreground/70 leading-relaxed">
-                  Direction Générale des Finances et de l'Équipement — Coordination gouvernementale et pilotage stratégique du projet
+                  Direction générale de la formation qualifiante et de l'emploi — Structuration et pilotage du dispositif de formation qualifiante et d'emploi
                 </p>
               </motion.div>
               
@@ -184,7 +184,7 @@ const Home = () => {
                   <h3 className="text-2xl font-bold text-foreground">FONEA</h3>
                 </div>
                 <p className="text-foreground/70 leading-relaxed">
-                  Fonds National d'Appui à l'Employabilité et à l'Apprentissage — Financement des formations et accompagnement des bénéficiaires
+                  Fonds national d'appui à l'employabilité et à l'apprentissage — Mise en œuvre des actions de formation qualifiante
                 </p>
               </motion.div>
               
@@ -199,7 +199,7 @@ const Home = () => {
                   <h3 className="text-2xl font-bold text-foreground">ACPE</h3>
                 </div>
                 <p className="text-foreground/70 leading-relaxed">
-                  Agence Congolaise Pour l'Emploi — Mise en relation avec les employeurs et placement des jeunes
+                  Agence congolaise pour l'emploi — Information, orientation et accompagnement des jeunes demandeurs d'emploi
                 </p>
               </motion.div>
             </div>
@@ -248,5 +248,4 @@ const Home = () => {
   );
 };
 
-export default Home;
 export default Home;

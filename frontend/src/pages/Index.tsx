@@ -61,8 +61,8 @@ const Index = () => {
                   <div className="h-1 w-20 bg-[#16A34A] rounded-full"></div>
                 </div>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Au Congo, <span className="font-bold text-[#16A34A]">37% de la population jeune est en situation de NEET</span> (Not in Employment, Education or Training) 
-                  et seuls <span className="font-bold text-[#16A34A]">19% accèdent à l'emploi formel</span>. Ce défi majeur impacte le développement socio-économique du pays.
+                  Au Congo, en 2022, <span className="font-bold text-[#16A34A]">37% des 15-29 ans étaient en situation de NEET</span> (ni en emploi, ni en études, ni en formation) 
+                  et seuls <span className="font-bold text-[#16A34A]">19% avaient un emploi</span>. Ce défi majeur affecte le développement socio-économique du pays.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
                   Mosala, financé par l'AFD et l'Union Européenne, intervient pour structurer l'insertion professionnelle 
@@ -82,12 +82,12 @@ const Index = () => {
                   <div className="space-y">
                     <div className="text-center py-3">
                       <div className="text-xl md:text-4xl font-black text-[#16A34A]">37%</div>
-                      <p className="text-gray-700 mt-2 font-semibold text-base">Jeunes en situation NEET</p>
+                      <p className="text-gray-700 mt-2 font-semibold text-base">15-29 ans en situation NEET en 2022</p>
                     </div>
                     <div className="h-px bg-gradient-to-r from-transparent via-green-300 to-transparent"></div>
                     <div className="text-center py-3">
                       <div className="text-5xl md:text-4xl font-black text-[#16A34A]">19%</div>
-                      <p className="text-gray-700 mt-2 font-semibold text-base">Accès à l'emploi formel</p>
+                      <p className="text-gray-700 mt-2 font-semibold text-base">15-29 ans ayant un emploi en 2022</p>
                     </div>
                     <div className="h-px bg-gradient-to-r from-transparent via-green-300 to-transparent"></div>
                     <div className="text-center py-3">
@@ -122,7 +122,7 @@ const Index = () => {
                   <div className="h-1 w-20 bg-[#16A34A] rounded-full"></div>
                 </div>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  Mosala accompagne tous les jeunes Congolais en quête d'insertion professionnelle
+                  Mosala vise l'accompagnement de 5 000 jeunes dans leur parcours d'insertion professionnelle
                 </p>
               </div>
 
@@ -138,7 +138,7 @@ const Index = () => {
                     <div className="text-4xl font-bold text-[#3B82F6]">5000</div>
                     <div className="text-xl font-semibold text-gray-900 mt-2">Jeunes accompagnés</div>
                     <p className="text-sm text-gray-600 mt-3">Structuration, formation, accompagnement</p>
-                    <p className="text-xs text-gray-500 mt-4">50% de nos bénéficiaires</p>
+                    <p className="text-xs text-gray-500 mt-4">Objectif du projet Mosala</p>
                   </div>
                 </motion.div>
 
@@ -218,7 +218,7 @@ const Index = () => {
                   },
                   {
                     title: "FONEA",
-                    description: "Fonds National pour l'Employabilité et l'Apprentissage",
+                    description: "Fonds national d'appui à l'employabilité et à l'apprentissage",
                     details: "Formation professionnelle adaptée aux besoins du marché",
                     icon: BookOpen,
                     color: "#34D399",

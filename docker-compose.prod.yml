@@ -31,6 +31,8 @@ services:
       dockerfile: Dockerfile
     container_name: mosala-frontend
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:1199:80"
     depends_on:
       - backend-nestjs
     networks:

@@ -168,7 +168,7 @@ const About = () => {
               </li>
               <li className="flex items-start gap-3 text-[var(--color-mosala-dark-600)]">
                 <span className="font-bold text-blue-500 mt-1">•</span>
-                <span className="text-sm leading-relaxed">appuyer le Fonds national pour l'employabilité et l'apprentissage (FONEA) dans ses activités de mise en œuvre des actions de formation qualifiante adaptée aux besoins du marché de l'emploi (renforcement des compétences des jeunes et de la qualité de l'offre de formations dans les secteurs porteurs (notamment l'agriculture, le tourisme durable et l'industrie), promotion de l'apprentissage et de l'insertion des jeunes).</span>
+                <span className="text-sm leading-relaxed">appuyer le Fonds national d'appui à l'employabilité et à l'apprentissage (FONEA) dans ses activités de mise en œuvre des actions de formation qualifiante adaptée aux besoins du marché de l'emploi (renforcement des compétences des jeunes et de la qualité de l'offre de formations dans les secteurs porteurs (notamment l'agriculture, le tourisme durable et l'industrie), promotion de l'apprentissage et de l'insertion des jeunes).</span>
               </li>
               <li className="flex items-start gap-3 text-[var(--color-mosala-dark-600)]">
                 <span className="font-bold text-blue-500 mt-1">•</span>
